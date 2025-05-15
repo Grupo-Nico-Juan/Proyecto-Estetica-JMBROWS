@@ -1,4 +1,7 @@
 
+using LogicaAccesoDatos.EF;
+using Microsoft.EntityFrameworkCore;
+
 namespace apiJMBROWS
 {
     public class Program
@@ -13,6 +16,10 @@ namespace apiJMBROWS
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Configure the DbContext with the connection string
+            builder.Services.AddDbContext<EsteticaContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
@@ -31,6 +38,7 @@ namespace apiJMBROWS
             app.MapControllers();
 
             app.Run();
+
         }
     }
 }
