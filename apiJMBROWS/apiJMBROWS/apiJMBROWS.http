@@ -1,0 +1,6 @@
+@apiJMBROWS_HostAddress = http://localhost:5217
+
+GET {{apiJMBROWS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
