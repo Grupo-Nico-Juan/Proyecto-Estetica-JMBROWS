@@ -15,7 +15,7 @@ namespace LogicaAccesoDatos.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"SERVER=(localDb)\MsSqlLocalDb;Database=EsteticaDB;Integrated Security=true;Encrypt=false");
+            //optionsBuilder.UseSqlServer(@"SERVER=(localDb)\MsSqlLocalDb;Database=EsteticaDB;Integrated Security=true;Encrypt=false");
 
         }
         public EsteticaContext(DbContextOptions<EsteticaContext> options) : base(options)
