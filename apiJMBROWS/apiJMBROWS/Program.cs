@@ -1,5 +1,9 @@
 
+using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
+using LogicaAccesoDatos.Repositorios;
+using LogicaNegocio.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -13,7 +17,10 @@ namespace apiJMBROWS
 
             // Servicios MVC/Web API
             builder.Services.AddControllers();
-
+            //Repositorios
+            builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
+            //Casos de uso
+            builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>

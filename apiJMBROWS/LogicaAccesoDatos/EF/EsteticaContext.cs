@@ -20,6 +20,8 @@ namespace LogicaAccesoDatos.EF
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Usuario>()
