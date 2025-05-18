@@ -33,7 +33,8 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                         Email = dto.Email,
                         Nombre = dto.Nombre,
                         Apellido = dto.Apellido,
-                        Password = _hasher.HashPassword(null, dto.Password)
+                        PasswordPlano = dto.PasswordPlano,
+                        Password = "" // temporal, se reemplaza luego con el hash
                     };
                     break;
 
@@ -43,7 +44,8 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                         Email = dto.Email,
                         Nombre = dto.Nombre,
                         Apellido = dto.Apellido,
-                        Password = _hasher.HashPassword(null, dto.Password),
+                        PasswordPlano = dto.PasswordPlano,
+                        Password = "", // temporal, se reemplaza luego con el hash
                         Cargo = "Pendiente"
                     };
                     break;
@@ -54,16 +56,17 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                         Email = dto.Email,
                         Nombre = dto.Nombre,
                         Apellido = dto.Apellido,
-                        Password = _hasher.HashPassword(null, dto.Password)
+                        PasswordPlano = dto.PasswordPlano,
+                        Password = "" // temporal, se reemplaza luego con el hash
                     };
                     break;
 
                 default:
                     throw new UsuarioException("Tipo de usuario no válido.");
             }
-
-
             nuevo.EsValido();
+            // 🔐 Hashear con el objeto completo (mejor que usar null)
+            nuevo.Password = _hasher.HashPassword(nuevo, dto.PasswordPlano);
             RepoUsuario.Add(nuevo);
         }
     }
