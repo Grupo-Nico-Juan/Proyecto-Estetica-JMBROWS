@@ -1,11 +1,12 @@
 
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
-using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
-using LogicaNegocio.Entidades;
+using LogicaAplicacion.InterfacesCasosDeUso;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace apiJMBROWS
 {
@@ -21,6 +22,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             //Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
+            builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
             // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -32,6 +34,21 @@ namespace apiJMBROWS
                     Description = "API REST para la gestión de citas y notificaciones",
                 });
             });
+            builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>{
+            options.TokenValidationParameters = new TokenValidationParameters
+             {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+             });
+
+            builder.Services.AddAuthorization();
 
             // DbContext
             builder.Services.AddDbContext<EsteticaContext>(options =>
@@ -51,6 +68,7 @@ namespace apiJMBROWS
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
+            app.UseAuthentication();
             app.MapControllers();
             app.Run();
         }
