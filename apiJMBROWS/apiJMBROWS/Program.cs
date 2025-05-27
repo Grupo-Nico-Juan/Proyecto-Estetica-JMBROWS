@@ -1,4 +1,4 @@
-
+﻿
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
@@ -16,6 +16,9 @@ namespace apiJMBROWS
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // 🔧 (reemplaza 8080 si querés otro)
+            builder.WebHost.UseUrls("http://*:8080");
+
             // Servicios MVC/Web API
             builder.Services.AddControllers();
             //Repositorios
@@ -29,9 +32,9 @@ namespace apiJMBROWS
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "API de Est�tica JMBROWS",
+                    Title = "API de Estética JMBROWS",
                     Version = "v1",
-                    Description = "API REST para la gesti�n de citas y notificaciones",
+                    Description = "API REST para la gestión de citas y notificaciones",
                 });
             });
             builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>{
@@ -65,8 +68,8 @@ namespace apiJMBROWS
                     c.RoutePrefix = "swagger";
                 });
             }
-
-            app.UseHttpsRedirection();
+            //EN DESARROLLO COMENTADO
+            //app.UseHttpsRedirection();
             app.UseAuthorization();
             app.UseAuthentication();
             app.MapControllers();
