@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using LogicaNegocio.Excepciones.Middleware;
 
 namespace apiJMBROWS
 {
@@ -37,9 +38,10 @@ namespace apiJMBROWS
                     Description = "API REST para la gestión de citas y notificaciones",
                 });
             });
-            builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>{
-            options.TokenValidationParameters = new TokenValidationParameters
-             {
+            builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -49,7 +51,7 @@ namespace apiJMBROWS
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
-             });
+            });
 
             builder.Services.AddAuthorization();
 
@@ -70,6 +72,7 @@ namespace apiJMBROWS
             }
             //EN DESARROLLO COMENTADO
             //app.UseHttpsRedirection();
+            app.UsarManejadorErrores(); 
             app.UseAuthorization();
             app.UseAuthentication();
             app.MapControllers();
