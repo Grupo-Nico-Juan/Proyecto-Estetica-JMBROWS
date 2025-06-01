@@ -30,6 +30,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
             builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
+            builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
 
 
 

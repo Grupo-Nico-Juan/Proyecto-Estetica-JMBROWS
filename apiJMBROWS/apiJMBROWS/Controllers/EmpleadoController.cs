@@ -2,6 +2,7 @@
 using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Mvc;
+using LogicaNegocio.InterfacesRepositorio;
 
 namespace apiJMBROWS.Controllers
 {
@@ -73,6 +74,10 @@ namespace apiJMBROWS.Controllers
                 return NotFound(new { error = ex.Message });
             }
         }
+
+
+
+
     }
 }
 

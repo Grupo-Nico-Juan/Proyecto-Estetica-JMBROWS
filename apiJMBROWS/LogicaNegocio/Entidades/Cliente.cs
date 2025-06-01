@@ -32,6 +32,8 @@ namespace LogicaNegocio.Entidades
 
 
         public List<Turno> Turnos { get; set; } = new();
+        public List<Promocion> Promociones { get; set; } = new();
+        public List<Notificacion> Notificaciones { get; set; } = new();
 
         public bool Equals(Cliente? other)
         {

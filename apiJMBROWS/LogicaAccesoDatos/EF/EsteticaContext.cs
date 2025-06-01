@@ -13,6 +13,7 @@ namespace LogicaAccesoDatos.EF
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<Habilidad> Habilidades { get; set; }
         public DbSet<Turno> Turnos { get; set; }
+        public DbSet<DetalleTurno> DetalleTurnos { get; set; }
 
         public EsteticaContext(DbContextOptions<EsteticaContext> options) : base(options) { }
 

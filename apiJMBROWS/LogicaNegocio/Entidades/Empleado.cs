@@ -6,6 +6,8 @@ namespace LogicaNegocio.Entidades
 {
     public class Empleado : Usuario
     {
+        [Key]
+        public int Id { get; set; } 
         [Required]
         public required string Cargo { get; set; }
 
