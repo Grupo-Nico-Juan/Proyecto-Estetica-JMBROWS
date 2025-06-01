@@ -39,5 +39,25 @@ namespace apiJMBROWS.UtilidadesJwt
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        public static string GenerarTokenCliente(string email, string key, string issuer, string audience)
+        {
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.Email, email)
+        };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer,
+                audience,
+                claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }

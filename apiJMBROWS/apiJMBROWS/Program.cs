@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using LogicaNegocio.Excepciones.Middleware;
+using LogicaNegocio.InterfacesRepositorio;
+using Libreria.LogicaNegocio.InterfacesRepositorio;
 
 namespace apiJMBROWS
 {
@@ -24,9 +26,18 @@ namespace apiJMBROWS
             builder.Services.AddControllers();
             //Repositorios
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
+            builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
+            builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
+            builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
+            builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
+
+
+
             //Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
+            builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
+            builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
             // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>

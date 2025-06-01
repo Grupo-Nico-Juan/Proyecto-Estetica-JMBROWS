@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using LogicaAccesoDatos.EF;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using Libreria.LogicaNegocio.Excepciones;
+using Libreria.LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 
 namespace LogicaAccesoDatos.Repositorios
 {
@@ -77,6 +79,42 @@ namespace LogicaAccesoDatos.Repositorios
         {
             return _context.Usuarios.Where(u => u.Rol == rol).ToList();
         }
+
+        public IEnumerable<Empleado> GetEmpleados()
+        {
+            return _context.Usuarios.OfType<Empleado>().ToList();
+        }
+        public void AsignarHabilidad(int empleadoId, int habilidadId)
+        {
+            var empleado = _context.Usuarios.OfType<Empleado>().Include(e => e.Habilidades).FirstOrDefault(e => e.Id == empleadoId)
+                ?? throw new EmpleadoException("Empleado no encontrado");
+
+            var habilidad = _context.Habilidades.FirstOrDefault(h => h.Id == habilidadId)
+                ?? throw new HabilidadException("Habilidad no encontrada");
+
+            if (!empleado.Habilidades.Contains(habilidad))
+            {
+                empleado.Habilidades.Add(habilidad);
+                _context.SaveChanges();
+            }
+        }
+
+        public void QuitarHabilidad(int empleadoId, int habilidadId)
+        {
+            var empleado = _context.Usuarios.OfType<Empleado>().Include(e => e.Habilidades).FirstOrDefault(e => e.Id == empleadoId)
+                ?? throw new EmpleadoException("Empleado no encontrado");
+
+            var habilidad = _context.Habilidades.FirstOrDefault(h => h.Id == habilidadId)
+                ?? throw new HabilidadException("Habilidad no encontrada");
+
+            if (empleado.Habilidades.Contains(habilidad))
+            {
+                empleado.Habilidades.Remove(habilidad);
+                _context.SaveChanges();
+            }
+        }
+
+
     }
 }
 

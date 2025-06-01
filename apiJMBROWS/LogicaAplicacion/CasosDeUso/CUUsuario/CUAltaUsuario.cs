@@ -27,16 +27,7 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
 
             switch (dto.TipoUsuario.ToLower())
             {
-                case "cliente":
-                    nuevo = new Cliente
-                    {
-                        Email = dto.Email,
-                        Nombre = dto.Nombre,
-                        Apellido = dto.Apellido,
-                        PasswordPlano = dto.PasswordPlano,
-                        Password = "" // temporal, se reemplaza luego con el hash
-                    };
-                    break;
+
 
                 case "empleado":
                     nuevo = new Empleado
