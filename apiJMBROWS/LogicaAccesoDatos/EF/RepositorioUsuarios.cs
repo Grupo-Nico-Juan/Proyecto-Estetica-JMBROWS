@@ -84,6 +84,38 @@ namespace LogicaAccesoDatos.Repositorios
         {
             return _context.Usuarios.OfType<Empleado>().ToList();
         }
+        public Empleado GetEmpleadoById(int id)
+        {
+            return _context.Usuarios
+                .OfType<Empleado>()
+                .FirstOrDefault(e => e.Id == id);
+        }
+        public void AddEmpleado(Empleado e)
+        {
+            e.EsValido();
+            _context.Usuarios.Add(e);
+            _context.SaveChanges();
+        }
+        public void UpdateEmpleado(int id, Empleado e)
+        {
+            var actual = GetEmpleadoById(id);
+            if (actual == null)
+                throw new EmpleadoException($"No se encontró el empleado con Id {id}");
+
+            _context.Entry(actual).CurrentValues.SetValues(e);
+            _context.SaveChanges();
+        }
+        public void DeleteEmpleado(int id)
+        {
+            var e = GetEmpleadoById(id);
+            if (e == null)
+                throw new EmpleadoException($"No se encontró el empleado con Id {id}");
+
+            _context.Usuarios.Remove(e);
+            _context.SaveChanges();
+        }
+
+
         public void AsignarHabilidad(int empleadoId, int habilidadId)
         {
             var empleado = _context.Usuarios.OfType<Empleado>().Include(e => e.Habilidades).FirstOrDefault(e => e.Id == empleadoId)

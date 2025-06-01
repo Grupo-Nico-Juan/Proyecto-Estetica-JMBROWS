@@ -10,6 +10,10 @@ public interface IRepositorioUsuarios : IRepositorio<Usuario>
     IEnumerable<Empleado> GetEmpleados();
     void AsignarHabilidad(int empleadoId, int habilidadId);
     void QuitarHabilidad(int empleadoId, int habilidadId);
+    Empleado GetEmpleadoById(int id);
+    void AddEmpleado(Empleado e);
+    void UpdateEmpleado(int id, Empleado e);
+    void DeleteEmpleado(int id);
 
 }
 

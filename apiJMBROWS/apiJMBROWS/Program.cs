@@ -81,7 +81,7 @@ namespace apiJMBROWS
                     c.RoutePrefix = "swagger";
                 });
             }
-            //EN DESARROLLO COMENTADO
+            
             //app.UseHttpsRedirection();
             app.UsarManejadorErrores(); 
             app.UseAuthorization();
