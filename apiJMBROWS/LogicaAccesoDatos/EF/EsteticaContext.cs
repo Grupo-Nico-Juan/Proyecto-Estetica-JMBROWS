@@ -20,6 +20,7 @@ namespace LogicaAccesoDatos.EF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=tcp:jmbrows.database.windows.net,1433;Initial Catalog=JMBRowsDB;Persist Security Info=False;User ID=jmbrows;Password=Pestañas123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            //Cambiar al appSettings ***********************************************************************************************************
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
