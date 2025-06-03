@@ -73,22 +73,21 @@ namespace apiJMBROWS
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+            // Habilitar Swagger en todos los entornos (solo mientras estás desarrollando o testeando)
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "JMBROWS API v1");
-                    c.RoutePrefix = "swagger";
-                });
-            }
-            
-            //app.UseHttpsRedirection();
-            app.UsarManejadorErrores(); 
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "JMBROWS API v1");
+                c.RoutePrefix = "swagger"; // Deja esto si querés que se acceda con /swagger
+            });
+
+
+            app.UsarManejadorErrores();
             app.UseAuthorization();
             app.UseAuthentication();
             app.MapControllers();
             app.Run();
+
         }
     }
 }
