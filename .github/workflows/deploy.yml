@@ -3,8 +3,8 @@ name: Deploy Web API to Azure
 on:
   push:
     branches:
-        - main
-        - develop
+      - main
+      - develop
 
 jobs:
   build-and-deploy:
@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Build proyecto
-        run: dotnet build --configuration Release
+        run: dotnet build ./apiJMBROWS/apiJMBROWS.sln --configuration Release
 
       - name: Publicar proyecto
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish ./apiJMBROWS/apiJMBROWS.csproj -c Release -o ./publish
 
       - name: Iniciar sesión en Azure
         uses: azure/login@v1
