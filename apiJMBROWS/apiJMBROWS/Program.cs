@@ -39,6 +39,17 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
+
+            //CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowLocalhost5173", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
             // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -81,7 +92,7 @@ namespace apiJMBROWS
                 c.RoutePrefix = "swagger"; // Deja esto si querés que se acceda con /swagger
             });
 
-
+            app.UseCors("AllowLocalhost5173");
             app.UsarManejadorErrores();
             app.UseAuthorization();
             app.UseAuthentication();
