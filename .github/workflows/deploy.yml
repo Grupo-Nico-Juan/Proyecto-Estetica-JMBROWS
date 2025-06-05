@@ -19,11 +19,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build proyecto
+      - name: Build solución
         run: dotnet build ./apiJMBROWS/apiJMBROWS.sln --configuration Release
 
       - name: Publicar proyecto
-        run: dotnet publish ./apiJMBROWS/apiJMBROWS.csproj -c Release -o ./publish
+        run: dotnet publish ./apiJMBROWS/apiJMBROWS/apiJMBROWS.csproj -c Release -o ./publish
 
       - name: Iniciar sesión en Azure
         uses: azure/login@v1
