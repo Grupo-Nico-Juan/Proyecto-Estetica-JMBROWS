@@ -1,0 +1,38 @@
+name: Deploy Web API to Azure
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build solución
+        run: dotnet build ./apiJMBROWS/apiJMBROWS.sln --configuration Release
+
+      - name: Publicar proyecto
+        run: dotnet publish ./apiJMBROWS/apiJMBROWS/apiJMBROWS.csproj -c Release -o ./publish
+
+      - name: Iniciar sesión en Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy a Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: apiJMBROWSV1
+          slot-name: Production
+          package: ./publish
