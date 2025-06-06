@@ -20,20 +20,11 @@ namespace LogicaAccesoDatos.EF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=tcp:jmbrows.database.windows.net,1433;Initial Catalog=JMBRowsDB;Persist Security Info=False;User ID=jmbrows;Password=Pestañas123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-            // TODO: Mover al appsettings.json
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Servicio>()
-                .Property(s => s.Precio)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<DetalleTurno>()
-                .Property(dt => dt.Precio)
-                .HasPrecision(10, 2);
 
             // Herencia TPH para Usuario
             modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
@@ -42,28 +33,28 @@ namespace LogicaAccesoDatos.EF
                 .HasValue<Administrador>("Administrador")
                 .HasValue<Empleado>("Empleado");
 
-            // Cliente es tabla separada (no hereda de Usuario)
+            // Cliente es tabla separada
             modelBuilder.Entity<Cliente>().ToTable("Clientes");
 
-            // Empleado ↔ Habilidad (muchos a muchos)
+            // Empleado ↔ Habilidad
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.Habilidades)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("EmpleadoHabilidad"));
 
-            // Servicio ↔ Habilidad (muchos a muchos)
+            // Servicio ↔ Habilidad
             modelBuilder.Entity<Servicio>()
                 .HasMany(s => s.Habilidades)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("HabilidadServicio"));
 
-            // Servicio ↔ Sector (muchos a muchos)
-            modelBuilder.Entity<Servicio>()
-                .HasMany(s => s.Sectores)
-                .WithMany(se => se.Servicios)
+            // Sector ↔ Servicio (unidireccional desde Sector)
+            modelBuilder.Entity<Sector>()
+                .HasMany(se => se.Servicios)
+                .WithMany()
                 .UsingEntity(j => j.ToTable("ServicioSector"));
 
-            // Empleado ↔ Sector (muchos a muchos)
+            // Empleado ↔ Sector
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.SectoresAsignados)
                 .WithMany()
