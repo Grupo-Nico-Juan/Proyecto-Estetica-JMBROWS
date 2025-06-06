@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.DtoUsuario
 {
-    public class RegistroUsuarioDTO
+    public class RegistroAdministradorDTO
     {
         public required string TipoUsuario { get; set; } // "Cliente", "Empleado", "Administrador"
         public required string Email { get; set; }

@@ -5,6 +5,8 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
 {
     public interface ICUAltaUsuario
     {
-        void AltaUsuario(RegistroUsuarioDTO dto);
+        void AltaUsuario(RegistroAdministradorDTO dto);
+        void AltaUsuario(RegistroEmpleadoDTO dto);
+
     }
 }
