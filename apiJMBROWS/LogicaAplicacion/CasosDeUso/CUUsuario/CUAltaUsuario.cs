@@ -52,7 +52,7 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                 throw new UsuarioException("Ya existe un usuario con ese email.");
 
             Usuario nuevo;
-            if (dto.TipoUsuario.ToLower() == "administrador")
+            if (dto.TipoUsuario.ToLower() == "empleado")
             {
                 nuevo = new Empleado
                 {
@@ -61,7 +61,7 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                     Apellido = dto.Apellido,
                     PasswordPlano = dto.PasswordPlano,
                     Password = "", // temporal, se reemplaza luego con el hash
-                    Cargo = "Pendiente"
+                    Cargo = dto.Cargo
                     // TODO: Sucursal, Habilidades, Turnos se agregan en próximos pasos
                 };
             }

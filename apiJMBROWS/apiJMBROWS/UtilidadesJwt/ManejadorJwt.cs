@@ -14,8 +14,8 @@ namespace apiJMBROWS.UtilidadesJwt
         {
             var claims = new[]
             {
-                new Claim("email", email),
-                new Claim("tipoUsuario", tipoUsuario)
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, tipoUsuario)
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

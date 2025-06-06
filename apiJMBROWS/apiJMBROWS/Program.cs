@@ -1,15 +1,15 @@
 ﻿
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaNegocio.Excepciones.Middleware;
+using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using LogicaNegocio.Excepciones.Middleware;
-using LogicaNegocio.InterfacesRepositorio;
-using Libreria.LogicaNegocio.InterfacesRepositorio;
 
 namespace apiJMBROWS
 {
@@ -59,7 +59,32 @@ namespace apiJMBROWS
                     Title = "API de Estética JMBROWS",
                     Version = "v1",
                     Description = "API REST para la gestión de citas y notificaciones",
+
                 });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Ingrese: Bearer {su_token_jwt}"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+                new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
             });
             builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
             {
@@ -94,8 +119,8 @@ namespace apiJMBROWS
 
             app.UseCors("AllowLocalhost5173");
             app.UsarManejadorErrores();
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
             app.Run();
 
