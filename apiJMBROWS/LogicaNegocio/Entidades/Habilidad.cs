@@ -22,10 +22,6 @@ namespace LogicaNegocio.Entidades
         [MinLength(5)]
         public required string Descripcion { get; set; }
 
-        // Relaciones
-        public List<Empleado> Empleadas { get; set; } = new();
-        public List<Servicio> Servicios { get; set; } = new();
-
         [JsonIgnore]
         public bool Eliminada { get; set; } = false;
 

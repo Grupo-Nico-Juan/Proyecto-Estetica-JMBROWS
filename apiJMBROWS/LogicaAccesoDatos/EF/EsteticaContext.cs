@@ -20,56 +20,63 @@ namespace LogicaAccesoDatos.EF
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=tcp:jmbrows.database.windows.net,1433;Initial Catalog=JMBRowsDB;Persist Security Info=False;User ID=jmbrows;Password=Pestañas123.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-            //Cambiar al appSettings ***********************************************************************************************************
+            // TODO: Mover al appsettings.json
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // TPH: Administrador y Empleado en Usuarios
-            modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
+            modelBuilder.Entity<Servicio>()
+                .Property(s => s.Precio)
+                .HasPrecision(10, 2);
 
+            modelBuilder.Entity<DetalleTurno>()
+                .Property(dt => dt.Precio)
+                .HasPrecision(10, 2);
+
+            // Herencia TPH para Usuario
+            modelBuilder.Entity<Usuario>().HasKey(u => u.Id);
             modelBuilder.Entity<Usuario>()
                 .HasDiscriminator<string>("TipoUsuario")
                 .HasValue<Administrador>("Administrador")
                 .HasValue<Empleado>("Empleado");
 
-            // Cliente es una clase separada (sin herencia)
+            // Cliente es tabla separada (no hereda de Usuario)
             modelBuilder.Entity<Cliente>().ToTable("Clientes");
 
-            // Relación Empleado ↔ Habilidad
+            // Empleado ↔ Habilidad (muchos a muchos)
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.Habilidades)
-                .WithMany(h => h.Empleadas)
+                .WithMany()
                 .UsingEntity(j => j.ToTable("EmpleadoHabilidad"));
 
-            // Relación Habilidad ↔ Servicio
-            modelBuilder.Entity<Habilidad>()
-                .HasMany(h => h.Servicios)
-                .WithMany(s => s.Habilidades)
+            // Servicio ↔ Habilidad (muchos a muchos)
+            modelBuilder.Entity<Servicio>()
+                .HasMany(s => s.Habilidades)
+                .WithMany()
                 .UsingEntity(j => j.ToTable("HabilidadServicio"));
 
-            // Relación Servicio ↔ Sector
+            // Servicio ↔ Sector (muchos a muchos)
             modelBuilder.Entity<Servicio>()
                 .HasMany(s => s.Sectores)
                 .WithMany(se => se.Servicios)
                 .UsingEntity(j => j.ToTable("ServicioSector"));
 
-            // Relación Empleado ↔ Sector (manual)
+            // Empleado ↔ Sector (muchos a muchos)
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.SectoresAsignados)
-                .WithMany(se => se.Empleadas)
+                .WithMany()
                 .UsingEntity(j => j.ToTable("EmpleadoSector"));
 
-            // Relación Turno ↔ Empleada
+            // Turno ↔ Empleada
             modelBuilder.Entity<Turno>()
                 .HasOne(t => t.Empleada)
                 .WithMany(e => e.TurnosAsignados)
                 .HasForeignKey(t => t.EmpleadaId)
-                .OnDelete(DeleteBehavior.Restrict); // evita cascadas múltiples
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Relación Turno ↔ Cliente
+            // Turno ↔ Cliente
             modelBuilder.Entity<Turno>()
                 .HasOne(t => t.Cliente)
                 .WithMany(c => c.Turnos)
@@ -78,6 +85,3 @@ namespace LogicaAccesoDatos.EF
         }
     }
 }
-
-
-
