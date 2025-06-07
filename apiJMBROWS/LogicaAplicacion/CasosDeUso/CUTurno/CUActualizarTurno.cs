@@ -1,0 +1,46 @@
+using LogicaAplicacion.Dtos.TurnoDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaNegocio.InterfacesRepositorio;
+using LogicaNegocio.Entidades;
+using System;
+using System.Linq;
+
+namespace LogicaAplicacion.CasosDeUso.CUTurno
+{
+    public class CUActualizarTurno : ICUActualizarTurno
+    {
+        private readonly IRepositorioTurnos _repo;
+
+        public CUActualizarTurno(IRepositorioTurnos repo)
+        {
+            _repo = repo;
+        }
+
+        public void Ejecutar(ActualizarTurnoDTO dto)
+        {
+            var turno = _repo.GetById(dto.Id);
+            if (turno == null)
+                throw new Exception("Turno no encontrado");
+
+            turno.FechaHora = dto.FechaHora;
+            turno.EmpleadaId = dto.EmpleadaId;
+            turno.ClienteId = dto.ClienteId;
+            turno.Realizado = dto.Realizado;
+
+            turno.Detalles.Clear();
+            foreach (var det in dto.Detalles)
+            {
+                turno.Detalles.Add(new DetalleTurno
+                {
+                    ServicioId = det.ServicioId,
+                    DuracionMinutos = det.DuracionMinutos,
+                    Precio = det.Precio
+                });
+            }
+
+            turno.EsValido(); // <-- Validación de solapamiento
+
+            _repo.Update(dto.Id, turno);
+        }
+    }
+}

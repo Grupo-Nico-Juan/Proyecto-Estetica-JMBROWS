@@ -1,104 +1,163 @@
-﻿using LogicaNegocio.Entidades;
-using LogicaNegocio.InterfacesRepositorio;
+﻿using LogicaAplicacion.Dtos.TurnoDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace apiJMBROWS.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TurnosController : ControllerBase
     {
-        private readonly IRepositorioTurnos _repositorioTurnos;
+        private readonly ICUAltaTurno _altaTurno;
+        private readonly ICUObtenerTurnos _obtenerTurnos;
+        private readonly ICUObtenerTurnoPorId _obtenerTurnoPorId;
+        private readonly ICUObtenerTurnosPorEmpleada _obtenerTurnosPorEmpleada;
+        private readonly ICUObtenerTurnosDelDiaPorEmpleada _obtenerTurnosDelDiaPorEmpleada;
+        private readonly ICUActualizarTurno _actualizarTurno;
+        private readonly ICUEliminarTurno _eliminarTurno;
 
-        public TurnosController(IRepositorioTurnos repositorioTurnos)
+        public TurnosController(
+            ICUAltaTurno altaTurno,
+            ICUObtenerTurnos obtenerTurnos,
+            ICUObtenerTurnoPorId obtenerTurnoPorId,
+            ICUObtenerTurnosPorEmpleada obtenerTurnosPorEmpleada,
+            ICUObtenerTurnosDelDiaPorEmpleada obtenerTurnosDelDiaPorEmpleada,
+            ICUActualizarTurno actualizarTurno,
+            ICUEliminarTurno eliminarTurno)
         {
-            _repositorioTurnos = repositorioTurnos;
+            _altaTurno = altaTurno;
+            _obtenerTurnos = obtenerTurnos;
+            _obtenerTurnoPorId = obtenerTurnoPorId;
+            _obtenerTurnosPorEmpleada = obtenerTurnosPorEmpleada;
+            _obtenerTurnosDelDiaPorEmpleada = obtenerTurnosDelDiaPorEmpleada;
+            _actualizarTurno = actualizarTurno;
+            _eliminarTurno = eliminarTurno;
         }
 
-        // GET api/turnos
+        /// <summary>
+        /// Obtiene todos los turnos.
+        /// </summary>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene todos los turnos")]
+        [SwaggerResponse(200, "Lista de turnos", typeof(IEnumerable<TurnoDTO>))]
         public IActionResult GetAll()
         {
-            var todos = _repositorioTurnos.GetAll();
-            return Ok(todos);
+            var turnos = _obtenerTurnos.Ejecutar();
+            return Ok(turnos);
         }
 
-        // GET api/turnos/5
+        /// <summary>
+        /// Obtiene un turno por su ID.
+        /// </summary>
         [HttpGet("{id:int}")]
+        [SwaggerOperation(Summary = "Obtiene un turno por ID")]
+        [SwaggerResponse(200, "Turno encontrado", typeof(TurnoDTO))]
+        [SwaggerResponse(404, "Turno no encontrado")]
         public IActionResult GetById(int id)
         {
-            var turno = _repositorioTurnos.GetById(id);
-            if (turno == null) return NotFound();
-            return Ok(turno);
+            try
+            {
+                var turno = _obtenerTurnoPorId.Ejecutar(id);
+                return Ok(turno);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
         }
 
-        // POST api/turnos
+        /// <summary>
+        /// Crea un nuevo turno. Solo administradores.
+        /// </summary>
         [HttpPost]
-        public IActionResult Create([FromBody] Turno nuevo)
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Crea un nuevo turno (solo administradores)")]
+        [SwaggerResponse(201, "Turno creado correctamente")]
+        [SwaggerResponse(400, "Error en los datos del turno")]
+        public IActionResult Create([FromBody] AltaTurnoDTO dto)
         {
             try
             {
-                _repositorioTurnos.Add(nuevo);
-                return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
+                _altaTurno.Ejecutar(dto);
+                return StatusCode(201, "Turno creado correctamente.");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
-        // PUT api/turnos/5
+        /// <summary>
+        /// Obtiene los turnos de una empleada.
+        /// </summary>
+        [HttpGet("empleada/{empleadaId:int}")]
+        [SwaggerOperation(Summary = "Obtiene los turnos de una empleada")]
+        [SwaggerResponse(200, "Lista de turnos", typeof(IEnumerable<TurnoDTO>))]
+        public IActionResult TurnosPorEmpleada(int empleadaId)
+        {
+            var lista = _obtenerTurnosPorEmpleada.Ejecutar(empleadaId);
+            return Ok(lista);
+        }
+
+        /// <summary>
+        /// Obtiene los turnos de hoy de una empleada.
+        /// </summary>
+        [HttpGet("empleada/{empleadaId:int}/hoy")]
+        [SwaggerOperation(Summary = "Obtiene los turnos de hoy de una empleada")]
+        [SwaggerResponse(200, "Lista de turnos de hoy", typeof(IEnumerable<TurnoDTO>))]
+        public IActionResult TurnosHoy(int empleadaId)
+        {
+            var lista = _obtenerTurnosDelDiaPorEmpleada.Ejecutar(empleadaId, DateTime.Today);
+            return Ok(lista);
+        }
+
+        /// <summary>
+        /// Actualiza un turno existente. Solo administradores.
+        /// </summary>
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] Turno modificado)
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Actualiza un turno (solo administradores)")]
+        [SwaggerResponse(200, "Turno actualizado correctamente")]
+        [SwaggerResponse(400, "Error en los datos del turno")]
+        [SwaggerResponse(404, "Turno no encontrado")]
+        public IActionResult Update(int id, [FromBody] ActualizarTurnoDTO dto)
         {
             try
             {
-                _repositorioTurnos.Update(id, modificado);
-                return NoContent();
-            }
-            catch (InvalidOperationException inv)
-            {
-                return NotFound(inv.Message);
+                if (id != dto.Id)
+                    return BadRequest(new { error = "El id de la URL no coincide con el del cuerpo." });
+
+                _actualizarTurno.Ejecutar(dto);
+                return Ok("Turno actualizado correctamente.");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
         }
 
-        // DELETE api/turnos/5
+        /// <summary>
+        /// Elimina un turno por ID. Solo administradores.
+        /// </summary>
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Elimina un turno (solo administradores)")]
+        [SwaggerResponse(200, "Turno eliminado correctamente")]
+        [SwaggerResponse(404, "Turno no encontrado")]
         public IActionResult Delete(int id)
         {
             try
             {
-                _repositorioTurnos.Remove(id);
-                return NoContent();
-            }
-            catch (InvalidOperationException inv)
-            {
-                return NotFound(inv.Message);
+                _eliminarTurno.Ejecutar(id);
+                return Ok("Turno eliminado correctamente.");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(new { error = ex.Message });
             }
-        }
-
-        // GET api/turnos/empleada/3
-        [HttpGet("empleada/{empleadaId:int}")]
-        public IActionResult TurnosPorEmpleada(int empleadaId)
-        {
-            var lista = _repositorioTurnos.BuscarPorEmpleada(empleadaId);
-            return Ok(lista);
-        }
-
-        // GET api/turnos/empleada/3/hoy
-        [HttpGet("empleada/{empleadaId:int}/hoy")]
-        public IActionResult TurnosHoy(int empleadaId)
-        {
-            var lista = _repositorioTurnos.ObtenerTurnosDelDiaPorEmpleada(empleadaId, DateTime.Now);
-            return Ok(lista);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -31,6 +32,10 @@ namespace LogicaNegocio.Entidades
         [Required]
         [Range(0.0, 10000.0)]
         public decimal Precio { get; set; }
+        [NotMapped]
+        public DateTime HoraInicio { get; set; }
+        [NotMapped]
+        public DateTime HoraFin { get; set; }
 
         public void EsValido()
         {

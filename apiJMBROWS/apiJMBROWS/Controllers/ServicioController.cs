@@ -1,16 +1,16 @@
-﻿using LogicaNegocio.Entidades;
-using LogicaNegocio.InterfacesRepositorio;
-using LogicaAplicacion.Dtos.ServicioDTO;
+﻿using LogicaAplicacion.Dtos.ServicioDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace apiJMBROWS.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ServicioController : ControllerBase
     {
-        private readonly IRepositorioServicios _repo;
         private readonly ICUAltaServicio _altaServicio;
         private readonly ICUActualizarServicio _actualizarServicio;
         private readonly ICUEliminarServicio _eliminarServicio;
@@ -19,7 +19,6 @@ namespace apiJMBROWS.Controllers
         private readonly ICUBuscarServiciosPorNombre _buscarServiciosPorNombre;
 
         public ServicioController(
-            IRepositorioServicios repo,
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
             ICUEliminarServicio eliminarServicio,
@@ -27,7 +26,6 @@ namespace apiJMBROWS.Controllers
             ICUObtenerServicioPorId obtenerServicioPorId,
             ICUBuscarServiciosPorNombre buscarServiciosPorNombre)
         {
-            _repo = repo;
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
             _eliminarServicio = eliminarServicio;
@@ -36,14 +34,25 @@ namespace apiJMBROWS.Controllers
             _buscarServiciosPorNombre = buscarServiciosPorNombre;
         }
 
+        /// <summary>
+        /// Obtiene todos los servicios.
+        /// </summary>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene todos los servicios")]
+        [SwaggerResponse(200, "Lista de servicios", typeof(IEnumerable<ServicioDTO>))]
         public IActionResult Get()
         {
             var servicios = _obtenerServicios.Ejecutar();
             return Ok(servicios);
         }
 
+        /// <summary>
+        /// Obtiene un servicio por su ID.
+        /// </summary>
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Obtiene un servicio por ID")]
+        [SwaggerResponse(200, "Servicio encontrado", typeof(ServicioDTO))]
+        [SwaggerResponse(404, "Servicio no encontrado")]
         public IActionResult Get(int id)
         {
             try
@@ -57,7 +66,14 @@ namespace apiJMBROWS.Controllers
             }
         }
 
+        /// <summary>
+        /// Crea un nuevo servicio. Solo administradores.
+        /// </summary>
         [HttpPost]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Crea un nuevo servicio (solo administradores)")]
+        [SwaggerResponse(200, "Servicio creado correctamente")]
+        [SwaggerResponse(400, "Error en los datos del servicio")]
         public IActionResult Post([FromBody] AltaServicioDTO dto)
         {
             try
@@ -71,7 +87,14 @@ namespace apiJMBROWS.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza un servicio existente. Solo administradores.
+        /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Actualiza un servicio (solo administradores)")]
+        [SwaggerResponse(200, "Servicio actualizado correctamente")]
+        [SwaggerResponse(400, "Error en los datos del servicio")]
         public IActionResult Put(int id, [FromBody] ActualizarServicioDTO dto)
         {
             try
@@ -88,7 +111,14 @@ namespace apiJMBROWS.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina un servicio por ID. Solo administradores.
+        /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Elimina un servicio (solo administradores)")]
+        [SwaggerResponse(200, "Servicio eliminado correctamente")]
+        [SwaggerResponse(404, "Servicio no encontrado")]
         public IActionResult Delete(int id)
         {
             try
@@ -102,7 +132,12 @@ namespace apiJMBROWS.Controllers
             }
         }
 
+        /// <summary>
+        /// Busca servicios por nombre.
+        /// </summary>
         [HttpGet("buscar/{texto}")]
+        [SwaggerOperation(Summary = "Busca servicios por nombre")]
+        [SwaggerResponse(200, "Lista de servicios encontrados", typeof(IEnumerable<ServicioDTO>))]
         public IActionResult Buscar(string texto)
         {
             var servicios = _buscarServiciosPorNombre.Ejecutar(texto);

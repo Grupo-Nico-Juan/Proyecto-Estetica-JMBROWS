@@ -13,7 +13,7 @@ namespace LogicaAccesoDatos.EF
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<Habilidad> Habilidades { get; set; }
         public DbSet<Turno> Turnos { get; set; }
-        public DbSet<DetalleTurno> DetalleTurnos { get; set; }
+        public DbSet<DetalleTurno> DetallesTurno { get; set; }
 
         public EsteticaContext(DbContextOptions<EsteticaContext> options) : base(options) { }
 
@@ -73,6 +73,20 @@ namespace LogicaAccesoDatos.EF
                 .WithMany(c => c.Turnos)
                 .HasForeignKey(t => t.ClienteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación Turno 1 - N DetalleTurno
+            modelBuilder.Entity<Turno>()
+                .HasMany(t => t.Detalles)
+                .WithOne(d => d.Turno)
+                .HasForeignKey(d => d.TurnoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Relación Servicio 1 - N DetalleTurno
+            modelBuilder.Entity<Servicio>()
+                .HasMany<DetalleTurno>()
+                .WithOne(d => d.Servicio)
+                .HasForeignKey(d => d.ServicioId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

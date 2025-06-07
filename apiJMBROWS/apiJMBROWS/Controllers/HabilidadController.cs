@@ -1,107 +1,126 @@
 ﻿using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace apiJMBROWS.Controllers
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class HabilidadController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class HabilidadController : ControllerBase
+    private readonly ICUAltaHabilidad _altaHabilidad;
+    private readonly ICUActualizarHabilidad _actualizarHabilidad;
+    private readonly ICUEliminarHabilidad _eliminarHabilidad;
+    private readonly ICUObtenerHabilidadPorId _obtenerHabilidadPorId;
+    private readonly ICUBuscarHabilidadesPorNombre _buscarHabilidadesPorNombre;
+    private readonly ICUObtenerHabilidades _obtenerHabilidades;
+
+    public HabilidadController(
+        ICUAltaHabilidad altaHabilidad,
+        ICUActualizarHabilidad actualizarHabilidad,
+        ICUEliminarHabilidad eliminarHabilidad,
+        ICUObtenerHabilidadPorId obtenerHabilidadPorId,
+        ICUBuscarHabilidadesPorNombre buscarHabilidadesPorNombre,
+        ICUObtenerHabilidades obtenerHabilidades)
     {
-        private readonly ICUAltaHabilidad _altaHabilidad;
-        private readonly ICUActualizarHabilidad _actualizarHabilidad;
-        private readonly ICUEliminarHabilidad _eliminarHabilidad;
-        private readonly ICUObtenerHabilidadPorId _obtenerHabilidadPorId;
-        private readonly ICUBuscarHabilidadesPorNombre _buscarHabilidadesPorNombre;
-        private readonly ICUObtenerHabilidades _obtenerHabilidades;
+        _altaHabilidad = altaHabilidad;
+        _actualizarHabilidad = actualizarHabilidad;
+        _eliminarHabilidad = eliminarHabilidad;
+        _obtenerHabilidadPorId = obtenerHabilidadPorId;
+        _buscarHabilidadesPorNombre = buscarHabilidadesPorNombre;
+        _obtenerHabilidades = obtenerHabilidades;
+    }
 
-        public HabilidadController(
-            ICUAltaHabilidad altaHabilidad,
-            ICUActualizarHabilidad actualizarHabilidad,
-            ICUEliminarHabilidad eliminarHabilidad,
-            ICUObtenerHabilidadPorId obtenerHabilidadPorId,
-            ICUBuscarHabilidadesPorNombre buscarHabilidadesPorNombre,
-            ICUObtenerHabilidades obtenerHabilidades)
+    [HttpGet]
+    [SwaggerOperation(Summary = "Obtiene todas las habilidades")]
+    [SwaggerResponse(200, "Lista de habilidades", typeof(IEnumerable<HabilidadDTO>))]
+    public IActionResult Get()
+    {
+        var habilidades = _obtenerHabilidades.Ejecutar();
+        return Ok(habilidades);
+    }
+
+    [HttpGet("{id}")]
+    [SwaggerOperation(Summary = "Obtiene una habilidad por ID")]
+    [SwaggerResponse(200, "Habilidad encontrada", typeof(HabilidadDTO))]
+    [SwaggerResponse(404, "Habilidad no encontrada")]
+    public IActionResult Get(int id)
+    {
+        try
         {
-            _altaHabilidad = altaHabilidad;
-            _actualizarHabilidad = actualizarHabilidad;
-            _eliminarHabilidad = eliminarHabilidad;
-            _obtenerHabilidadPorId = obtenerHabilidadPorId;
-            _buscarHabilidadesPorNombre = buscarHabilidadesPorNombre;
-            _obtenerHabilidades = obtenerHabilidades;
+            var habilidad = _obtenerHabilidadPorId.Ejecutar(id);
+            return Ok(habilidad);
         }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                var habilidad = _obtenerHabilidadPorId.Ejecutar(id);
-                return Ok(habilidad);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            return NotFound(new { error = ex.Message });
         }
+    }
 
-        [HttpGet]
-        public IActionResult Get()
+    [HttpPost]
+    [Authorize(Roles = "Administrador")]
+    [SwaggerOperation(Summary = "Crea una nueva habilidad (solo administradores)")]
+    [SwaggerResponse(200, "Habilidad creada correctamente")]
+    [SwaggerResponse(400, "Error en los datos de la habilidad")]
+    public IActionResult Post([FromBody] AltaHabilidadDTO dto)
+    {
+        try
         {
-            var habilidades = _obtenerHabilidades.Ejecutar();
-            return Ok(habilidades);
+            _altaHabilidad.Ejecutar(dto);
+            return Ok("Habilidad creada correctamente.");
         }
-
-        [HttpPost]
-        public IActionResult Post([FromBody] AltaHabilidadDTO dto)
+        catch (Exception ex)
         {
-            try
-            {
-                _altaHabilidad.Ejecutar(dto);
-                return Ok("Habilidad creada correctamente.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
+            return BadRequest(new { error = ex.Message });
         }
+    }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ActualizarHabilidadDTO dto)
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Administrador")]
+    [SwaggerOperation(Summary = "Actualiza una habilidad (solo administradores)")]
+    [SwaggerResponse(200, "Habilidad actualizada correctamente")]
+    [SwaggerResponse(400, "Error en los datos de la habilidad")]
+    public IActionResult Put(int id, [FromBody] ActualizarHabilidadDTO dto)
+    {
+        try
         {
-            try
-            {
-                if (id != dto.Id)
-                    return BadRequest(new { error = "El id de la URL no coincide con el del cuerpo." });
+            if (id != dto.Id)
+                return BadRequest(new { error = "El id de la URL no coincide con el del cuerpo." });
 
-                _actualizarHabilidad.Ejecutar(dto);
-                return Ok("Habilidad actualizada correctamente.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
+            _actualizarHabilidad.Ejecutar(dto);
+            return Ok("Habilidad actualizada correctamente.");
         }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                _eliminarHabilidad.Ejecutar(id);
-                return Ok("Habilidad eliminada correctamente.");
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
+            return BadRequest(new { error = ex.Message });
         }
+    }
 
-        [HttpGet("buscar/{texto}")]
-        public IActionResult Buscar(string texto)
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrador")]
+    [SwaggerOperation(Summary = "Elimina una habilidad (solo administradores)")]
+    [SwaggerResponse(200, "Habilidad eliminada correctamente")]
+    [SwaggerResponse(404, "Habilidad no encontrada")]
+    public IActionResult Delete(int id)
+    {
+        try
         {
-            var resultados = _buscarHabilidadesPorNombre.Ejecutar(texto);
-            return Ok(resultados);
+            _eliminarHabilidad.Ejecutar(id);
+            return Ok("Habilidad eliminada correctamente.");
         }
+        catch (Exception ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("buscar/{texto}")]
+    [SwaggerOperation(Summary = "Busca habilidades por nombre")]
+    [SwaggerResponse(200, "Lista de habilidades encontradas", typeof(IEnumerable<HabilidadDTO>))]
+    public IActionResult Buscar(string texto)
+    {
+        var resultados = _buscarHabilidadesPorNombre.Ejecutar(texto);
+        return Ok(resultados);
     }
 }
