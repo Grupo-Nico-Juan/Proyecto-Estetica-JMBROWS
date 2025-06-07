@@ -1,9 +1,10 @@
-﻿
-using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
+using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,11 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
-
+            builder.Services.AddScoped<ICUModificarSucursal, CUModificarSucursal>();
+            builder.Services.AddScoped<ICUAltaSucursal, CUAltaSucursal>();
+            builder.Services.AddScoped<ICUObtenerSucursales, CUObtenerSucursales>();
+            builder.Services.AddScoped<ICUObtenerSucursalPorId, CUObtenerSucursalPorId>();
+            builder.Services.AddScoped<ICUEliminarSucursal, CUEliminarSucursal>();
             //CORS
             builder.Services.AddCors(options =>
             {
