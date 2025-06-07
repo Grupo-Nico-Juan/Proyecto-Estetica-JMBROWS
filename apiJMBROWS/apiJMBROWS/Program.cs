@@ -1,7 +1,6 @@
 ﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
-using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
 using LogicaAplicacion.CasosDeUso.CUServicio;
@@ -22,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using LogicaAccesoDatos.Repositorios;
 
 namespace apiJMBROWS
 {
@@ -43,6 +43,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
             builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
+            builder.Services.AddScoped<IRepositorioSectores, LogicaAccesoDatos.EF.RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
 
             //Casos de uso
@@ -98,6 +99,13 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarDetalleTurno, CUEliminarDetalleTurno>();
             builder.Services.AddScoped<ICUObtenerDetalleTurnoPorId, CUObtenerDetalleTurnoPorId>();
             builder.Services.AddScoped<ICUObtenerDetallesTurno, CUObtenerDetallesTurno>();
+
+            //Casos de uso Sector
+            builder.Services.AddScoped<ICUAltaSector, CUAltaSector>();
+            builder.Services.AddScoped<ICUActualizarSector, CUActualizarSector>();
+            builder.Services.AddScoped<ICUEliminarSector, CUEliminarSector>();
+            builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
+            builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
 
             //CORS
             builder.Services.AddCors(options =>

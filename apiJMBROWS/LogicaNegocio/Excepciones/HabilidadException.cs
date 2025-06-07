@@ -2,7 +2,7 @@
 namespace LogicaAccesoDatos.Repositorios
 {
     [Serializable]
-    internal class HabilidadException : Exception
+    public class HabilidadException : Exception
     {
         public HabilidadException()
         {
