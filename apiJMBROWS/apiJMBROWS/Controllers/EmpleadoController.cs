@@ -4,6 +4,8 @@ using Libreria.LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Mvc;
 using LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos.DtoUsuario;
+using LogicaAplicacion.Dtos.EmpleadoDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
@@ -15,88 +17,158 @@ namespace apiJMBROWS.Controllers
     [Route("api/[controller]")]
     public class EmpleadoController : ControllerBase
     {
-        private readonly IRepositorioUsuarios _repo;
-        private readonly ICUAltaUsuario _altaUsuario;
+        private readonly ICUAltaEmpleado _altaEmpleado;
+        private readonly ICUObtenerEmpleados _obtenerEmpleados;
+        private readonly ICUObtenerEmpleadoPorId _obtenerEmpleadoPorId;
+        private readonly ICUActualizarEmpleado _actualizarEmpleado;
+        private readonly ICUEliminarEmpleado _eliminarEmpleado;
+        private readonly ICUBuscarEmpleadosPorNombre _buscarEmpleadosPorNombre;
+        private readonly ICUAsignarHabilidadEmpleado _asignarHabilidadEmpleado;
+        private readonly ICUQuitarHabilidadEmpleado _quitarHabilidadEmpleado;
+        private readonly ICUObtenerHabilidadesDeEmpleado _obtenerHabilidadesDeEmpleado;
+        private readonly ICUAsignarSectorEmpleado _asignarSectorEmpleado;
+        private readonly ICUQuitarSectorEmpleado _quitarSectorEmpleado;
+        private readonly ICUObtenerSectoresDeEmpleado _obtenerSectoresDeEmpleado;
 
-        public EmpleadoController(IRepositorioUsuarios repo, ICUAltaUsuario altaUsuario)
+        public EmpleadoController(
+            ICUAltaEmpleado altaEmpleado,
+            ICUObtenerEmpleados obtenerEmpleados,
+            ICUObtenerEmpleadoPorId obtenerEmpleadoPorId,
+            ICUActualizarEmpleado actualizarEmpleado,
+            ICUEliminarEmpleado eliminarEmpleado,
+            ICUBuscarEmpleadosPorNombre buscarEmpleadosPorNombre,
+            ICUAsignarHabilidadEmpleado asignarHabilidadEmpleado,
+            ICUQuitarHabilidadEmpleado quitarHabilidadEmpleado,
+            ICUObtenerHabilidadesDeEmpleado obtenerHabilidadesDeEmpleado,
+            ICUAsignarSectorEmpleado asignarSectorEmpleado,
+            ICUQuitarSectorEmpleado quitarSectorEmpleado,
+            ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado)
         {
-            _repo = repo;
-            _altaUsuario = altaUsuario;
+            _altaEmpleado = altaEmpleado;
+            _obtenerEmpleados = obtenerEmpleados;
+            _obtenerEmpleadoPorId = obtenerEmpleadoPorId;
+            _actualizarEmpleado = actualizarEmpleado;
+            _eliminarEmpleado = eliminarEmpleado;
+            _buscarEmpleadosPorNombre = buscarEmpleadosPorNombre;
+            _asignarHabilidadEmpleado = asignarHabilidadEmpleado;
+            _quitarHabilidadEmpleado = quitarHabilidadEmpleado;
+            _obtenerHabilidadesDeEmpleado = obtenerHabilidadesDeEmpleado;
         }
 
-        // GET: api/empleado
         [HttpGet]
-        public IActionResult Get() => Ok(_repo.GetEmpleados());
+        public IActionResult Get()
+        {
+            var empleados = _obtenerEmpleados.Ejecutar();
+            return Ok(empleados);
+        }
 
-        // GET: api/empleado/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var emp = _repo.GetEmpleadoById(id);
-            if (emp == null) return NotFound();
-            return Ok(emp);
-        }
-
-        // POST: api/empleado
-        // POST: api/empleado/registrar
-        [HttpPost("Registrar")]
-        [Authorize(Roles = "Administrador")] // ✅ Solo admins pueden registrar
-        [SwaggerOperation(Summary = "Registro de un nuevo empleado (solo administradores autorizados).")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Empleado registrado exitosamente.")]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los datos del empleado.")]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, "No autorizado.")]
-        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor.")]
-        public IActionResult Registrar([FromBody] RegistroEmpleadoDTO dto)
-        {
             try
             {
-                _altaUsuario.AltaUsuario(dto);
-                return Ok("Empleado registrado correctamente.");
-            }
-            catch (EmpleadoException ex)
-            {
-                return BadRequest(new { error = ex.Message });
+                var empleado = _obtenerEmpleadoPorId.Ejecutar(id);
+                return Ok(empleado);
             }
             catch (Exception ex)
-            {
-                return StatusCode(500, new { Error = "Error interno: " + ex.Message });
-            }
-        }
-
-
-        // PUT: api/empleado/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Empleado e)
-        {
-            try
-            {
-                _repo.UpdateEmpleado(id, e);
-                return NoContent();
-            }
-            catch (UsuarioException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
-
-        // DELETE: api/empleado/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            try
-            {
-                _repo.DeleteEmpleado(id);
-                return NoContent();
-            }
-            catch (UsuarioException ex)
             {
                 return NotFound(new { error = ex.Message });
             }
         }
 
+        [HttpPost]
+        public IActionResult Post([FromBody] AltaEmpleadoDTO dto)
+        {
+            try
+            {
+                _altaEmpleado.Ejecutar(dto);
+                return Ok("Empleado creado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] ActualizarEmpleadoDTO dto)
+        {
+            try
+            {
+                if (id != dto.Id)
+                    return BadRequest(new { error = "El id de la URL no coincide con el del cuerpo." });
 
+                _actualizarEmpleado.Ejecutar(dto);
+                return Ok("Empleado actualizado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _eliminarEmpleado.Ejecutar(id);
+                return Ok("Empleado eliminado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("buscar/{texto}")]
+        public IActionResult Buscar(string texto)
+        {
+            var empleados = _buscarEmpleadosPorNombre.Ejecutar(texto);
+            return Ok(empleados);
+        }
+
+        [HttpPost("{empleadoId}/habilidades/{habilidadId}")]
+        public IActionResult AsignarHabilidad(int empleadoId, int habilidadId)
+        {
+            try
+            {
+                _asignarHabilidadEmpleado.Ejecutar(new EmpleadoHabilidadDTO { EmpleadoId = empleadoId, HabilidadId = habilidadId });
+                return Ok("Habilidad asignada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{empleadoId}/habilidades/{habilidadId}")]
+        public IActionResult QuitarHabilidad(int empleadoId, int habilidadId)
+        {
+            try
+            {
+                _quitarHabilidadEmpleado.Ejecutar(new EmpleadoHabilidadDTO { EmpleadoId = empleadoId, HabilidadId = habilidadId });
+                return Ok("Habilidad quitada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("{empleadoId}/habilidades")]
+        public IActionResult GetHabilidades(int empleadoId)
+        {
+            try
+            {
+                var habilidades = _obtenerHabilidadesDeEmpleado.Ejecutar(empleadoId);
+                return Ok(habilidades);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
     }
 }
 

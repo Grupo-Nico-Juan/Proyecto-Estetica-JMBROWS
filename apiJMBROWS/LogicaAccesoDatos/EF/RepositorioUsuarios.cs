@@ -146,7 +146,15 @@ namespace LogicaAccesoDatos.Repositorios
             }
         }
 
+        public void AsignarSector(int empleadoId, int sectorId)
+        {
+            throw new NotImplementedException();
+        }
 
+        public void QuitarSector(int empleadoId, int sectorId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

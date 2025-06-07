@@ -1,88 +1,107 @@
-﻿namespace apiJMBROWS.Controllers
+﻿using LogicaAplicacion.Dtos.HabilidadDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using Microsoft.AspNetCore.Mvc;
+
+namespace apiJMBROWS.Controllers
 {
-    using Libreria.LogicaNegocio.InterfacesRepositorio;
-    using LogicaNegocio.Entidades;
-    using LogicaNegocio.InterfacesRepositorio;
-    using Microsoft.AspNetCore.Mvc;
-
-    namespace apiJMBROWS.Controllers
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HabilidadController : ControllerBase
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        public class HabilidadController : ControllerBase
+        private readonly ICUAltaHabilidad _altaHabilidad;
+        private readonly ICUActualizarHabilidad _actualizarHabilidad;
+        private readonly ICUEliminarHabilidad _eliminarHabilidad;
+        private readonly ICUObtenerHabilidadPorId _obtenerHabilidadPorId;
+        private readonly ICUBuscarHabilidadesPorNombre _buscarHabilidadesPorNombre;
+        private readonly ICUObtenerHabilidades _obtenerHabilidades;
+
+        public HabilidadController(
+            ICUAltaHabilidad altaHabilidad,
+            ICUActualizarHabilidad actualizarHabilidad,
+            ICUEliminarHabilidad eliminarHabilidad,
+            ICUObtenerHabilidadPorId obtenerHabilidadPorId,
+            ICUBuscarHabilidadesPorNombre buscarHabilidadesPorNombre,
+            ICUObtenerHabilidades obtenerHabilidades)
         {
-            private readonly IRepositorioHabilidades _repo;
+            _altaHabilidad = altaHabilidad;
+            _actualizarHabilidad = actualizarHabilidad;
+            _eliminarHabilidad = eliminarHabilidad;
+            _obtenerHabilidadPorId = obtenerHabilidadPorId;
+            _buscarHabilidadesPorNombre = buscarHabilidadesPorNombre;
+            _obtenerHabilidades = obtenerHabilidades;
+        }
 
-            public HabilidadController(IRepositorioHabilidades repo)
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            try
             {
-                _repo = repo;
-            }
-
-            [HttpGet]
-            public IActionResult Get()
-            {
-                var habilidades = _repo.GetAll();
-                return Ok(habilidades);
-            }
-
-            [HttpGet("{id}")]
-            public IActionResult Get(int id)
-            {
-                var habilidad = _repo.GetById(id);
-                if (habilidad == null)
-                    return NotFound();
+                var habilidad = _obtenerHabilidadPorId.Ejecutar(id);
                 return Ok(habilidad);
             }
-
-            [HttpPost]
-            public IActionResult Post([FromBody] Habilidad habilidad)
+            catch (Exception ex)
             {
-                try
-                {
-                    _repo.Add(habilidad);
-                    return CreatedAtAction(nameof(Get), new { id = habilidad.Id }, habilidad);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { error = ex.Message });
-                }
-            }
-
-            [HttpPut("{id}")]
-            public IActionResult Put(int id, [FromBody] Habilidad habilidad)
-            {
-                try
-                {
-                    _repo.Update(id, habilidad);
-                    return NoContent();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { error = ex.Message });
-                }
-            }
-
-            [HttpDelete("{id}")]
-            public IActionResult Delete(int id)
-            {
-                try
-                {
-                    _repo.Remove(id);
-                    return NoContent();
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(new { error = ex.Message });
-                }
-            }
-
-            [HttpGet("buscar/{texto}")]
-            public IActionResult Buscar(string texto)
-            {
-                var resultados = _repo.BuscarPorNombre(texto);
-                return Ok(resultados);
+                return NotFound(new { error = ex.Message });
             }
         }
-    }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var habilidades = _obtenerHabilidades.Ejecutar();
+            return Ok(habilidades);
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] AltaHabilidadDTO dto)
+        {
+            try
+            {
+                _altaHabilidad.Ejecutar(dto);
+                return Ok("Habilidad creada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] ActualizarHabilidadDTO dto)
+        {
+            try
+            {
+                if (id != dto.Id)
+                    return BadRequest(new { error = "El id de la URL no coincide con el del cuerpo." });
+
+                _actualizarHabilidad.Ejecutar(dto);
+                return Ok("Habilidad actualizada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _eliminarHabilidad.Ejecutar(id);
+                return Ok("Habilidad eliminada correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("buscar/{texto}")]
+        public IActionResult Buscar(string texto)
+        {
+            var resultados = _buscarHabilidadesPorNombre.Ejecutar(texto);
+            return Ok(resultados);
+        }
+    }
 }

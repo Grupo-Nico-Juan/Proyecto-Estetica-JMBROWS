@@ -2,9 +2,15 @@
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
-using LogicaAplicacion.InterfacesCasosDeUso;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
+using LogicaAplicacion.CasosDeUso.CUHabilidad;
+using LogicaAplicacion.CasosDeUso.CUServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
+using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +40,6 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
 
 
-
             //Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
@@ -45,6 +50,35 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSucursales, CUObtenerSucursales>();
             builder.Services.AddScoped<ICUObtenerSucursalPorId, CUObtenerSucursalPorId>();
             builder.Services.AddScoped<ICUEliminarSucursal, CUEliminarSucursal>();
+            builder.Services.AddScoped<ICUAltaServicio, CUAltaServicio>();
+            builder.Services.AddScoped<ICUActualizarServicio, CUActualizarServicio>();
+            builder.Services.AddScoped<ICUEliminarServicio, CUEliminarServicio>();
+            builder.Services.AddScoped<ICUObtenerServicios, CUObtenerServicios>();
+            builder.Services.AddScoped<ICUObtenerServicioPorId, CUObtenerServicioPorId>();
+            builder.Services.AddScoped<ICUBuscarServiciosPorNombre, CUBuscarServiciosPorNombre>();
+
+            // Casos de uso de habilidades
+            builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
+            builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
+            builder.Services.AddScoped<ICUEliminarHabilidad, CUEliminarHabilidad>();
+            builder.Services.AddScoped<ICUObtenerHabilidadPorId, CUObtenerHabilidadPorId>();
+            builder.Services.AddScoped<ICUBuscarHabilidadesPorNombre, CUBuscarHabilidadesPorNombre>();
+            builder.Services.AddScoped<ICUObtenerHabilidades, CUObtenerHabilidades>();
+
+            //Casos de uso Empleado
+            builder.Services.AddScoped<ICUAltaEmpleado, CUAltaEmpleado>();
+            builder.Services.AddScoped<ICUObtenerEmpleados, CUObtenerEmpleados>();
+            builder.Services.AddScoped<ICUObtenerEmpleadoPorId, CUObtenerEmpleadoPorId>();
+            builder.Services.AddScoped<ICUActualizarEmpleado, CUActualizarEmpleado>();
+            builder.Services.AddScoped<ICUEliminarEmpleado, CUEliminarEmpleado>();
+            builder.Services.AddScoped<ICUBuscarEmpleadosPorNombre, CUBuscarEmpleadosPorNombre>();
+            builder.Services.AddScoped<ICUAsignarHabilidadEmpleado, CUAsignarHabilidadEmpleado>();
+            builder.Services.AddScoped<ICUQuitarHabilidadEmpleado, CUQuitarHabilidadEmpleado>();
+            builder.Services.AddScoped<ICUObtenerHabilidadesDeEmpleado, CUObtenerHabilidadesDeEmpleado>();
+            builder.Services.AddScoped<ICUAsignarSectorEmpleado, CUAsignarSectorEmpleado>();
+            builder.Services.AddScoped<ICUQuitarSectorEmpleado, CUQuitarSectorEmpleado>();
+            builder.Services.AddScoped<ICUObtenerSectoresDeEmpleado, CUObtenerSectoresDeEmpleado>();
+
             //CORS
             builder.Services.AddCors(options =>
             {
