@@ -115,11 +115,16 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
 
             //CORS
+            var allowedOrigins = new[] {
+            "https://calm-tree-09940dd0f.6.azurestaticapps.net", // producción
+            "http://localhost:5173" // opcional, para desarrollo local con Vite
+};
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowLocalhost5173", policy =>
+
+                options.AddPolicy("FrontendPolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins(allowedOrigins)
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
@@ -191,7 +196,7 @@ namespace apiJMBROWS
                 c.RoutePrefix = "swagger"; // Deja esto si querés que se acceda con /swagger
             });
 
-            app.UseCors("AllowLocalhost5173");
+            app.UseCors("FrontendPolicy");
             app.UsarManejadorErrores();
             app.UseAuthentication();
             app.UseAuthorization();
