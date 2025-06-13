@@ -22,6 +22,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using LogicaAccesoDatos.Repositorios;
+using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 
 namespace apiJMBROWS
 {
@@ -45,6 +47,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
             builder.Services.AddScoped<IRepositorioSectores, LogicaAccesoDatos.EF.RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
+            builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
 
             //Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
@@ -99,7 +102,11 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarDetalleTurno, CUEliminarDetalleTurno>();
             builder.Services.AddScoped<ICUObtenerDetalleTurnoPorId, CUObtenerDetalleTurnoPorId>();
             builder.Services.AddScoped<ICUObtenerDetallesTurno, CUObtenerDetallesTurno>();
-
+            //Casos de uso Periodo Laboral
+            builder.Services.AddScoped<ICUObtenerPeriodosLaboralesPorEmpleada, CUObtenerPeriodosLaboralesPorEmpleada>();
+            builder.Services.AddScoped<ICUAltaPeriodoLaboral, CUAltaPeriodoLaboral>();
+            builder.Services.AddScoped<ICUModificarPeriodoLaboral, CUModificarPeriodoLaboral>();
+            builder.Services.AddScoped<ICUEliminarPeriodoLaboral, CUEliminarPeriodoLaboral>();
             //Casos de uso Sector
             builder.Services.AddScoped<ICUAltaSector, CUAltaSector>();
             builder.Services.AddScoped<ICUActualizarSector, CUActualizarSector>();

@@ -14,6 +14,8 @@ namespace LogicaAccesoDatos.EF
         public DbSet<Habilidad> Habilidades { get; set; }
         public DbSet<Turno> Turnos { get; set; }
         public DbSet<DetalleTurno> DetallesTurno { get; set; }
+        public DbSet<PeriodoLaboral> PeriodosLaborales { get; set; }
+
 
         public EsteticaContext(DbContextOptions<EsteticaContext> options) : base(options) { }
 
@@ -87,6 +89,13 @@ namespace LogicaAccesoDatos.EF
                 .WithOne(d => d.Servicio)
                 .HasForeignKey(d => d.ServicioId)
                 .OnDelete(DeleteBehavior.Restrict);
+            // Relación Empleado 1 - N PeriodoLaboral
+            modelBuilder.Entity<PeriodoLaboral>()
+                .HasOne<Empleado>(p => p.Empleada)
+                .WithMany(e => e.PeriodosLaborales)
+                .HasForeignKey(p => p.EmpleadaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
