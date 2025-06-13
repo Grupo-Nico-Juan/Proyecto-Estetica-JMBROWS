@@ -1,6 +1,7 @@
 ﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
+using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
 using LogicaAplicacion.CasosDeUso.CUServicio;
@@ -14,16 +15,14 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
+using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
-using LogicaNegocio.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using LogicaAccesoDatos.Repositorios;
-using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 
 namespace apiJMBROWS
 {
@@ -32,33 +31,33 @@ namespace apiJMBROWS
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // 🔧 (reemplaza 8080 si querés otro)
             builder.WebHost.UseUrls("http://*:8080");
 
-            // Servicios MVC/Web API
             builder.Services.AddControllers();
-            //Repositorios
+
+            // Repositorios
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
             builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
-            builder.Services.AddScoped<IRepositorioSectores, LogicaAccesoDatos.EF.RepositorioSectores>();
+            builder.Services.AddScoped<IRepositorioSectores, RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
             builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
 
-            //Casos de uso
+            // Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
+
             builder.Services.AddScoped<ICUModificarSucursal, CUModificarSucursal>();
             builder.Services.AddScoped<ICUAltaSucursal, CUAltaSucursal>();
             builder.Services.AddScoped<ICUObtenerSucursales, CUObtenerSucursales>();
             builder.Services.AddScoped<ICUObtenerSucursalPorId, CUObtenerSucursalPorId>();
             builder.Services.AddScoped<ICUEliminarSucursal, CUEliminarSucursal>();
+
             builder.Services.AddScoped<ICUAltaServicio, CUAltaServicio>();
             builder.Services.AddScoped<ICUActualizarServicio, CUActualizarServicio>();
             builder.Services.AddScoped<ICUEliminarServicio, CUEliminarServicio>();
@@ -66,7 +65,6 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerServicioPorId, CUObtenerServicioPorId>();
             builder.Services.AddScoped<ICUBuscarServiciosPorNombre, CUBuscarServiciosPorNombre>();
 
-            // Casos de uso de habilidades
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
             builder.Services.AddScoped<ICUEliminarHabilidad, CUEliminarHabilidad>();
@@ -74,7 +72,6 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUBuscarHabilidadesPorNombre, CUBuscarHabilidadesPorNombre>();
             builder.Services.AddScoped<ICUObtenerHabilidades, CUObtenerHabilidades>();
 
-            //Casos de uso Empleado
             builder.Services.AddScoped<ICUAltaEmpleado, CUAltaEmpleado>();
             builder.Services.AddScoped<ICUObtenerEmpleados, CUObtenerEmpleados>();
             builder.Services.AddScoped<ICUObtenerEmpleadoPorId, CUObtenerEmpleadoPorId>();
@@ -87,7 +84,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUAsignarSectorEmpleado, CUAsignarSectorEmpleado>();
             builder.Services.AddScoped<ICUQuitarSectorEmpleado, CUQuitarSectorEmpleado>();
             builder.Services.AddScoped<ICUObtenerSectoresDeEmpleado, CUObtenerSectoresDeEmpleado>();
-            //Casos de uso Turnos
+
             builder.Services.AddScoped<ICUActualizarTurno, CUActualizarTurno>();
             builder.Services.AddScoped<ICUEliminarTurno, CUEliminarTurno>();
             builder.Services.AddScoped<ICUAltaTurno, CUAltaTurno>();
@@ -96,32 +93,30 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerTurnosPorEmpleada, CUObtenerTurnosPorEmpleada>();
             builder.Services.AddScoped<ICUObtenerTurnosDelDiaPorEmpleada, CUObtenerTurnosDelDiaPorEmpleada>();
 
-            //Casos de uso DetalleTurno
             builder.Services.AddScoped<ICUAltaDetalleTurno, CUAltaDetalleTurno>();
             builder.Services.AddScoped<ICUActualizarDetalleTurno, CUActualizarDetalleTurno>();
             builder.Services.AddScoped<ICUEliminarDetalleTurno, CUEliminarDetalleTurno>();
             builder.Services.AddScoped<ICUObtenerDetalleTurnoPorId, CUObtenerDetalleTurnoPorId>();
             builder.Services.AddScoped<ICUObtenerDetallesTurno, CUObtenerDetallesTurno>();
-            //Casos de uso Periodo Laboral
+
             builder.Services.AddScoped<ICUObtenerPeriodosLaboralesPorEmpleada, CUObtenerPeriodosLaboralesPorEmpleada>();
             builder.Services.AddScoped<ICUAltaPeriodoLaboral, CUAltaPeriodoLaboral>();
             builder.Services.AddScoped<ICUModificarPeriodoLaboral, CUModificarPeriodoLaboral>();
             builder.Services.AddScoped<ICUEliminarPeriodoLaboral, CUEliminarPeriodoLaboral>();
-            //Casos de uso Sector
+
             builder.Services.AddScoped<ICUAltaSector, CUAltaSector>();
             builder.Services.AddScoped<ICUActualizarSector, CUActualizarSector>();
             builder.Services.AddScoped<ICUEliminarSector, CUEliminarSector>();
             builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
 
-            //CORS
+            // CORS
             var allowedOrigins = new[] {
-            "https://calm-tree-09940dd0f.6.azurestaticapps.net", // producción
-            "http://localhost:5173" // opcional, para desarrollo local con Vite
-};
+                "https://calm-tree-09940dd0f.6.azurestaticapps.net",
+                "http://localhost:5173"
+            };
             builder.Services.AddCors(options =>
             {
-
                 options.AddPolicy("FrontendPolicy", policy =>
                 {
                     policy.WithOrigins(allowedOrigins)
@@ -129,6 +124,7 @@ namespace apiJMBROWS
                           .AllowAnyMethod();
                 });
             });
+
             // Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -138,7 +134,6 @@ namespace apiJMBROWS
                     Title = "API de Estética JMBROWS",
                     Version = "v1",
                     Description = "API REST para la gestión de citas y notificaciones",
-
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -149,22 +144,22 @@ namespace apiJMBROWS
                     In = ParameterLocation.Header,
                     Description = "Ingrese: Bearer {su_token_jwt}"
                 });
-
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-                new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
+
             builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -182,27 +177,28 @@ namespace apiJMBROWS
 
             builder.Services.AddAuthorization();
 
-            // DbContext
             builder.Services.AddDbContext<EsteticaContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
-            // Habilitar Swagger en todos los entornos (solo mientras estás desarrollando o testeando)
+            // ✅ ORDEN CORRECTO DE MIDDLEWARES
+            app.UseCors("FrontendPolicy");
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "JMBROWS API v1");
-                c.RoutePrefix = "swagger"; // Deja esto si querés que se acceda con /swagger
+                c.RoutePrefix = "swagger";
             });
 
-            app.UseCors("FrontendPolicy");
             app.UsarManejadorErrores();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
-
         }
     }
 }
