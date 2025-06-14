@@ -14,6 +14,7 @@ public class CUActualizarSector : ICUActualizarSector
             throw new Exception("Sector no encontrado");
 
         sector.Nombre = dto.Nombre;
+        sector.SucursalId = dto.SucursalId;
         _repo.Update(dto.Id, sector);
     }
 }

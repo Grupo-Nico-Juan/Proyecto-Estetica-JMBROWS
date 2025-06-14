@@ -8,7 +8,7 @@ public class CUAltaSector : ICUAltaSector
     public CUAltaSector(IRepositorioSectores repo) { _repo = repo; }
     public void Ejecutar(AltaSectorDTO dto)
     {
-        var sector = new Sector { Nombre = dto.Nombre };
+        var sector = new Sector { Nombre = dto.Nombre, SucursalId = dto.SucursalId, };
         _repo.Add(sector);
     }
 }
