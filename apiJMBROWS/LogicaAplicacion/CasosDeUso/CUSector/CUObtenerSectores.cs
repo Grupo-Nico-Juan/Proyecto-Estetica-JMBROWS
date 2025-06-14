@@ -14,6 +14,8 @@ public class CUObtenerSectores : ICUObtenerSectores
         {
             Id = s.Id,
             Nombre = s.Nombre,
+            Descripcion = s.Descripcion,
+            SucursalId = s.SucursalId
         });
     }
 }
