@@ -15,6 +15,8 @@ public class CUObtenerSectorPorId : ICUObtenerSectorPorId
         {
             Id = sector.Id,
             Nombre = sector.Nombre,
+            Descripcion = sector.Descripcion,
+            SucursalId = sector.SucursalId
         };
     }
 }
