@@ -13,6 +13,10 @@ namespace LogicaNegocio.Entidades
         [MinLength(3)]
         public required string Nombre { get; set; }
 
+        // Nueva propiedad
+        [MaxLength(200)]
+        public string? Descripcion { get; set; }
+
         // FK a Sucursal (sector pertenece a una sola sucursal)
         [Required]
         [ForeignKey("Sucursal")]
@@ -28,6 +32,9 @@ namespace LogicaNegocio.Entidades
         {
             if (string.IsNullOrWhiteSpace(Nombre) || Nombre.Length < 3)
                 throw new Exception("El nombre del sector debe tener al menos 3 caracteres.");
+            // Validación opcional para Descripcion
+            if (Descripcion != null && Descripcion.Length > 200)
+                throw new Exception("La descripción del sector no puede superar los 200 caracteres.");
         }
     }
 }
