@@ -3,8 +3,8 @@ using Libreria.LogicaNegocio.Excepciones;
 using Microsoft.AspNetCore.Identity;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos.DtoUsuario;
-using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaNegocio.Entidades;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 
 public class CULoginCliente : ICULoginCliente
 {

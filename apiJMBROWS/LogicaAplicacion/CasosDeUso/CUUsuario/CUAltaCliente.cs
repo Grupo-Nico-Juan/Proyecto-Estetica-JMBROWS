@@ -1,7 +1,7 @@
 ﻿using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos;
-using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaNegocio.Entidades;
 using Microsoft.AspNetCore.Identity;
 
@@ -18,22 +18,24 @@ public class CUAltaCliente : ICUAltaCliente
 
     public void AltaCliente(RegistroClienteDTO dto)
     {
-        if (_repo.ExisteCorreoElectronico(dto.Email))
-            throw new UsuarioException("Ya existe un cliente con ese correo electrónico.");
+        if (_repo.ExisteTelefono(dto.Telefono))
+            throw new UsuarioException("Ya existe un cliente con ese teléfono.");
 
         var nuevo = new Cliente
         {
             Nombre = dto.Nombre,
             Apellido = dto.Apellido,
             Email = dto.Email,
+            Telefono = dto.Telefono,
             PasswordPlano = dto.PasswordPlano,
             Password = "" // se completa luego
         };
 
+        // Hashear con el objeto real
         nuevo.EsValido();
 
-        // Hashear con el objeto real
-        nuevo.Password = _hasher.HashPassword(nuevo, dto.PasswordPlano);
+        if (!string.IsNullOrWhiteSpace(dto.PasswordPlano))
+            nuevo.Password = _hasher.HashPassword(nuevo, dto.PasswordPlano);
 
         _repo.Add(nuevo);
     }
