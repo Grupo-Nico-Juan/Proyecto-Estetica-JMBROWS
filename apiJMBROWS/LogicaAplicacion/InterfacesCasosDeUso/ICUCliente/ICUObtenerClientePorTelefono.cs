@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.InterfacesCasosDeUso.ICUCliente
 {
-    internal class ICUObtenerClientePorTelefono
+    public interface ICUObtenerClientePorTelefono
     {
+        ClienteDTO? Ejecutar(string telefono);
     }
 }

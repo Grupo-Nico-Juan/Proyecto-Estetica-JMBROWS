@@ -38,6 +38,10 @@ namespace LogicaAccesoDatos.EF
             // Cliente es tabla separada
             modelBuilder.Entity<Cliente>().ToTable("Clientes");
 
+            modelBuilder.Entity<Cliente>()
+                .HasIndex(c => c.Telefono)
+                .IsUnique();
+
             // Empleado ↔ Habilidad
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.Habilidades)
