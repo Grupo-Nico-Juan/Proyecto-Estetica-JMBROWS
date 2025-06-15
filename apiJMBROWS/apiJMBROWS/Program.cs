@@ -2,21 +2,23 @@
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
+using LogicaAplicacion.CasosDeUso.CUCliente;
+using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
 using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
+using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
 using LogicaAplicacion.CasosDeUso.CUServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
-using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
-using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +53,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
+            builder.Services.AddScoped<ICUGetClientes, CUGetClientes>();
 
             builder.Services.AddScoped<ICUModificarSucursal, CUModificarSucursal>();
             builder.Services.AddScoped<ICUAltaSucursal, CUAltaSucursal>();
