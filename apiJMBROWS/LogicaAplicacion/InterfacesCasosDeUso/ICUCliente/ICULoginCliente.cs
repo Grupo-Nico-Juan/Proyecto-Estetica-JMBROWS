@@ -11,6 +11,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUCliente
 {
     public interface ICULoginCliente
     {
-        Cliente LoginCliente(LoginDTO dto);
+        Cliente Ejecutar(LoginDTO dto);
     }
 }

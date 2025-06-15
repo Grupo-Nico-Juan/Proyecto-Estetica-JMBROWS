@@ -17,7 +17,7 @@ public class CULoginCliente : ICULoginCliente
         _hasher = new PasswordHasher<Cliente>();
     }
 
-    public Cliente LoginCliente(LoginDTO dto)
+    public Cliente Ejecutar(LoginDTO dto)
     {
         var cliente = _repo.GetByEmail(dto.Email);
         if (cliente == null)

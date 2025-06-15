@@ -42,8 +42,8 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
-            builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
+            builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioSectores, RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
             builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
@@ -51,7 +51,9 @@ namespace apiJMBROWS
             // Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
+
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
+            builder.Services.AddScoped<ICUObtenerClientePorTelefono, CUObtenerClientePorTelefono>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
             builder.Services.AddScoped<ICUGetClientes, CUGetClientes>();
 
@@ -112,6 +114,8 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarSector, CUEliminarSector>();
             builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
+
+
 
             // CORS
             var allowedOrigins = new[] {

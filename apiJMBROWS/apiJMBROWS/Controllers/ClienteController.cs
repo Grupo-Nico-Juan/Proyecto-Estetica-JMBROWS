@@ -2,6 +2,7 @@
 using Libreria.LogicaNegocio.Excepciones;
 using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.ClienteDTO;
+using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaNegocio.Entidades;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,19 @@ namespace apiJMBROWS.Controllers
     {
         private readonly ICUAltaCliente _altaCliente;
         private readonly ICUObtenerClientePorTelefono _obtenerClientePorTelefono;
+        private readonly ICUGetClientes _getClientes;
+        private readonly ICULoginCliente _loginCliente;
 
-        public ClienteController(ICUAltaCliente altaCliente, ICUObtenerClientePorTelefono obtenerClientePorTelefono)
+        public ClienteController(
+            ICUAltaCliente altaCliente,
+            ICUObtenerClientePorTelefono obtenerClientePorTelefono,
+            ICUGetClientes getClientes,
+            ICULoginCliente loginCliente)
         {
             _altaCliente = altaCliente;
             _obtenerClientePorTelefono = obtenerClientePorTelefono;
+            _getClientes = getClientes;
+            _loginCliente = loginCliente;
         }
 
         /// <summary>
@@ -57,6 +66,35 @@ namespace apiJMBROWS.Controllers
             var cliente = _obtenerClientePorTelefono.Ejecutar(telefono);
             if (cliente == null)
                 return NotFound();
+            return Ok(cliente);
+        }
+
+        /// <summary>
+        /// Obtiene todos los clientes.
+        /// </summary>
+        [HttpGet]
+        [Authorize]
+        [SwaggerOperation(Summary = "Obtiene todos los clientes.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Lista de clientes.")]
+        public IActionResult GetClientes()
+        {
+            var clientes = _getClientes.Ejecutar();
+            return Ok(clientes);
+        }
+
+        /// <summary>
+        /// Login de cliente.
+        /// </summary>
+        [HttpPost("login")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Login de cliente.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Login exitoso.")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Credenciales inválidas.")]
+        public IActionResult Login([FromBody] LoginDTO dto)
+        {
+            var cliente = _loginCliente.Ejecutar(dto);
+            if (cliente == null)
+                return Unauthorized(new { error = "Credenciales inválidas." });
             return Ok(cliente);
         }
     }
