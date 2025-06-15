@@ -4,14 +4,13 @@ using Libreria.LogicaNegocio.Excepciones;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace apiJMBROWS.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
         private readonly ICUAltaUsuario _altaUsuario;
@@ -24,6 +23,10 @@ namespace apiJMBROWS.Controllers
             _login = login;
             _config = config;
         }
+
+        /// <summary>
+        /// Autenticación de usuario.
+        /// </summary>
         [HttpPost("Login")]
         [AllowAnonymous]
         [SwaggerOperation(Summary = "Autenticación de usuario.")]
@@ -32,7 +35,7 @@ namespace apiJMBROWS.Controllers
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor.")]
         public IActionResult Login([FromBody] LoginDTO dto)
         {
-            if (!ModelState.IsValid)                          // ← validación automática
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
@@ -61,15 +64,17 @@ namespace apiJMBROWS.Controllers
             }
         }
 
-
-        // POST: api/Usuario/Registrar
-        [AllowAnonymous]
+        /// <summary>
+        /// Registro de un nuevo administrador. Solo administradores.
+        /// </summary>
         [HttpPost("Registrar")]
-        [SwaggerOperation(Summary = "Registro de un nuevo usuario.")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Usuario registrado exitosamente.")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Registro de un nuevo administrador (solo administradores autorizados).")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Administrador registrado exitosamente.")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los datos del usuario.")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "No autorizado.")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor.")]
-        public IActionResult Registrar([FromBody] RegistroUsuarioDTO dto)
+        public IActionResult Registrar([FromBody] RegistroAdministradorDTO dto)
         {
             try
             {
@@ -85,6 +90,5 @@ namespace apiJMBROWS.Controllers
                 return StatusCode(500, new { Error = "Error interno: " + ex.Message });
             }
         }
-        
     }
 }

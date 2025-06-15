@@ -1,12 +1,14 @@
 ﻿using apiJMBROWS.UtilidadesJwt;
 using Libreria.LogicaNegocio.Excepciones;
+using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.DtoUsuario;
+using LogicaAplicacion.Dtos.EmpleadoDTO;
+using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaNegocio.Entidades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using LogicaAplicacion.InterfacesCasosDeUso;
-using LogicaAplicacion.Dtos.DtoUsuario;
-using LogicaAplicacion.Dtos;
 
 namespace apiJMBROWS.Controllers
 {
@@ -17,12 +19,14 @@ namespace apiJMBROWS.Controllers
         private readonly ICUAltaCliente _altaCliente;
         private readonly ICULoginCliente _loginCliente;
         private readonly IConfiguration _config;
+        private readonly ICUGetClientes _getClientes;
 
-        public ClienteController(ICUAltaCliente altaCliente, ICULoginCliente loginCliente, IConfiguration config)
+        public ClienteController(ICUAltaCliente altaCliente, ICULoginCliente loginCliente, IConfiguration config, ICUGetClientes clientes)
         {
             _altaCliente = altaCliente;
             _loginCliente = loginCliente;
             _config = config;
+            _getClientes = clientes;
         }
 
         [HttpPost("registrar")]
@@ -77,6 +81,16 @@ namespace apiJMBROWS.Controllers
             {
                 return Unauthorized(new { error = ex.Message });
             }
+        }
+
+
+        [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene todos los clientes")]
+        [SwaggerResponse(200, "Lista de clientes", typeof(IEnumerable<ClienteDTO>))]
+        public IActionResult getClientes()
+        {
+            var clientes = _getClientes.Ejecutar();
+            return Ok(clientes);
         }
     }
 }

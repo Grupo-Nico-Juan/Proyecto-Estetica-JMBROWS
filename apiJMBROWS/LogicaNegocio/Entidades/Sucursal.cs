@@ -1,12 +1,6 @@
-﻿using Libreria.LogicaNegocio.Entidades;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LogicaNegocio.Entidades
 {
@@ -27,12 +21,6 @@ namespace LogicaNegocio.Entidades
         [Phone]
         public required string Telefono { get; set; }
 
-        // Relaciones
-        public List<Empleado> Empleadas { get; set; } = new();
-        public List<Sector> Sectores { get; set; } = new();
-
-        [JsonIgnore]
-        public bool Eliminada { get; set; } = false;
 
         public void EsValido()
         {

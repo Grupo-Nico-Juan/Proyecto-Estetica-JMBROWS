@@ -46,10 +46,55 @@ namespace LogicaNegocio.Entidades
 
             foreach (var detalle in Detalles)
                 detalle.EsValido();
+
+            // Validar que los detalles no se solapan
+            var horaActual = FechaHora;
+            foreach (var detalle in Detalles.OrderBy(d => d.Id)) // O el orden que corresponda
+            {
+                detalle.HoraInicio = horaActual;
+                detalle.HoraFin = horaActual.AddMinutes(detalle.DuracionMinutos);
+                horaActual = detalle.HoraFin;
+            }
+
+            for (int i = 0; i < Detalles.Count - 1; i++)
+            {
+                if (Detalles[i].HoraFin > Detalles[i + 1].HoraInicio)
+                    throw new Exception("Los servicios del turno se solapan en el tiempo.");
+            }
         }
 
         public int DuracionTotal() => Detalles.Sum(d => d.DuracionMinutos);
 
         public decimal PrecioTotal() => Detalles.Sum(d => d.Precio);
+
+        public void AgregarDetalle(DetalleTurno detalle)
+        {
+            detalle.EsValido();
+            Detalles.Add(detalle);
+            EsValido();
+        }
+
+        public void QuitarDetalle(int detalleId)
+        {
+            var detalle = Detalles.FirstOrDefault(d => d.Id == detalleId);
+            if (detalle != null)
+            {
+                Detalles.Remove(detalle);
+                EsValido();
+            }
+        }
+
+        public void ModificarDetalle(DetalleTurno detalleActualizado)
+        {
+            var detalle = Detalles.FirstOrDefault(d => d.Id == detalleActualizado.Id);
+            if (detalle == null)
+                throw new Exception("Detalle no encontrado");
+
+            detalle.ServicioId = detalleActualizado.ServicioId;
+            detalle.DuracionMinutos = detalleActualizado.DuracionMinutos;
+            detalle.Precio = detalleActualizado.Precio;
+            detalle.EsValido();
+            EsValido();
+        }
     }
 }

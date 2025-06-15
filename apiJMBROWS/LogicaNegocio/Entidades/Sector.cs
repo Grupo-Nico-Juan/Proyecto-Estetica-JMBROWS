@@ -1,11 +1,6 @@
-﻿using Libreria.LogicaNegocio.Entidades;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace LogicaNegocio.Entidades
 {
@@ -18,24 +13,28 @@ namespace LogicaNegocio.Entidades
         [MinLength(3)]
         public required string Nombre { get; set; }
 
-        // Relaciones
+        // Nueva propiedad
+        [MaxLength(200)]
+        public string? Descripcion { get; set; }
 
+        // FK a Sucursal (sector pertenece a una sola sucursal)
         [Required]
+        [ForeignKey("Sucursal")]
         public int SucursalId { get; set; }
 
         [JsonIgnore]
         public Sucursal? Sucursal { get; set; }
 
+        // Relación con Servicios (muchos a muchos)
         public List<Servicio> Servicios { get; set; } = new();
-        public List<Empleado> Empleadas { get; set; } = new();
-
-        [JsonIgnore]
-        public bool Eliminado { get; set; } = false;
 
         public void EsValido()
         {
             if (string.IsNullOrWhiteSpace(Nombre) || Nombre.Length < 3)
                 throw new Exception("El nombre del sector debe tener al menos 3 caracteres.");
+            // Validación opcional para Descripcion
+            if (Descripcion != null && Descripcion.Length > 200)
+                throw new Exception("La descripción del sector no puede superar los 200 caracteres.");
         }
     }
 }

@@ -14,6 +14,7 @@ public interface IRepositorioUsuarios : IRepositorio<Usuario>
     void AddEmpleado(Empleado e);
     void UpdateEmpleado(int id, Empleado e);
     void DeleteEmpleado(int id);
-
+    void AsignarSector(int empleadoId, int sectorId);
+    void QuitarSector(int empleadoId, int sectorId); 
 }
 
