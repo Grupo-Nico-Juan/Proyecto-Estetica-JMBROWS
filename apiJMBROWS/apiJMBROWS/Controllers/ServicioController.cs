@@ -38,6 +38,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene todos los servicios.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene todos los servicios")]
         [SwaggerResponse(200, "Lista de servicios", typeof(IEnumerable<ServicioDTO>))]
         public IActionResult Get()
@@ -50,6 +51,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene un servicio por su ID.
         /// </summary>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene un servicio por ID")]
         [SwaggerResponse(200, "Servicio encontrado", typeof(ServicioDTO))]
         [SwaggerResponse(404, "Servicio no encontrado")]

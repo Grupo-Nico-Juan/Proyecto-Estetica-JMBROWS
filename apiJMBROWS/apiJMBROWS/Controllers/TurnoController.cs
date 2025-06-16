@@ -41,6 +41,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene todos los turnos.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene todos los turnos")]
         [SwaggerResponse(200, "Lista de turnos", typeof(IEnumerable<TurnoDTO>))]
         public IActionResult GetAll()
@@ -53,6 +54,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene un turno por su ID.
         /// </summary>
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene un turno por ID")]
         [SwaggerResponse(200, "Turno encontrado", typeof(TurnoDTO))]
         [SwaggerResponse(404, "Turno no encontrado")]
@@ -73,7 +75,7 @@ namespace apiJMBROWS.Controllers
         /// Crea un nuevo turno. Solo administradores.
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Crea un nuevo turno (solo administradores)")]
         [SwaggerResponse(201, "Turno creado correctamente")]
         [SwaggerResponse(400, "Error en los datos del turno")]

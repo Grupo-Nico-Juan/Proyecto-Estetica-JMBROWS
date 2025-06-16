@@ -33,6 +33,7 @@ public class SucursalController : ControllerBase
     /// Obtiene todas las sucursales.
     /// </summary>
     [HttpGet]
+    [AllowAnonymous]
     [SwaggerOperation(Summary = "Obtiene todas las sucursales")]
     [SwaggerResponse(200, "Lista de sucursales", typeof(IEnumerable<SucursalDTO>))]
     public IActionResult Get()
@@ -53,6 +54,7 @@ public class SucursalController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Obtiene una sucursal por ID")]
+    [AllowAnonymous]
     [SwaggerResponse(200, "Sucursal encontrada", typeof(SucursalDTO))]
     [SwaggerResponse(404, "Sucursal no encontrada")]
     public IActionResult Get(int id)

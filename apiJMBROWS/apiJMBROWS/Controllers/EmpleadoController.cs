@@ -65,6 +65,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene todos los empleados.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene todos los empleados")]
         [SwaggerResponse(200, "Lista de empleados", typeof(IEnumerable<EmpleadoDTO>))]
         public IActionResult Get()
@@ -78,6 +79,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Obtiene un empleado por ID")]
+        [AllowAnonymous]
         [SwaggerResponse(200, "Empleado encontrado", typeof(EmpleadoDTO))]
         [SwaggerResponse(404, "Empleado no encontrado")]
         public IActionResult Get(int id)
