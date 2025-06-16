@@ -20,8 +20,6 @@ namespace LogicaAplicacion.CasosDeUso.CUDetalleTurno
                 throw new Exception("DetalleTurno no encontrado");
 
             detalle.ServicioId = dto.ServicioId;
-            detalle.DuracionMinutos = dto.DuracionMinutos;
-            detalle.Precio = dto.Precio;
             detalle.EsValido();
 
             _repo.Update(dto.Id, detalle);

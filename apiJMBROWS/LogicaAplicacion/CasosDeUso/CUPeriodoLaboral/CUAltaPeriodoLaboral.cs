@@ -17,10 +17,13 @@ public class CUAltaPeriodoLaboral : ICUAltaPeriodoLaboral
         var periodo = new PeriodoLaboral
         {
             EmpleadaId = dto.EmpleadaId,
+            Tipo = dto.Tipo,
+            DiaSemana = dto.DiaSemana,
+            HoraInicio = dto.HoraInicio,
+            HoraFin = dto.HoraFin,
             Desde = dto.Desde,
             Hasta = dto.Hasta,
-            Motivo = dto.Motivo,
-            EsLicencia = dto.EsLicencia
+            Motivo = dto.Motivo
         };
         periodo.EsValido();
         _repo.Agregar(periodo);

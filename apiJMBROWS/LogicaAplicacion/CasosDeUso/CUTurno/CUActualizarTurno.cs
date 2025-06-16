@@ -33,8 +33,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 turno.Detalles.Add(new DetalleTurno
                 {
                     ServicioId = det.ServicioId,
-                    DuracionMinutos = det.DuracionMinutos,
-                    Precio = det.Precio
+
                 });
             }
 

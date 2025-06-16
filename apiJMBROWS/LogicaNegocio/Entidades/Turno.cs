@@ -1,4 +1,5 @@
 ﻿using Libreria.LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,10 +40,13 @@ namespace LogicaNegocio.Entidades
         public void EsValido()
         {
             if (FechaHora < DateTime.Now)
-                throw new Exception("No se puede reservar un turno en el pasado.");
+                throw new TurnoException("No se puede reservar un turno en el pasado.");
+            if (FechaHora > DateTime.Now.AddMonths(1))
+                throw new TurnoException("No se puede reservar un turno con mas de un de antelacion.");
 
             if (Detalles.Count == 0)
-                throw new Exception("El turno debe contener al menos un servicio.");
+                throw new TurnoException("El turno debe contener al menos un servicio.");
+            
 
             foreach (var detalle in Detalles)
                 detalle.EsValido();
@@ -52,23 +56,37 @@ namespace LogicaNegocio.Entidades
             foreach (var detalle in Detalles.OrderBy(d => d.Id)) // O el orden que corresponda
             {
                 detalle.HoraInicio = horaActual;
-                detalle.HoraFin = horaActual.AddMinutes(detalle.DuracionMinutos);
+                detalle.HoraFin = horaActual.AddMinutes(detalle.Servicio.DuracionMinutos);
                 horaActual = detalle.HoraFin;
             }
 
             for (int i = 0; i < Detalles.Count - 1; i++)
             {
                 if (Detalles[i].HoraFin > Detalles[i + 1].HoraInicio)
-                    throw new Exception("Los servicios del turno se solapan en el tiempo.");
+                    throw new TurnoException("Los servicios del turno se solapan en el tiempo.");
             }
         }
 
-        public int DuracionTotal() => Detalles.Sum(d => d.DuracionMinutos);
+        public int DuracionTotal()
+        {
+            // Suma la duración de todos los servicios de los detalles del turno
+            return Detalles.Sum(d => d.Servicio?.DuracionMinutos ?? 0);
+        }
 
-        public decimal PrecioTotal() => Detalles.Sum(d => d.Precio);
+        public decimal PrecioTotal()
+        {
+            // Suma el precio de todos los servicios de los detalles del turno
+            return Detalles.Sum(d => d.Servicio?.Precio ?? 0);
+        }
 
         public void AgregarDetalle(DetalleTurno detalle)
         {
+            if (Realizado || Cancelado)
+                throw new TurnoException("No se pueden modificar los servicios de un turno realizado o cancelado.");
+
+            if (Detalles.Any(d => d.ServicioId == detalle.ServicioId))
+                throw new TurnoException("El servicio ya está agregado al turno.");
+
             detalle.EsValido();
             Detalles.Add(detalle);
             EsValido();
@@ -76,25 +94,19 @@ namespace LogicaNegocio.Entidades
 
         public void QuitarDetalle(int detalleId)
         {
+            if (Realizado || Cancelado)
+                throw new Exception("No se pueden modificar los servicios de un turno realizado o cancelado.");
+
             var detalle = Detalles.FirstOrDefault(d => d.Id == detalleId);
             if (detalle != null)
             {
+                if (Detalles.Count == 1)
+                    throw new Exception("El turno debe contener al menos un servicio.");
+
                 Detalles.Remove(detalle);
                 EsValido();
             }
         }
 
-        public void ModificarDetalle(DetalleTurno detalleActualizado)
-        {
-            var detalle = Detalles.FirstOrDefault(d => d.Id == detalleActualizado.Id);
-            if (detalle == null)
-                throw new Exception("Detalle no encontrado");
-
-            detalle.ServicioId = detalleActualizado.ServicioId;
-            detalle.DuracionMinutos = detalleActualizado.DuracionMinutos;
-            detalle.Precio = detalleActualizado.Precio;
-            detalle.EsValido();
-            EsValido();
-        }
     }
 }

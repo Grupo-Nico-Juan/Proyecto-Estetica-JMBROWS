@@ -19,8 +19,7 @@ namespace LogicaAplicacion.CasosDeUso.CUDetalleTurno
             {
                 TurnoId = dto.TurnoId,
                 ServicioId = dto.ServicioId,
-                DuracionMinutos = dto.DuracionMinutos,
-                Precio = dto.Precio
+
             };
             detalle.EsValido();
             _repo.Add(detalle);

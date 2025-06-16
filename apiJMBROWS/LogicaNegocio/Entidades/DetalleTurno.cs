@@ -25,13 +25,6 @@ namespace LogicaNegocio.Entidades
 
         public Servicio? Servicio { get; set; }
 
-        [Required]
-        [Range(1, 300)]
-        public int DuracionMinutos { get; set; }
-
-        [Required]
-        [Range(0.0, 10000.0)]
-        public decimal Precio { get; set; }
         [NotMapped]
         public DateTime HoraInicio { get; set; }
         [NotMapped]
@@ -39,11 +32,10 @@ namespace LogicaNegocio.Entidades
 
         public void EsValido()
         {
-            if (DuracionMinutos <= 0 || DuracionMinutos > 300)
-                throw new Exception("Duración inválida en detalle del turno.");
+            if (Servicio == null)
+                throw new Exception("El servicio es obligatorio en el detalle del turno.");
 
-            if (Precio < 0)
-                throw new Exception("Precio inválido en detalle del turno.");
+            Servicio.EsValido();
         }
     }
 }

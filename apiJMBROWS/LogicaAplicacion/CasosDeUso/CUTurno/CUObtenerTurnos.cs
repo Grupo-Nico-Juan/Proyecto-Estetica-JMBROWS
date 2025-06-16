@@ -27,8 +27,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 Detalles = t.Detalles.Select(d => new DetalleTurnoDTO
                 {
                     ServicioId = d.ServicioId,
-                    DuracionMinutos = d.DuracionMinutos,
-                    Precio = d.Precio
+
                 }).ToList()
             });
         }

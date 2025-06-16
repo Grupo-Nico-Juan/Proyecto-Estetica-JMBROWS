@@ -28,8 +28,6 @@ namespace LogicaAccesoDatos.Repositorios
             if (existente != null)
             {
                 existente.ServicioId = detalle.ServicioId;
-                existente.DuracionMinutos = detalle.DuracionMinutos;
-                existente.Precio = detalle.Precio;
                 existente.TurnoId = detalle.TurnoId;
                 _context.SaveChanges();
             }

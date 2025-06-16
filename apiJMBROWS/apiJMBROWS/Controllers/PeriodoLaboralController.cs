@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+﻿using LogicaAplicacion.Dtos.PeriodoLaboralDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace apiJMBROWS.Controllers
         /// <param name="empleadaId">ID de la empleada</param>
         [HttpGet("empleada/{empleadaId}")]
         [SwaggerOperation(Summary = "Obtiene todos los periodos laborales de una empleada")]
-        [SwaggerResponse(200, "Lista de periodos laborales", typeof(IEnumerable<LogicaAplicacion.Dtos.PeriodoLaboralDTO.PeriodoLaboralDTO>))]
+        [SwaggerResponse(200, "Lista de periodos laborales", typeof(IEnumerable<PeriodoLaboralDTO>))]
         [SwaggerResponse(404, "No se encontraron periodos laborales para la empleada")]
         public IActionResult GetPorEmpleada(int empleadaId)
         {
@@ -60,7 +61,7 @@ namespace apiJMBROWS.Controllers
         [SwaggerOperation(Summary = "Crea un nuevo periodo laboral para una empleada")]
         [SwaggerResponse(200, "Periodo laboral creado correctamente")]
         [SwaggerResponse(400, "Error en los datos del periodo laboral")]
-        public IActionResult Post([FromBody] LogicaAplicacion.Dtos.PeriodoLaboralDTO.AltaPeriodoLaboralDTO dto)
+        public IActionResult Post([FromBody] AltaPeriodoLaboralDTO dto)
         {
             try
             {
@@ -81,7 +82,7 @@ namespace apiJMBROWS.Controllers
         [SwaggerOperation(Summary = "Modifica un periodo laboral (solo administradores)")]
         [SwaggerResponse(200, "Periodo laboral modificado correctamente")]
         [SwaggerResponse(400, "Error en los datos del periodo laboral")]
-        public IActionResult Put(int id, [FromBody] LogicaAplicacion.Dtos.PeriodoLaboralDTO.PeriodoLaboralDTO dto)
+        public IActionResult Put(int id, [FromBody] PeriodoLaboralDTO dto)
         {
             try
             {
