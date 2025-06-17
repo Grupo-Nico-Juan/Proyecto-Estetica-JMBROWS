@@ -1,6 +1,7 @@
 ﻿using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.ClienteDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaNegocio.Entidades;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,7 @@ public class CUAltaCliente : ICUAltaCliente
             Email = dto.Email,
             Telefono = dto.Telefono,
             PasswordPlano = dto.PasswordPlano,
+            EsRegistrado = true,
             Password = "" // se completa luego
         };
 

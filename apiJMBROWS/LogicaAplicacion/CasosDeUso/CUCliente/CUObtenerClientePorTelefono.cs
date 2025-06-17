@@ -1,4 +1,5 @@
 ﻿using Libreria.LogicaNegocio.InterfacesRepositorio;
+using LogicaAplicacion.Dtos.ClienteDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
 ﻿using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.ClienteDTO;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using System;
@@ -21,12 +22,14 @@ namespace LogicaAplicacion.CasosDeUso.CUCliente
 
         public IEnumerable<ClienteDTO> Ejecutar()
         {
-            return repoClientes.GetAll().Select(e => new ClienteDTO
+            return repoClientes.GetAll().Select(c => new ClienteDTO
             {
-                Id = e.Id,
-                Nombre = e.Nombre,
-                Apellido = e.Apellido,
-                Email = e.Email,
+                Id = c.Id,
+                Nombre = c.Nombre,
+                Apellido = c.Apellido,
+                Telefono = c.Telefono,
+                Email = c.Email,
+                EsRegistrado = c.EsRegistrado
             });
         }
     }

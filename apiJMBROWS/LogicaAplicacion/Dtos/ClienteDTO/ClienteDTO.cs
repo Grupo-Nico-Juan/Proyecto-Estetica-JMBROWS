@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LogicaAplicacion.Dtos.ClienteDTO
 {
     public class ClienteDTO
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Email { get; set; }
+        public string Nombre { get; set; } = null!;
+        public string Apellido { get; set; } = null!;
+        public string Telefono { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public bool EsRegistrado { get; set; }
     }
 }

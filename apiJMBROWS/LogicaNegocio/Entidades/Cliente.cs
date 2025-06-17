@@ -30,6 +30,8 @@ namespace LogicaNegocio.Entidades
         [JsonIgnore]
         [NotMapped]
         public string? PasswordPlano { get; set; } = string.Empty;
+        public bool EsRegistrado { get; set; } // true si tiene cuenta con contraseña, false si es ocasional
+
 
         public List<Turno> Turnos { get; set; } = new();
         public List<Promocion> Promociones { get; set; } = new();

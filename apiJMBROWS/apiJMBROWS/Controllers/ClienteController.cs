@@ -19,17 +19,40 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerClientePorTelefono _obtenerClientePorTelefono;
         private readonly ICUGetClientes _getClientes;
         private readonly ICULoginCliente _loginCliente;
+        private readonly ICURegistrarClienteSinCuenta _registrarSinCuenta;
 
         public ClienteController(
             ICUAltaCliente altaCliente,
             ICUObtenerClientePorTelefono obtenerClientePorTelefono,
             ICUGetClientes getClientes,
-            ICULoginCliente loginCliente)
+            ICULoginCliente loginCliente,
+            ICURegistrarClienteSinCuenta registrarSinCuenta)
         {
             _altaCliente = altaCliente;
             _obtenerClientePorTelefono = obtenerClientePorTelefono;
             _getClientes = getClientes;
             _loginCliente = loginCliente;
+            _registrarSinCuenta = registrarSinCuenta;
+        }
+        /// <summary>
+        /// Registra un cliente que agenda una cita sin crear una cuenta.
+        /// </summary>
+        [HttpPost("registrar-sin-cuenta")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Registra un cliente solo con datos necesarios para reservar.")]
+        [SwaggerResponse(StatusCodes.Status201Created, "Cliente registrado o encontrado.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Datos inválidos.")]
+        public IActionResult RegistrarSinCuenta([FromBody] ReservaClienteDTO dto)
+        {
+            try
+            {
+                var cliente = _registrarSinCuenta.Ejecutar(dto);
+                return StatusCode(201, cliente); // Devuelve el cliente (nuevo o existente)
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         /// <summary>
