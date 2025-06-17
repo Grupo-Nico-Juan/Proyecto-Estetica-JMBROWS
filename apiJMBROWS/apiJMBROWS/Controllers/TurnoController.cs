@@ -1,4 +1,7 @@
-﻿using LogicaAplicacion.Dtos.TurnoDTO;
+﻿using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
+using LogicaAplicacion.CasosDeUso.CUTurno;
+using LogicaAplicacion.Dtos.TurnoDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +21,11 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerTurnosDelDiaPorEmpleada _obtenerTurnosDelDiaPorEmpleada;
         private readonly ICUActualizarTurno _actualizarTurno;
         private readonly ICUEliminarTurno _eliminarTurno;
-
+        private readonly ICUAltaDetalleTurno _altaDetalleTurno;
+        private readonly ICUObtenerDetallesTurno _obtenerDetallesTurno;
+        private readonly ICUActualizarDetalleTurno _actualizarDetalleTurno;
+        private readonly ICUObtenerDetalleTurnoPorId _obtenerDetalleTurnoPorId;
+        private readonly ICUEliminarDetalleTurno _eliminarDetalleTurno;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -26,7 +33,12 @@ namespace apiJMBROWS.Controllers
             ICUObtenerTurnosPorEmpleada obtenerTurnosPorEmpleada,
             ICUObtenerTurnosDelDiaPorEmpleada obtenerTurnosDelDiaPorEmpleada,
             ICUActualizarTurno actualizarTurno,
-            ICUEliminarTurno eliminarTurno)
+            ICUEliminarTurno eliminarTurno,
+            ICUAltaDetalleTurno altaDetalleTurno,
+            ICUObtenerDetallesTurno obtenerDetallesTurno,
+            ICUActualizarDetalleTurno actualizarDetalleTurno,
+            ICUObtenerDetalleTurnoPorId obtenerDetalleTurnoPorId,
+            ICUEliminarDetalleTurno eliminarDetalleTurno)
         {
             _altaTurno = altaTurno;
             _obtenerTurnos = obtenerTurnos;
@@ -35,6 +47,11 @@ namespace apiJMBROWS.Controllers
             _obtenerTurnosDelDiaPorEmpleada = obtenerTurnosDelDiaPorEmpleada;
             _actualizarTurno = actualizarTurno;
             _eliminarTurno = eliminarTurno;
+            _altaDetalleTurno = altaDetalleTurno;
+            _obtenerDetallesTurno = obtenerDetallesTurno;
+            _actualizarDetalleTurno = actualizarDetalleTurno;
+            _obtenerDetalleTurnoPorId = obtenerDetalleTurnoPorId;
+            _eliminarDetalleTurno = eliminarDetalleTurno;
         }
 
         /// <summary>
@@ -49,6 +66,81 @@ namespace apiJMBROWS.Controllers
             var turnos = _obtenerTurnos.Ejecutar();
             return Ok(turnos);
         }
+
+        [HttpPost("{id}/agregar-detalle")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Agrega un detalle a un turno existente")]
+        [SwaggerResponse(200, "Detalle agregado correctamente")]
+        [SwaggerResponse(400, "Error en los datos")]
+        public IActionResult AgregarDetalle(int id, [FromBody] AltaDetalleTurnoDTO dto)
+        {
+            try
+            {
+                if (dto.TurnoId != id)
+                    return BadRequest(new { error = "El ID del turno en la URL no coincide con el del cuerpo." });
+
+                _altaDetalleTurno.Ejecutar(dto);
+                return Ok(new { mensaje = "Detalle agregado con éxito." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        [HttpGet("{id}/detalles")]
+        [SwaggerOperation(Summary = "Obtiene los detalles de un turno")]
+        [SwaggerResponse(200, "Lista de detalles", typeof(IEnumerable<DetalleTurnoDTO>))]
+        public IActionResult ObtenerDetallesDeTurno(int id)
+        {
+            try
+            {
+                var detalles = _obtenerDetallesTurno.Ejecutar().Where(d => d.TurnoId == id);
+                return Ok(detalles);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+        [HttpPut("{turnoId}/detalle/{detalleId}")]
+        [SwaggerOperation(Summary = "Actualiza un detalle de turno")]
+        public IActionResult ActualizarDetalle(int turnoId, int detalleId, [FromBody] ActualizarDetalleTurnoDTO dto)
+        {
+            try
+            {
+                if (detalleId != dto.Id || turnoId != dto.TurnoId)
+                    return BadRequest(new { error = "IDs no coinciden." });
+
+                _actualizarDetalleTurno.Ejecutar(dto);
+                return Ok("Detalle actualizado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        [HttpDelete("{turnoId}/detalle/{detalleId}")]
+        [SwaggerOperation(Summary = "Elimina un detalle de turno")]
+        public IActionResult EliminarDetalle(int turnoId, int detalleId)
+        {
+            try
+            {
+                var detalle = _obtenerDetalleTurnoPorId.Ejecutar(detalleId);
+                if (detalle.TurnoId != turnoId)
+                    return BadRequest(new { error = "El detalle no pertenece al turno indicado." });
+
+                _eliminarDetalleTurno.Ejecutar(detalleId);
+                return Ok("Detalle eliminado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
+
+
+
 
         /// <summary>
         /// Obtiene un turno por su ID.

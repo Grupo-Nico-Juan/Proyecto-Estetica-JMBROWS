@@ -21,6 +21,8 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
 
         public void Ejecutar(AltaTurnoDTO dto)
         {
+            if (dto.Detalles == null || dto.Detalles.Count == 0)
+                throw new TurnoException("Debe incluir al menos un servicio en el turno.");
             var turno = new Turno
             {
                 FechaHora = dto.FechaHora,

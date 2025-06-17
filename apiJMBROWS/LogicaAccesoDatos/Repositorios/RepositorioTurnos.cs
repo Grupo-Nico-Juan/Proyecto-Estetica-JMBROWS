@@ -71,8 +71,33 @@ namespace LogicaAccesoDatos.EF
 
         public void Update(int id, Turno obj)
         {
-            //falta hacer
+            var existente = _context.Turnos
+                .Include(t => t.Detalles)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (existente == null)
+                throw new Exception("Turno no encontrado.");
+
+            // Limpia los detalles existentes si necesitás reemplazarlos (opcional)
+            // existente.Detalles.Clear(); 
+
+            // Agrega los nuevos detalles del objeto entrante
+            foreach (var detalle in obj.Detalles)
+            {
+                // Asegura que no se agreguen duplicados si estás agregando incrementalmente
+                if (!existente.Detalles.Any(d => d.ServicioId == detalle.ServicioId))
+                {
+                    existente.Detalles.Add(new DetalleTurno
+                    {
+                        TurnoId = id,
+                        ServicioId = detalle.ServicioId
+                    });
+                }
+            }
+
+            _context.SaveChanges();
         }
+
 
         public IEnumerable<Turno> BuscarPorEmpleada(int empleadaId)
         {
