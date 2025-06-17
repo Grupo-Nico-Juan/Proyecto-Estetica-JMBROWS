@@ -12,11 +12,15 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
     {
         private readonly IRepositorioTurnos _repo;
         private readonly IRepositorioUsuarios _repoUsuarios;
+        private readonly IRepositorioServicios _repoServicios;
 
-        public CUAltaTurno(IRepositorioTurnos repo, IRepositorioUsuarios repoUsuarios)
+
+        public CUAltaTurno(IRepositorioTurnos repo, IRepositorioUsuarios repoUsuarios, IRepositorioServicios repoServicios)
         {
             _repo = repo;
             _repoUsuarios = repoUsuarios;
+            _repoServicios = repoServicios;
+
         }
 
         public void Ejecutar(AltaTurnoDTO dto)
@@ -34,9 +38,14 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
 
             foreach (var det in dto.Detalles)
             {
+                var servicio = _repoServicios.GetById(det.ServicioId);
+                if (servicio == null)
+                    throw new TurnoException($"El servicio con ID {det.ServicioId} no existe.");
+
                 turno.Detalles.Add(new DetalleTurno
                 {
                     ServicioId = det.ServicioId,
+                    Servicio = servicio // Asigna el objeto Servicio aquí
                 });
             }
 
