@@ -34,6 +34,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         /// <param name="empleadaId">ID de la empleada</param>
         [HttpGet("empleada/{empleadaId}")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene todos los periodos laborales de una empleada")]
         [SwaggerResponse(200, "Lista de periodos laborales", typeof(IEnumerable<PeriodoLaboralDTO>))]
         [SwaggerResponse(404, "No se encontraron periodos laborales para la empleada")]
