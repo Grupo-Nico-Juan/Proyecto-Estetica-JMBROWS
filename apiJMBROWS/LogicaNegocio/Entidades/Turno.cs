@@ -86,7 +86,7 @@ namespace LogicaNegocio.Entidades
 
             if (Detalles.Any(d => d.ServicioId == detalle.ServicioId))
                 throw new TurnoException("El servicio ya está agregado al turno.");
-
+            detalle.TurnoId = this.Id;
             detalle.EsValido();
             Detalles.Add(detalle);
             EsValido();
