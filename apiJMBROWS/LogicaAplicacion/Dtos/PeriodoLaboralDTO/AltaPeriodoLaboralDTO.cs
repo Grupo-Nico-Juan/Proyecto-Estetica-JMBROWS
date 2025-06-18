@@ -1,10 +1,6 @@
-﻿using LogicaNegocio.Entidades;
+﻿
 using LogicaNegocio.Entidades.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LogicaAplicacion.Dtos.PeriodoLaboralDTO
 {
