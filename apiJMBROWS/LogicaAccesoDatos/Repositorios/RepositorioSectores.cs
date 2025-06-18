@@ -1,5 +1,6 @@
 ﻿using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepositorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,14 @@ namespace LogicaAccesoDatos.EF
         public IEnumerable<Sector> ObtenerPorSucursal(int idSucursal)
         {
             return _context.Sectores.Where(s => s.SucursalId == idSucursal).ToList();
+        }
+
+        public IEnumerable<Sector> ObtenerSectoresConServiciosPorSucursal(int sucursalId)
+        {
+            return _context.Sectores
+            .Include(s => s.Servicios)
+            .Where(s => s.SucursalId == sucursalId)
+            .ToList();
         }
     }
 

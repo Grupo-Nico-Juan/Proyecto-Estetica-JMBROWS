@@ -282,7 +282,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         [HttpGet("{empleadoId}/sectores")]
         [SwaggerOperation(Summary = "Obtiene los sectores de un empleado")]
-        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTO>))]
+        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
         [SwaggerResponse(404, "Empleado no encontrado")]
         public IActionResult GetSectores(int empleadoId)
         {

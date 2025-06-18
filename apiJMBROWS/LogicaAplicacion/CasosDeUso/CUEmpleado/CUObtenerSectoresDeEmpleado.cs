@@ -15,13 +15,13 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
             _repo = repo;
         }
 
-        public IEnumerable<SectorDTO> Ejecutar(int empleadoId)
+        public IEnumerable<SectorDTSSuc> Ejecutar(int empleadoId)
         {
             var empleado = _repo.GetEmpleadoById(empleadoId);
             if (empleado == null)
                 throw new System.Exception("Empleado no encontrado");
 
-            return empleado.SectoresAsignados.Select(s => new SectorDTO
+            return empleado.SectoresAsignados.Select(s => new SectorDTSSuc
             {
                 Id = s.Id,
                 Nombre = s.Nombre,

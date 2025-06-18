@@ -16,5 +16,7 @@ namespace LogicaNegocio.InterfacesRepositorio
         void Remove(int id);
         Sector GetById(int id);
         IEnumerable<Sector> GetAll();
+
+        IEnumerable<Sector> ObtenerSectoresConServiciosPorSucursal(int sucursalId);
     }
 }

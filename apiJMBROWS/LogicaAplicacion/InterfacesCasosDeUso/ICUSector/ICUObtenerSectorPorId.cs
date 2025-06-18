@@ -2,5 +2,5 @@ using LogicaAplicacion.Dtos.SectorDTO;
 
 public interface ICUObtenerSectorPorId
 {
-    SectorDTO Ejecutar(int id);
+    SectorDTSSuc Ejecutar(int id);
 }

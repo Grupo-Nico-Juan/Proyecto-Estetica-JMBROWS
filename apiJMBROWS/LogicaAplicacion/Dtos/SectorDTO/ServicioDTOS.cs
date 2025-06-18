@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.SectorDTO
 {
-    public class SectorDTSSuc
+    public class ServicioDTOS
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
-        public string? Descripcion { get; set; }
-        public int SucursalId { get; internal set; }
+        public string Descripcion { get; set; }
+        public int DuracionMinutos { get; set; }
+        public decimal Precio { get; set; }
     }
-
 }
