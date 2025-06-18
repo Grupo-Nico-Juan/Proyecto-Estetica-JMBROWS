@@ -57,7 +57,7 @@ namespace apiJMBROWS.Controllers
         /// Crea un nuevo periodo laboral para una empleada.
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Crea un nuevo periodo laboral para una empleada")]
         [SwaggerResponse(200, "Periodo laboral creado correctamente")]
         [SwaggerResponse(400, "Error en los datos del periodo laboral")]
