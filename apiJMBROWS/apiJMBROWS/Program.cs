@@ -16,6 +16,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
@@ -120,6 +121,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarSector, CUEliminarSector>();
             builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
+            builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
 
 
 
