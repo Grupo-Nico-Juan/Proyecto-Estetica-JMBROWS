@@ -73,6 +73,7 @@ namespace LogicaAccesoDatos.EF
             .Where(s => s.SucursalId == sucursalId)
             .ToList();
         }
+
     }
 
 }
