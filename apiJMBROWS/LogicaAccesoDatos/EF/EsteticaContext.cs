@@ -54,10 +54,12 @@ namespace LogicaAccesoDatos.EF
                 .WithMany()
                 .UsingEntity(j => j.ToTable("HabilidadServicio"));
 
+
+
             // Sector ↔ Servicio (unidireccional desde Sector)
             modelBuilder.Entity<Sector>()
                 .HasMany(se => se.Servicios)
-                .WithMany()
+                .WithMany(s => s.Sectores)
                 .UsingEntity(j => j.ToTable("ServicioSector"));
 
             // Empleado ↔ Sector
