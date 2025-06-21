@@ -25,6 +25,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
 
         public void Ejecutar(AltaTurnoDTO dto)
         {
+            
             if (dto.Detalles == null || dto.Detalles.Count == 0)
                 throw new TurnoException("Debe incluir al menos un servicio en el turno.");
             var turno = new Turno
@@ -84,8 +85,8 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 h.HoraInicio <= inicioNuevoTurno.TimeOfDay &&
                 h.HoraFin >= finNuevoTurno.TimeOfDay);
 
-            //if (!enHorario)
-               // throw new TurnoException("El turno está fuera del horario laboral habitual de la empleada.");
+            if (!enHorario)
+               throw new TurnoException("El turno está fuera del horario laboral habitual de la empleada.");
 
             // 2. Validar que no se solape con ninguna licencia
             foreach (var periodo in empleada.PeriodosLaborales.Where(p => p.Tipo == TipoPeriodoLaboral.Licencia))
