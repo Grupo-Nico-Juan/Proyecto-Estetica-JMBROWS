@@ -86,6 +86,7 @@ namespace apiJMBROWS
 
             builder.Services.AddScoped<ICUAltaEmpleado, CUAltaEmpleado>();
             builder.Services.AddScoped<ICUObtenerEmpleados, CUObtenerEmpleados>();
+            builder.Services.AddScoped<ICUObtenerEmpleadasDisponibles, CUObtenerEmpleadasDisponibles>();
             builder.Services.AddScoped<ICUObtenerEmpleadoPorId, CUObtenerEmpleadoPorId>();
             builder.Services.AddScoped<ICUActualizarEmpleado, CUActualizarEmpleado>();
             builder.Services.AddScoped<ICUEliminarEmpleado, CUEliminarEmpleado>();

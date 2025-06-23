@@ -111,13 +111,14 @@ namespace LogicaAccesoDatos.EF
         public IEnumerable<Turno> ObtenerTurnosDelDiaPorEmpleada(int empleadaId, DateTime dia)
         {
             return _context.Turnos
-                           .Include(t => t.Detalles)
-                           .Include(t => t.Cliente)
-                           .Where(t => t.EmpleadaId == empleadaId
-                                       && t.FechaHora.Date == dia.Date
-                                       && !t.Cancelado
-                                       && !t.Realizado)
-                           .ToList();
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Servicio) 
+                .Include(t => t.Cliente)
+                .Where(t => t.EmpleadaId == empleadaId
+                            && t.FechaHora.Date == dia.Date
+                            && !t.Cancelado
+                            && !t.Realizado)
+                .ToList();
         }
 
         public IEnumerable<Turno> ObtenerTurnosDelDia(DateTime dia)

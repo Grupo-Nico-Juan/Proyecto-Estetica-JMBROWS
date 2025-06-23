@@ -3,6 +3,7 @@ using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
+using LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO;
 using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.Dtos.SectorDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
@@ -32,6 +33,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUAsignarSectorEmpleado _asignarSectorEmpleado;
         private readonly ICUQuitarSectorEmpleado _quitarSectorEmpleado;
         private readonly ICUObtenerSectoresDeEmpleado _obtenerSectoresDeEmpleado;
+        private readonly ICUObtenerEmpleadasDisponibles _obtenerDisponibles;
 
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
@@ -45,7 +47,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerHabilidadesDeEmpleado obtenerHabilidadesDeEmpleado,
             ICUAsignarSectorEmpleado asignarSectorEmpleado,
             ICUQuitarSectorEmpleado quitarSectorEmpleado,
-            ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado)
+            ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado,
+            ICUObtenerEmpleadasDisponibles obtenerDisponibles)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -59,6 +62,7 @@ namespace apiJMBROWS.Controllers
             _asignarSectorEmpleado = asignarSectorEmpleado;
             _quitarSectorEmpleado = quitarSectorEmpleado;
             _obtenerSectoresDeEmpleado = obtenerSectoresDeEmpleado;
+            _obtenerDisponibles = obtenerDisponibles;
         }
 
         /// <summary>
@@ -72,6 +76,25 @@ namespace apiJMBROWS.Controllers
         {
             var empleados = _obtenerEmpleados.Ejecutar();
             return Ok(empleados);
+        }
+        /// <summary>
+        /// Obtiene la lista de empleadas disponibles que pueden realizar los servicios indicados.
+        /// </summary>
+        [HttpPost("disponibles")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Empleadas disponibles para servicios")]
+        [SwaggerResponse(200, "Lista de empleadas válidas", typeof(List<EmpleadaDisponibleDTO>))]
+        public IActionResult GetEmpleadasDisponibles([FromBody] ConsultaEmpleadasDisponiblesDTO dto)
+        {
+            try
+            {
+                var result = _obtenerDisponibles.Ejecutar(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         /// <summary>

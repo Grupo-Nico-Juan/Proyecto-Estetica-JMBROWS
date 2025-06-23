@@ -82,7 +82,13 @@ namespace LogicaAccesoDatos.Repositorios
 
         public IEnumerable<Empleado> GetEmpleados()
         {
-            return _context.Usuarios.OfType<Empleado>().ToList();
+            return _context.Usuarios
+            .OfType<Empleado>()
+            .Include(e => e.PeriodosLaborales)
+            .Include(e => e.TurnosAsignados)
+            .Include(e => e.SectoresAsignados)
+            .Include(e => e.Habilidades)
+            .ToList();
         }
         public Empleado GetEmpleadoById(int id)
         {
