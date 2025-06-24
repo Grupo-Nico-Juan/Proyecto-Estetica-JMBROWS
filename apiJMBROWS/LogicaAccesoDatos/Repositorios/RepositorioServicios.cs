@@ -122,7 +122,25 @@ namespace LogicaAccesoDatos.EF
                 _context.SaveChanges();
             }
         }
+        public List<Habilidad> ObtenerHabilidadesDeServicio(int servicioId)
+        {
+            var servicio = _context.Servicios
+                .Include(s => s.Habilidades)
+                .FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new Exception("Servicio no encontrado");
 
+            return servicio.Habilidades;
+        }
+
+        public List<Sector> ObtenerSectoresDeServicio(int servicioId)
+        {
+            var servicio = _context.Servicios
+                .Include(s => s.Sectores)
+                .FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new Exception("Servicio no encontrado");
+
+            return servicio.Sectores;
+        }
 
     }
 

@@ -1,4 +1,6 @@
-﻿using LogicaAplicacion.Dtos.ServicioDTO;
+﻿using LogicaAplicacion.Dtos.HabilidadDTO;
+using LogicaAplicacion.Dtos.SectorDTO;
+using LogicaAplicacion.Dtos.ServicioDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,8 @@ namespace apiJMBROWS.Controllers
         private readonly ICUQuitarSectorDeServicio _quitarSector;
         private readonly ICUAsignarHabilidadAServicio _asignarHabilidad;
         private readonly ICUQuitarHabilidadDeServicio _quitarHabilidad;
+        private readonly ICUObtenerHabilidadesServicio _obtenerHabilidadesServicio;
+        private readonly ICUObtenerSectoresServicio _obtenerSectoresServicio;
         public ServicioController(
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
@@ -31,7 +35,9 @@ namespace apiJMBROWS.Controllers
             ICUAsignarSectorAServicio asignarSector,
             ICUQuitarSectorDeServicio quitarSector,
             ICUAsignarHabilidadAServicio asignarHabilidad,
-            ICUQuitarHabilidadDeServicio quitarHabilidad)
+            ICUQuitarHabilidadDeServicio quitarHabilidad,
+            ICUObtenerHabilidadesServicio obtenerHabilidadesServicio,
+            ICUObtenerSectoresServicio obtenerSectoresServicio)
         {
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
@@ -43,6 +49,8 @@ namespace apiJMBROWS.Controllers
             _quitarSector = quitarSector;
             _asignarHabilidad = asignarHabilidad;
             _quitarHabilidad = quitarHabilidad;
+            _obtenerHabilidadesServicio = obtenerHabilidadesServicio;
+            _obtenerSectoresServicio = obtenerSectoresServicio;
         }
 
         /// <summary>
@@ -162,6 +170,9 @@ namespace apiJMBROWS.Controllers
         [HttpPost("{servicioId}/sectores/{sectorId}")]
         [Authorize(Roles = "Administrador")]
         [SwaggerOperation(Summary = "Asigna un sector a un servicio")]
+        [SwaggerResponse(200, "Sector quitado correctamente")]
+        [SwaggerResponse(400, "Error al quitar sector")]
+
         public IActionResult AsignarSector(int servicioId, int sectorId)
         {
             try
@@ -185,6 +196,8 @@ namespace apiJMBROWS.Controllers
         [HttpDelete("{servicioId}/sectores/{sectorId}")]
         [Authorize(Roles = "Administrador")]
         [SwaggerOperation(Summary = "Quita un sector de un servicio")]
+        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
+        [SwaggerResponse(404, "Empleado no encontrado")]
         public IActionResult QuitarSector(int servicioId, int sectorId)
         {
             try
@@ -207,6 +220,8 @@ namespace apiJMBROWS.Controllers
         [HttpPost("{servicioId}/habilidades/{habilidadId}")]
         [Authorize(Roles = "Administrador")]
         [SwaggerOperation(Summary = "Asigna una habilidad a un servicio")]
+        [SwaggerResponse(200, "Habilidad asignada correctamente")]
+        [SwaggerResponse(400, "Error al asignar habilidad")]
         public IActionResult AsignarHabilidad(int servicioId, int habilidadId)
         {
             try
@@ -230,6 +245,8 @@ namespace apiJMBROWS.Controllers
         [HttpDelete("{servicioId}/habilidades/{habilidadId}")]
         [Authorize(Roles = "Administrador")]
         [SwaggerOperation(Summary = "Quita una habilidad de un servicio")]
+        [SwaggerResponse(200, "Habilidad quitada correctamente")]
+        [SwaggerResponse(400, "Error al quitar habilidad")]
         public IActionResult QuitarHabilidad(int servicioId, int habilidadId)
         {
             try
@@ -244,6 +261,44 @@ namespace apiJMBROWS.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// 
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Obtiene las habilidades de un servicio")]
+        [SwaggerResponse(200, "Lista de habilidades", typeof(IEnumerable<HabilidadDTO>))]
+        [SwaggerResponse(404, "Empleado no encontrado")]
+        public IActionResult GetHabilidades(int servicioId)
+        {
+            try
+            {
+                var result = _obtenerHabilidadesServicio.Ejecutar(servicioId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return NotFound(new { error = e.Message });
+            }
+        }
+
+
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Quita una habilidad de un servicio")]
+        [HttpGet("{servicioId}/sectores")]
+        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
+        [SwaggerResponse(404, "Empleado no encontrado")]
+        public IActionResult GetSectores(int servicioId)
+        {
+            try
+            {
+                var result = _obtenerSectoresServicio.Ejecutar(servicioId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return NotFound(new { error = e.Message });
             }
         }
 

@@ -15,6 +15,8 @@ namespace LogicaNegocio.InterfacesRepositorio
         void QuitarSector(int servicioId, int sectorId);
         void AsignarHabilidad(int servicioId, int habilidadId);
         void QuitarHabilidad(int servicioId, int habilidadId);
+        List<Habilidad> ObtenerHabilidadesDeServicio(int servicioId);
+        List<Sector> ObtenerSectoresDeServicio(int servicioId);
     }
 
 }
