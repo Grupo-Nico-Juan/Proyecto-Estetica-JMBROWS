@@ -95,6 +95,7 @@ namespace LogicaAccesoDatos.Repositorios
             return _context.Usuarios
                 .OfType<Empleado>()
                 .Include(e => e.PeriodosLaborales)
+                .Include(e => e.Habilidades)
                 .FirstOrDefault(e => e.Id == id);
         }
         public void AddEmpleado(Empleado e)
