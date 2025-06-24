@@ -95,6 +95,8 @@ namespace LogicaAccesoDatos.Repositorios
             return _context.Usuarios
                 .OfType<Empleado>()
                 .Include(e => e.PeriodosLaborales)
+                .Include(e => e.TurnosAsignados)
+                .Include(e => e.SectoresAsignados)
                 .Include(e => e.Habilidades)
                 .FirstOrDefault(e => e.Id == id);
         }
@@ -156,12 +158,32 @@ namespace LogicaAccesoDatos.Repositorios
 
         public void AsignarSector(int empleadoId, int sectorId)
         {
-            throw new NotImplementedException();
+            var empleado = _context.Usuarios.OfType<Empleado>().Include(e => e.SectoresAsignados).FirstOrDefault(e => e.Id == empleadoId)
+                 ?? throw new EmpleadoException("Empleado no encontrado");
+
+            var sector = _context.Sectores.FirstOrDefault(h => h.Id == sectorId)
+                ?? throw new Exception("Sector no encontrado");
+
+            if (!empleado.SectoresAsignados.Contains(sector))
+            {
+                empleado.SectoresAsignados.Add(sector);
+                _context.SaveChanges();
+            }
         }
 
         public void QuitarSector(int empleadoId, int sectorId)
         {
-            throw new NotImplementedException();
+            var empleado = _context.Usuarios.OfType<Empleado>().Include(e => e.SectoresAsignados).FirstOrDefault(e => e.Id == empleadoId)
+                ?? throw new EmpleadoException("Empleado no encontrado");
+
+            var sector = _context.Sectores.FirstOrDefault(h => h.Id == sectorId)
+                ?? throw new Exception("Sector no encontrado");
+
+            if (!empleado.SectoresAsignados.Contains(sector))
+            {
+                empleado.SectoresAsignados.Remove(sector);
+                _context.SaveChanges();
+            }
         }
     }
 }
