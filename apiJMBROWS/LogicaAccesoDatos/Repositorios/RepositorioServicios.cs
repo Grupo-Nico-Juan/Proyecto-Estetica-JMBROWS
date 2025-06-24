@@ -1,5 +1,7 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepositorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +64,66 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Servicios.Where(s => s.Nombre.Contains(texto)).ToList();
         }
+        public void AsignarSector(int servicioId, int sectorId)
+        {
+            var servicio = _context.Servicios.Include(s => s.Sectores).FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new ServicioException("Servicio no encontrado");
+
+            var sector = _context.Sectores.FirstOrDefault(s => s.Id == sectorId)
+                ?? throw new ServicioException("Sector no encontrado");
+
+            if (!servicio.Sectores.Contains(sector))
+            {
+                servicio.Sectores.Add(sector);
+                _context.SaveChanges();
+            }
+        }
+
+        public void QuitarSector(int servicioId, int sectorId)
+        {
+            var servicio = _context.Servicios.Include(s => s.Sectores).FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new ServicioException("Servicio no encontrado");
+
+            var sector = _context.Sectores.FirstOrDefault(s => s.Id == sectorId)
+                ?? throw new ServicioException("Sector no encontrado");
+
+            if (servicio.Sectores.Contains(sector))
+            {
+                servicio.Sectores.Remove(sector);
+                _context.SaveChanges();
+            }
+        }
+        public void AsignarHabilidad(int servicioId, int habilidadId)
+        {
+            var servicio = _context.Servicios.Include(s => s.Habilidades).FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new ServicioException("Servicio no encontrado");
+
+            var habilidad = _context.Habilidades.FirstOrDefault(h => h.Id == habilidadId)
+                ?? throw new ServicioException("Habilidad no encontrada");
+
+            if (!servicio.Habilidades.Contains(habilidad))
+            {
+                servicio.Habilidades.Add(habilidad);
+                _context.SaveChanges();
+            }
+        }
+
+        public void QuitarHabilidad(int servicioId, int habilidadId)
+        {
+            var servicio = _context.Servicios.Include(s => s.Habilidades).FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new ServicioException("Servicio no encontrado");
+
+            var habilidad = _context.Habilidades.FirstOrDefault(h => h.Id == habilidadId)
+                ?? throw new ServicioException("Habilidad no encontrada");
+
+            if (servicio.Habilidades.Contains(habilidad))
+            {
+                servicio.Habilidades.Remove(habilidad);
+                _context.SaveChanges();
+            }
+        }
+
+
     }
 
 }

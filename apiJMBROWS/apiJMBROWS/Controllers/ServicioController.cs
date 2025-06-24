@@ -17,14 +17,21 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerServicios _obtenerServicios;
         private readonly ICUObtenerServicioPorId _obtenerServicioPorId;
         private readonly ICUBuscarServiciosPorNombre _buscarServiciosPorNombre;
-
+        private readonly ICUAsignarSectorAServicio _asignarSector;
+        private readonly ICUQuitarSectorDeServicio _quitarSector;
+        private readonly ICUAsignarHabilidadAServicio _asignarHabilidad;
+        private readonly ICUQuitarHabilidadDeServicio _quitarHabilidad;
         public ServicioController(
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
             ICUEliminarServicio eliminarServicio,
             ICUObtenerServicios obtenerServicios,
             ICUObtenerServicioPorId obtenerServicioPorId,
-            ICUBuscarServiciosPorNombre buscarServiciosPorNombre)
+            ICUBuscarServiciosPorNombre buscarServiciosPorNombre,
+            ICUAsignarSectorAServicio asignarSector,
+            ICUQuitarSectorDeServicio quitarSector,
+            ICUAsignarHabilidadAServicio asignarHabilidad,
+            ICUQuitarHabilidadDeServicio quitarHabilidad)
         {
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
@@ -32,6 +39,10 @@ namespace apiJMBROWS.Controllers
             _obtenerServicios = obtenerServicios;
             _obtenerServicioPorId = obtenerServicioPorId;
             _buscarServiciosPorNombre = buscarServiciosPorNombre;
+            _asignarSector = asignarSector;
+            _quitarSector = quitarSector;
+            _asignarHabilidad = asignarHabilidad;
+            _quitarHabilidad = quitarHabilidad;
         }
 
         /// <summary>
@@ -145,5 +156,97 @@ namespace apiJMBROWS.Controllers
             var servicios = _buscarServiciosPorNombre.Ejecutar(texto);
             return Ok(servicios);
         }
+        /// <summary>
+        /// Asigna un sector a un servicio.
+        /// </summary>
+        [HttpPost("{servicioId}/sectores/{sectorId}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Asigna un sector a un servicio")]
+        public IActionResult AsignarSector(int servicioId, int sectorId)
+        {
+            try
+            {
+                _asignarSector.Ejecutar(new SectorAServicioDTO
+                {
+                    ServicioId = servicioId,
+                    SectorId = sectorId
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Quita un sector de un servicio.
+        /// </summary>
+        [HttpDelete("{servicioId}/sectores/{sectorId}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Quita un sector de un servicio")]
+        public IActionResult QuitarSector(int servicioId, int sectorId)
+        {
+            try
+            {
+                _quitarSector.Ejecutar(new SectorAServicioDTO
+                {
+                    ServicioId = servicioId,
+                    SectorId = sectorId
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Asigna una habilidad a un servicio.
+        /// </summary>
+        [HttpPost("{servicioId}/habilidades/{habilidadId}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Asigna una habilidad a un servicio")]
+        public IActionResult AsignarHabilidad(int servicioId, int habilidadId)
+        {
+            try
+            {
+                _asignarHabilidad.Ejecutar(new HabilidadAServicioDTO
+                {
+                    ServicioId = servicioId,
+                    HabilidadId = habilidadId
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Quita una habilidad de un servicio.
+        /// </summary>
+        [HttpDelete("{servicioId}/habilidades/{habilidadId}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Quita una habilidad de un servicio")]
+        public IActionResult QuitarHabilidad(int servicioId, int habilidadId)
+        {
+            try
+            {
+                _quitarHabilidad.Ejecutar(new HabilidadAServicioDTO
+                {
+                    ServicioId = servicioId,
+                    HabilidadId = habilidadId
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+
     }
 }

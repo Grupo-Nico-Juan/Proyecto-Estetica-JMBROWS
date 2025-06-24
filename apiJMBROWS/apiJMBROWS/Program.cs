@@ -76,6 +76,10 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerServicios, CUObtenerServicios>();
             builder.Services.AddScoped<ICUObtenerServicioPorId, CUObtenerServicioPorId>();
             builder.Services.AddScoped<ICUBuscarServiciosPorNombre, CUBuscarServiciosPorNombre>();
+            builder.Services.AddScoped<ICUAsignarSectorAServicio, CUAsignarSectorAServicio>();
+            builder.Services.AddScoped<ICUQuitarSectorDeServicio, CUQuitarSectorDeServicio>();
+            builder.Services.AddScoped<ICUAsignarHabilidadAServicio, CUAsignarHabilidadAServicio>();
+            builder.Services.AddScoped<ICUQuitarHabilidadDeServicio, CUQuitarHabilidadDeServicio>();
 
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
