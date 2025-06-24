@@ -1,6 +1,7 @@
 ﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
 using LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO;
@@ -34,7 +35,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUQuitarSectorEmpleado _quitarSectorEmpleado;
         private readonly ICUObtenerSectoresDeEmpleado _obtenerSectoresDeEmpleado;
         private readonly ICUObtenerEmpleadasDisponibles _obtenerDisponibles;
-
+        private readonly ICUObtenerEmpleadoPorHabilidad _obtenerEmpleadoPorHabilidad;
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
             ICUObtenerEmpleados obtenerEmpleados,
@@ -48,7 +49,8 @@ namespace apiJMBROWS.Controllers
             ICUAsignarSectorEmpleado asignarSectorEmpleado,
             ICUQuitarSectorEmpleado quitarSectorEmpleado,
             ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado,
-            ICUObtenerEmpleadasDisponibles obtenerDisponibles)
+            ICUObtenerEmpleadasDisponibles obtenerDisponibles,
+            ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -63,6 +65,7 @@ namespace apiJMBROWS.Controllers
             _quitarSectorEmpleado = quitarSectorEmpleado;
             _obtenerSectoresDeEmpleado = obtenerSectoresDeEmpleado;
             _obtenerDisponibles = obtenerDisponibles;
+            _obtenerEmpleadoPorHabilidad = obtenerEmpleadoPorHabilidad;
         }
 
         /// <summary>
@@ -319,5 +322,15 @@ namespace apiJMBROWS.Controllers
                 return NotFound(new { error = ex.Message });
             }
         }
+
+        [HttpGet("habilidad/{habilidadId}")]
+        [SwaggerOperation(Summary = "Obtiene empleados que tienen una habilidad específica")]
+        public IActionResult GetPorHabilidad(int habilidadId)
+        {
+            var empleados = _obtenerEmpleadoPorHabilidad.Ejecutar(habilidadId);
+            return Ok(empleados);
+        }
+
+
     }
 }
