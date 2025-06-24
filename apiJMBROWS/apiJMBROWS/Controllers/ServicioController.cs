@@ -265,11 +265,13 @@ namespace apiJMBROWS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Obtiene las habilidades de un servicio.
+        /// </summary>
+        [HttpGet("{servicioId}/habilidades")]
         [Authorize(Roles = "Administrador")]
         [SwaggerOperation(Summary = "Obtiene las habilidades de un servicio")]
         [SwaggerResponse(200, "Lista de habilidades", typeof(IEnumerable<HabilidadDTO>))]
-        [SwaggerResponse(404, "Empleado no encontrado")]
+        [SwaggerResponse(404, "Servicio no encontrado")]
         public IActionResult GetHabilidades(int servicioId)
         {
             try
@@ -284,11 +286,14 @@ namespace apiJMBROWS.Controllers
         }
 
 
-        [Authorize(Roles = "Administrador")]
-        [SwaggerOperation(Summary = "Quita una habilidad de un servicio")]
+        /// <summary>
+        /// Obtiene los sectores de un servicio.
+        /// </summary>
         [HttpGet("{servicioId}/sectores")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Obtiene los sectores de un servicio")]
         [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
-        [SwaggerResponse(404, "Empleado no encontrado")]
+        [SwaggerResponse(404, "Servicio no encontrado")]
         public IActionResult GetSectores(int servicioId)
         {
             try
@@ -301,6 +306,7 @@ namespace apiJMBROWS.Controllers
                 return NotFound(new { error = e.Message });
             }
         }
+
 
 
     }
