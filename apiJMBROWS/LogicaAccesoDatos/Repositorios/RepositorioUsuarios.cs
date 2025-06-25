@@ -179,7 +179,7 @@ namespace LogicaAccesoDatos.Repositorios
             var sector = _context.Sectores.FirstOrDefault(h => h.Id == sectorId)
                 ?? throw new Exception("Sector no encontrado");
 
-            if (!empleado.SectoresAsignados.Contains(sector))
+            if (empleado.SectoresAsignados.Contains(sector))
             {
                 empleado.SectoresAsignados.Remove(sector);
                 _context.SaveChanges();
