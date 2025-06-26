@@ -85,12 +85,12 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                                 {
                                     FechaHoraInicio = bloque.inicio,
                                     FechaHoraFin = bloque.fin,
-                                    EmpleadasDisponibles = new List<EmpleadoDTO>()
+                                    EmpleadasDisponibles = new List<EmpleadoTurnoDTO>()
                                 };
                                 horarios.Add(existente);
                             }
 
-                            existente.EmpleadasDisponibles.Add(new EmpleadoDTO
+                            existente.EmpleadasDisponibles.Add(new EmpleadoTurnoDTO
                             {
                                 Id = empleada.Id,
                                 Nombre = empleada.Nombre,

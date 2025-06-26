@@ -10,6 +10,6 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     {
         public DateTime FechaHoraInicio { get; set; }
         public DateTime FechaHoraFin { get; set; }
-        public List<EmpleadoDTO> EmpleadasDisponibles { get; set; } = new();
+        public List<EmpleadoTurnoDTO> EmpleadasDisponibles { get; set; } = new();
     }
 }

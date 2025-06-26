@@ -1,6 +1,6 @@
 namespace LogicaAplicacion.Dtos.TurnoDTO
 {
-    public class EmpleadoDTO
+    public class EmpleadoTurnoDTO
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
