@@ -17,6 +17,7 @@ namespace LogicaNegocio.InterfacesRepositorio
         void QuitarHabilidad(int servicioId, int habilidadId);
         List<Habilidad> ObtenerHabilidadesDeServicio(int servicioId);
         List<Sector> ObtenerSectoresDeServicio(int servicioId);
+        List<Servicio> ObtenerPorIds(IEnumerable<int> ids);
     }
 
 }

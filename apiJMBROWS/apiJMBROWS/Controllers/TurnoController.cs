@@ -26,6 +26,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUActualizarDetalleTurno _actualizarDetalleTurno;
         private readonly ICUObtenerDetalleTurnoPorId _obtenerDetalleTurnoPorId;
         private readonly ICUEliminarDetalleTurno _eliminarDetalleTurno;
+        private readonly ICUObtenerHorariosDisponibles _horariosDisponibles;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -38,7 +39,9 @@ namespace apiJMBROWS.Controllers
             ICUObtenerDetallesTurno obtenerDetallesTurno,
             ICUActualizarDetalleTurno actualizarDetalleTurno,
             ICUObtenerDetalleTurnoPorId obtenerDetalleTurnoPorId,
-            ICUEliminarDetalleTurno eliminarDetalleTurno)
+            ICUEliminarDetalleTurno eliminarDetalleTurno, 
+            ICUObtenerHorariosDisponibles horariosDisponibles
+            )
         {
             _altaTurno = altaTurno;
             _obtenerTurnos = obtenerTurnos;
@@ -52,6 +55,7 @@ namespace apiJMBROWS.Controllers
             _actualizarDetalleTurno = actualizarDetalleTurno;
             _obtenerDetalleTurnoPorId = obtenerDetalleTurnoPorId;
             _eliminarDetalleTurno = eliminarDetalleTurno;
+            _horariosDisponibles = horariosDisponibles;
         }
 
         /// <summary>
@@ -251,6 +255,33 @@ namespace apiJMBROWS.Controllers
             catch (Exception ex)
             {
                 return NotFound(new { error = ex.Message });
+            }
+        }
+
+
+        /// <summary>
+        /// Muestra los horarios disponibles dependiendo servicio, sucursal y empleadas disponibles
+        /// </summary>
+        [HttpPost("horarios-disponibles")]
+        [AllowAnonymous] 
+        [SwaggerOperation(Summary = "Obtiene horarios disponibles para uno o varios servicios")]
+        [SwaggerResponse(200, "Lista de horarios con empleadas disponibles", typeof(List<HorarioDisponibleDTO>))]
+        [SwaggerResponse(400, "Faltan datos necesarios")]
+        [SwaggerResponse(500, "Error interno")]
+        public ActionResult<List<HorarioDisponibleDTO>> ObtenerHorariosDisponibles([FromBody] HorariosDisponiblesFiltroDTO filtro)
+        {
+            try
+            {
+                if (filtro.ServicioIds == null || !filtro.ServicioIds.Any())
+                    return BadRequest("Debe seleccionar al menos un servicio.");
+
+                var horarios = _horariosDisponibles.Ejecutar(filtro);
+
+                return Ok(horarios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener horarios: {ex.Message}");
             }
         }
     }

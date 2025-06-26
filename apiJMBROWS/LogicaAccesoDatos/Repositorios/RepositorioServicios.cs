@@ -142,6 +142,14 @@ namespace LogicaAccesoDatos.EF
             return servicio.Sectores;
         }
 
+
+        public List<Servicio> ObtenerPorIds(IEnumerable<int> ids)
+        {
+            return _context.Servicios
+                .Include(s => s.Habilidades)
+                .Where(s => ids.Contains(s.Id))
+                .ToList();
+        }
     }
 
 }
