@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogicaAplicacion.Dtos.ExtraServicioDTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace LogicaAplicacion.Dtos.SectorDTO
         public string Descripcion { get; set; }
         public int DuracionMinutos { get; set; }
         public decimal Precio { get; set; }
+        public List<ServiciosExtrasDTO> Extras { get; set; } = new();
     }
 }

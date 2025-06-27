@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.Dtos.SectorDTO;
+﻿using LogicaAplicacion.Dtos.ExtraServicioDTO;
+using LogicaAplicacion.Dtos.SectorDTO;
 using LogicaAplicacion.Dtos.ServicioDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using LogicaNegocio.Excepciones;
@@ -32,7 +33,15 @@ public CUObtenerSectoresPorSucursal(IRepositorioSectores repo)
                 Nombre = serv.Nombre,
                 Precio = serv.Precio,
                 DuracionMinutos = serv.DuracionMinutos,
-                Descripcion = serv.Descripcion
+                Descripcion = serv.Descripcion,
+                Extras = serv.Extras?.Select(ex => new ServiciosExtrasDTO
+                {
+                    Id = ex.Id,
+                    Nombre = ex.Nombre,
+                    DuracionMinutos = ex.DuracionMinutos,
+                    Precio = ex.Precio,
+                    ServicioId = ex.ServicioId
+                }).ToList() ?? new List<ServiciosExtrasDTO>()
             }).ToList()
         });
     }
