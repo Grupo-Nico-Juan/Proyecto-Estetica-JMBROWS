@@ -28,7 +28,7 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
                 DuracionMinutos = s.DuracionMinutos,
                 Precio = s.Precio,
                 Extras = _repoExtras.ObtenerPorServicio(s.Id)
-                    .Select(e => new ExtraServicioDTO
+                    .Select(e => new ServiciosExtrasDTO
                     {
                         Id = e.Id,
                         Nombre = e.Nombre,

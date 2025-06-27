@@ -25,7 +25,7 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
                 throw new Exception("Servicio no encontrado");
 
             var extras = _repoExtras.ObtenerPorServicio(s.Id)
-                .Select(e => new ExtraServicioDTO
+                .Select(e => new ServiciosExtrasDTO
                 {
                     Id = e.Id,
                     Nombre = e.Nombre,

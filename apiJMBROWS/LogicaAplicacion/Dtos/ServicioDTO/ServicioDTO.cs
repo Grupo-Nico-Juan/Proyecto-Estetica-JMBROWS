@@ -10,7 +10,7 @@ namespace LogicaAplicacion.Dtos.ServicioDTO
         public string Descripcion { get; set; }
         public int DuracionMinutos { get; set; }
         public decimal Precio { get; set; }
-        public List<ExtraServicioDTO> Extras { get; set; } = new();
+        public List<ServiciosExtrasDTO> Extras { get; set; } = new();
 
     }
 }
