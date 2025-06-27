@@ -26,6 +26,8 @@ public class Servicio
     // Relación solo con Habilidades (si la usás)
     public List<Habilidad> Habilidades { get; set; } = new();
 
+    public List<ExtraServicio> Extras { get; set; } = new();
+
 
     public void EsValido()
     {

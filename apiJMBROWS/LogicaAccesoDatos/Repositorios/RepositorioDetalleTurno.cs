@@ -46,6 +46,7 @@ namespace LogicaAccesoDatos.Repositorios
         public DetalleTurno GetById(int id)
         {
             return _context.DetallesTurno
+                .Include(d => d.Extras)
                 .AsNoTracking()
                 .FirstOrDefault(d => d.Id == id);
         }
@@ -53,6 +54,7 @@ namespace LogicaAccesoDatos.Repositorios
         public IEnumerable<DetalleTurno> GetAll()
         {
             return _context.DetallesTurno
+                .Include(d => d.Extras)
                 .AsNoTracking()
                 .ToList();
         }

@@ -32,6 +32,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Empleada)
                            .Include(t => t.Cliente)
                            .ToList();
@@ -41,6 +42,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Empleada)
                            .Include(t => t.Cliente)
                            .FirstOrDefault(t => t.Id == id);
@@ -103,6 +105,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
                            .Where(t => t.EmpleadaId == empleadaId && !t.Cancelado)
                            .ToList();
@@ -113,6 +116,8 @@ namespace LogicaAccesoDatos.EF
             return _context.Turnos
                 .Include(t => t.Detalles)
                     .ThenInclude(d => d.Servicio)
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Extras)
                 .Include(t => t.Cliente)
                 .Where(t => t.EmpleadaId == empleadaId
                             && t.FechaHora.Date == dia.Date
@@ -125,6 +130,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
                            .Where(t => t.FechaHora.Date == dia.Date
                                        && !t.Cancelado
@@ -135,6 +141,8 @@ namespace LogicaAccesoDatos.EF
         public List<Turno> ObtenerParaFechaYEmpleado(DateTime fecha, int empleadaId)
         {
             return _context.Turnos
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Extras)
                 .Where(t => t.EmpleadaId == empleadaId && t.FechaHora.Date == fecha.Date && !t.Cancelado)
                 .ToList();
         }

@@ -1,7 +1,9 @@
 ﻿using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.Dtos.SectorDTO;
 using LogicaAplicacion.Dtos.ServicioDTO;
+using LogicaAplicacion.Dtos.ExtraServicioDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -25,6 +27,11 @@ namespace apiJMBROWS.Controllers
         private readonly ICUQuitarHabilidadDeServicio _quitarHabilidad;
         private readonly ICUObtenerHabilidadesServicio _obtenerHabilidadesServicio;
         private readonly ICUObtenerSectoresServicio _obtenerSectoresServicio;
+        private readonly ICUAltaExtraServicio _altaExtra;
+        private readonly ICUActualizarExtraServicio _actualizarExtra;
+        private readonly ICUEliminarExtraServicio _eliminarExtra;
+        private readonly ICUObtenerExtrasDeServicio _obtenerExtras;
+        private readonly ICUObtenerExtraServicioPorId _obtenerExtraPorId;
         public ServicioController(
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
@@ -37,7 +44,12 @@ namespace apiJMBROWS.Controllers
             ICUAsignarHabilidadAServicio asignarHabilidad,
             ICUQuitarHabilidadDeServicio quitarHabilidad,
             ICUObtenerHabilidadesServicio obtenerHabilidadesServicio,
-            ICUObtenerSectoresServicio obtenerSectoresServicio)
+            ICUObtenerSectoresServicio obtenerSectoresServicio,
+            ICUAltaExtraServicio altaExtra,
+            ICUActualizarExtraServicio actualizarExtra,
+            ICUEliminarExtraServicio eliminarExtra,
+            ICUObtenerExtrasDeServicio obtenerExtras,
+            ICUObtenerExtraServicioPorId obtenerExtraPorId)
         {
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
@@ -51,6 +63,11 @@ namespace apiJMBROWS.Controllers
             _quitarHabilidad = quitarHabilidad;
             _obtenerHabilidadesServicio = obtenerHabilidadesServicio;
             _obtenerSectoresServicio = obtenerSectoresServicio;
+            _altaExtra = altaExtra;
+            _actualizarExtra = actualizarExtra;
+            _eliminarExtra = eliminarExtra;
+            _obtenerExtras = obtenerExtras;
+            _obtenerExtraPorId = obtenerExtraPorId;
         }
 
         /// <summary>
@@ -305,6 +322,49 @@ namespace apiJMBROWS.Controllers
             {
                 return NotFound(new { error = e.Message });
             }
+        }
+
+        [HttpGet("{servicioId}/extras")]
+        [AllowAnonymous]
+        public IActionResult GetExtras(int servicioId)
+        {
+            var extras = _obtenerExtras.Ejecutar(servicioId);
+            return Ok(extras);
+        }
+
+        [HttpGet("extras/{id}")]
+        [AllowAnonymous]
+        public IActionResult GetExtra(int id)
+        {
+            var extra = _obtenerExtraPorId.Ejecutar(id);
+            if (extra == null) return NotFound();
+            return Ok(extra);
+        }
+
+        [HttpPost("{servicioId}/extras")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult CrearExtra(int servicioId, [FromBody] AltaExtraServicioDTO dto)
+        {
+            dto.ServicioId = servicioId;
+            _altaExtra.Ejecutar(dto);
+            return Ok();
+        }
+
+        [HttpPut("extras/{id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult ActualizarExtra(int id, [FromBody] ExtraServicioDTO dto)
+        {
+            if (id != dto.Id) return BadRequest();
+            _actualizarExtra.Ejecutar(dto);
+            return Ok();
+        }
+
+        [HttpDelete("extras/{id}")]
+        [Authorize(Roles = "Administrador")]
+        public IActionResult EliminarExtra(int id)
+        {
+            _eliminarExtra.Ejecutar(id);
+            return Ok();
         }
 
 

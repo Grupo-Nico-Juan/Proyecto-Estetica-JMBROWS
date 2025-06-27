@@ -28,12 +28,16 @@ namespace LogicaAccesoDatos.EF
 
         public IEnumerable<Servicio> GetAll()
         {
-            return _context.Servicios.ToList();
+            return _context.Servicios
+                .Include(s => s.Extras)
+                .ToList();
         }
 
         public Servicio GetById(int id)
         {
-            return _context.Servicios.FirstOrDefault(s => s.Id == id);
+            return _context.Servicios
+                .Include(s => s.Extras)
+                .FirstOrDefault(s => s.Id == id);
         }
 
         public void Update(int id, Servicio obj)

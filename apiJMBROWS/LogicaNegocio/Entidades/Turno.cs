@@ -56,7 +56,8 @@ namespace LogicaNegocio.Entidades
             foreach (var detalle in Detalles.OrderBy(d => d.Id)) // O el orden que corresponda
             {
                 detalle.HoraInicio = horaActual;
-                detalle.HoraFin = horaActual.AddMinutes(detalle.Servicio.DuracionMinutos);
+                var extraDuracion = detalle.Extras.Sum(e => e.DuracionMinutos);
+                detalle.HoraFin = horaActual.AddMinutes(detalle.Servicio.DuracionMinutos + extraDuracion);
                 horaActual = detalle.HoraFin;
             }
 
@@ -70,13 +71,15 @@ namespace LogicaNegocio.Entidades
         public int DuracionTotal()
         {
             // Suma la duración de todos los servicios de los detalles del turno
-            return Detalles.Sum(d => d.Servicio?.DuracionMinutos ?? 0);
+            return Detalles.Sum(d =>
+                (d.Servicio?.DuracionMinutos ?? 0) + d.Extras.Sum(e => e.DuracionMinutos));
         }
 
         public decimal PrecioTotal()
         {
             // Suma el precio de todos los servicios de los detalles del turno
-            return Detalles.Sum(d => d.Servicio?.Precio ?? 0);
+            return Detalles.Sum(d =>
+                (d.Servicio?.Precio ?? 0) + d.Extras.Sum(e => e.Precio));
         }
 
         public void AgregarDetalle(DetalleTurno detalle)
