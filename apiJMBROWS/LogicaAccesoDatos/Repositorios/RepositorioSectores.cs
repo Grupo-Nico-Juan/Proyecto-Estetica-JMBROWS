@@ -70,7 +70,8 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Sectores
             .Include(s => s.Servicios)
-            .Where(s => s.SucursalId == sucursalId)
+                .ThenInclude(serv => serv.Extras)
+                .Where(s => s.SucursalId == sucursalId)
             .ToList();
         }
 
