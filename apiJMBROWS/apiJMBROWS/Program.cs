@@ -8,6 +8,7 @@ using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
 using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
 using LogicaAplicacion.CasosDeUso.CUServicio;
+using LogicaAplicacion.CasosDeUso.CUExtraServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
 using LogicaAplicacion.InterfacesCasosDeUso;
@@ -18,6 +19,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Excepciones.Middleware;
@@ -47,6 +49,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
+            builder.Services.AddScoped<IRepositorioExtrasServicio, RepositorioExtrasServicio>();
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
             builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
@@ -82,6 +85,11 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUQuitarHabilidadDeServicio, CUQuitarHabilidadDeServicio>();
             builder.Services.AddScoped<ICUObtenerSectoresServicio, CUObtenerSectoresServicio>();
             builder.Services.AddScoped<ICUObtenerHabilidadesServicio, CUObtenerHabilidadesServicio>();
+            builder.Services.AddScoped<ICUAltaExtraServicio, CUAltaExtraServicio>();
+            builder.Services.AddScoped<ICUObtenerExtrasDeServicio, CUObtenerExtrasDeServicio>();
+            builder.Services.AddScoped<ICUActualizarExtraServicio, CUActualizarExtraServicio>();
+            builder.Services.AddScoped<ICUEliminarExtraServicio, CUEliminarExtraServicio>();
+            builder.Services.AddScoped<ICUObtenerExtraServicioPorId, CUObtenerExtraServicioPorId>();
 
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();

@@ -25,6 +25,8 @@ namespace LogicaNegocio.Entidades
 
         public Servicio? Servicio { get; set; }
 
+        public List<ExtraServicio> Extras { get; set; } = new();
+
         [NotMapped]
         public DateTime HoraInicio { get; set; }
         [NotMapped]
