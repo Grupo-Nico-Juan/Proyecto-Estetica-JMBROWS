@@ -5,6 +5,7 @@ using Libreria.LogicaNegocio.InterfacesRepositorio;
 using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
+using LogicaNegocio.InterfacesRepositorio;
 
 namespace LogicaAccesoDatos.Repositorios
 {

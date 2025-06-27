@@ -9,6 +9,7 @@ using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
 using System.Collections.Generic;
 using System.Linq;
+using LogicaNegocio.InterfacesRepositorio;
 
 namespace LogicaAplicacion.CasosDeUso.CUEmpleado
 {
