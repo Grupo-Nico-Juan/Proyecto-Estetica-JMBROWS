@@ -142,6 +142,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
 
             //Whatsapp Services
+            builder.Services.AddMemoryCache();
             builder.Services.AddScoped<WhatsAppService>();
 
 

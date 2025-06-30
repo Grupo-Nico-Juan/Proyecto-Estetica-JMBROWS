@@ -31,5 +31,16 @@ namespace apiJMBROWS.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+       
+        [HttpPost("verificar-codigo")]
+        public IActionResult VerificarCodigo([FromBody] VerificarCodigoDTO dto)
+        {
+            bool ok = _whatsAppService.VerificarCodigo(dto.ClienteId, dto.Codigo);
+            if (!ok) return BadRequest("Código incorrecto o expirado.");
+
+
+            return Ok("Código verificado correctamente.");
+        }
+
     }
 }
