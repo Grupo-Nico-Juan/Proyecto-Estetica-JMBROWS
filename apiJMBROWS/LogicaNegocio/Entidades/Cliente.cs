@@ -32,7 +32,7 @@ namespace LogicaNegocio.Entidades
         public string? PasswordPlano { get; set; } = string.Empty;
         public bool EsRegistrado { get; set; } // true si tiene cuenta con contraseña, false si es ocasional
 
-
+        public bool TelefonoVerificado { get; set; } = false;
         public List<Turno> Turnos { get; set; } = new();
         public List<Promocion> Promociones { get; set; } = new();
         public List<Notificacion> Notificaciones { get; set; } = new();

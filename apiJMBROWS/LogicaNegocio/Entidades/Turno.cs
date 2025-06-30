@@ -42,7 +42,7 @@ namespace LogicaNegocio.Entidades
             if (FechaHora < DateTime.Now)
                 throw new TurnoException("No se puede reservar un turno en el pasado.");
             if (FechaHora > DateTime.Now.AddMonths(1))
-                throw new TurnoException("No se puede reservar un turno con mas de un de antelacion.");
+                throw new TurnoException("No se puede reservar un turno con mas de un de un mes antelacion.");
 
             if (Detalles.Count == 0)
                 throw new TurnoException("El turno debe contener al menos un servicio.");

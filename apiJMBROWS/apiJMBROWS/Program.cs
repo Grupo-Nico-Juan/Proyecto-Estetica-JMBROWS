@@ -29,6 +29,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using LogicaAplicacion.Infraestructura.ServiciosExternos;
 
 namespace apiJMBROWS
 {
@@ -140,6 +141,8 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
             builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
 
+            //Whatsapp Services
+            builder.Services.AddScoped<WhatsAppService>();
 
 
             // CORS
