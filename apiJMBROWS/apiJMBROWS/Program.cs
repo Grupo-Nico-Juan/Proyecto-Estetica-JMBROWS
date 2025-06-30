@@ -149,7 +149,8 @@ namespace apiJMBROWS
             // CORS
             var allowedOrigins = new[] {
                 "https://calm-tree-09940dd0f.6.azurestaticapps.net",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://www.jmbrows.site"
             };
             builder.Services.AddCors(options =>
             {
