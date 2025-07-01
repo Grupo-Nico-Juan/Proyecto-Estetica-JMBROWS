@@ -324,16 +324,27 @@ namespace apiJMBROWS.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene los extras asociados a un servicio.
+        /// </summary>
         [HttpGet("{servicioId}/extras")]
         [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene los extras de un servicio")]
+        [SwaggerResponse(200, "Lista de extras", typeof(IEnumerable<ExtraServicioDTO>))]
         public IActionResult GetExtras(int servicioId)
         {
             var extras = _obtenerExtras.Ejecutar(servicioId);
             return Ok(extras);
         }
 
+        /// <summary>
+        /// Obtiene un extra por su identificador.
+        /// </summary>
         [HttpGet("extras/{id}")]
         [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene un extra por ID")]
+        [SwaggerResponse(200, "Extra encontrado", typeof(ExtraServicioDTO))]
+        [SwaggerResponse(404, "Extra no encontrado")]
         public IActionResult GetExtra(int id)
         {
             var extra = _obtenerExtraPorId.Ejecutar(id);
@@ -341,8 +352,13 @@ namespace apiJMBROWS.Controllers
             return Ok(extra);
         }
 
+        /// <summary>
+        /// Crea un extra para un servicio. Solo administradores.
+        /// </summary>
         [HttpPost("{servicioId}/extras")]
         [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Crea un extra")]
+        [SwaggerResponse(200, "Extra creado correctamente")]
         public IActionResult CrearExtra(int servicioId, [FromBody] AltaExtraServicioDTO dto)
         {
             dto.ServicioId = servicioId;
@@ -350,8 +366,14 @@ namespace apiJMBROWS.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Actualiza un extra de un servicio. Solo administradores.
+        /// </summary>
         [HttpPut("extras/{id}")]
         [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Actualiza un extra")]
+        [SwaggerResponse(200, "Extra actualizado correctamente")]
+        [SwaggerResponse(400, "Id de la URL no coincide con el del cuerpo")]
         public IActionResult ActualizarExtra(int id, [FromBody] ExtraServicioDTO dto)
         {
             if (id != dto.Id) return BadRequest();
@@ -359,8 +381,13 @@ namespace apiJMBROWS.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Elimina un extra de un servicio. Solo administradores.
+        /// </summary>
         [HttpDelete("extras/{id}")]
         [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Elimina un extra")]
+        [SwaggerResponse(200, "Extra eliminado correctamente")]
         public IActionResult EliminarExtra(int id)
         {
             _eliminarExtra.Ejecutar(id);
