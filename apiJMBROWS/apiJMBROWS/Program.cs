@@ -11,6 +11,7 @@ using LogicaAplicacion.CasosDeUso.CUServicio;
 using LogicaAplicacion.CasosDeUso.CUExtraServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
+using LogicaAplicacion.CasosDeUso.CUReportes;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
@@ -22,6 +23,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
@@ -140,6 +142,12 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
             builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
+
+            // Reportes
+            builder.Services.AddScoped<ICUIngresosSucursalSector, CUIngresosSucursalSector>();
+            builder.Services.AddScoped<ICUEstadoTurnos, CUEstadoTurnos>();
+            builder.Services.AddScoped<ICUTurnosPorServicio, CUTurnosPorServicio>();
+            builder.Services.AddScoped<ICUHorarioMayorTurnos, CUHorarioMayorTurnos>();
 
             //Whatsapp Services
             builder.Services.AddMemoryCache();
