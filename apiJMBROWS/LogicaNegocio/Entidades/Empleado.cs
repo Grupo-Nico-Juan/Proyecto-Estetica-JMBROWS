@@ -12,6 +12,10 @@ namespace LogicaNegocio.Entidades
         public required string Cargo { get; set; }
 
         public override string Rol => "Empleado";
+        // Sucursal principal del empleado
+        public int? SucursalId { get; set; }
+        [JsonIgnore]
+        public Sucursal? Sucursal { get; set; }
 
         // Relación con Habilidades (muchos a muchos)
         public List<Habilidad> Habilidades { get; set; } = [];

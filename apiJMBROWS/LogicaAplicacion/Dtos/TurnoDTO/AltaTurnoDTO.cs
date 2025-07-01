@@ -8,6 +8,8 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
         public DateTime FechaHora { get; set; }
         public int EmpleadaId { get; set; }
         public int ClienteId { get; set; }
+        public int? SucursalId { get; set; }
+        public int? SectorId { get; set; }
         public List<AltaDetalleTurnoDTO> Detalles { get; set; } = [];
     }
 }

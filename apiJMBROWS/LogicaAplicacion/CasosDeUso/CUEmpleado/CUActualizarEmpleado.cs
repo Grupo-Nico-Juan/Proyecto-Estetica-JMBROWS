@@ -24,6 +24,7 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
             empleado.Apellido = dto.Apellido;
             empleado.Email = dto.Email;
             empleado.Cargo = dto.Cargo;
+            empleado.SucursalId = dto.SucursalId;
             empleado.EsValidoEmpleado();
 
             _repo.UpdateEmpleado(empleado.Id, empleado);

@@ -26,7 +26,8 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
                 Nombre = e.Nombre,
                 Apellido = e.Apellido,
                 Email = e.Email,
-                Cargo = e.Cargo
+                Cargo = e.Cargo,
+                SucursalId = e.SucursalId
             };
         }
     }

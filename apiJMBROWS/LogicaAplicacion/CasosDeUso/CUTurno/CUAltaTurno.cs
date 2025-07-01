@@ -33,6 +33,8 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 FechaHora = dto.FechaHora,
                 EmpleadaId = dto.EmpleadaId,
                 ClienteId = dto.ClienteId,
+                SucursalId = dto.SucursalId,
+                SectorId = dto.SectorId,
                 Realizado = false,
                 Detalles = new List<DetalleTurno>()
             };
@@ -46,7 +48,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 turno.Detalles.Add(new DetalleTurno
                 {
                     ServicioId = det.ServicioId,
-                    Servicio = servicio // Asigna el objeto Servicio aquí
+                    Servicio = servicio
                 });
             }
 
