@@ -1,6 +1,5 @@
-using Libreria.LogicaNegocio.Entidades;
+﻿using Libreria.LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
-using LogicaNegocio.Entidades.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,7 +41,10 @@ namespace LogicaNegocio.Entidades
 
         public List<DetalleTurno> Detalles { get; set; } = new();
 
-        public EstadoTurno Estado { get; set; } = EstadoTurno.Pendiente;
+        public bool Realizado { get; set; } = false;
+
+        [JsonIgnore]
+        public bool Cancelado { get; set; } = false;
 
         public void EsValido()
         {
@@ -91,7 +93,7 @@ namespace LogicaNegocio.Entidades
 
         public void AgregarDetalle(DetalleTurno detalle)
         {
-            if (Estado != EstadoTurno.Pendiente)
+            if (Realizado || Cancelado)
                 throw new TurnoException("No se pueden modificar los servicios de un turno realizado o cancelado.");
 
             if (Detalles.Any(d => d.ServicioId == detalle.ServicioId))
@@ -105,7 +107,7 @@ namespace LogicaNegocio.Entidades
 
         public void QuitarDetalle(int detalleId)
         {
-            if (Estado != EstadoTurno.Pendiente)
+            if (Realizado || Cancelado)
                 throw new Exception("No se pueden modificar los servicios de un turno realizado o cancelado.");
 
             var detalle = Detalles.FirstOrDefault(d => d.Id == detalleId);

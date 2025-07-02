@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using LogicaNegocio.Entidades.Enums;
 
 namespace LogicaAplicacion.Dtos.TurnoDTO
 {
@@ -10,7 +9,7 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
         public DateTime FechaHora { get; set; }
         public int EmpleadaId { get; set; }
         public int ClienteId { get; set; }
-        public EstadoTurno Estado { get; set; }
+        public bool Realizado { get; set; }
         public int? SucursalId { get; set; }
         public int? SectorId { get; set; }
         public List<ActualizarDetalleTurnoDTO> Detalles { get; set; } = [];
