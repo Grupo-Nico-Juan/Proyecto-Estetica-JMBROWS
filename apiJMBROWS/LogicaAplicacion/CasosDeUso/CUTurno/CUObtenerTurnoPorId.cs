@@ -3,6 +3,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.InterfacesRepositorio;
 using System.Linq;
 
+using LogicaNegocio.Entidades.Enums;
 namespace LogicaAplicacion.CasosDeUso.CUTurno
 {
     public class CUObtenerTurnoPorId : ICUObtenerTurnoPorId
@@ -25,7 +26,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 FechaHora = t.FechaHora,
                 EmpleadaId = t.EmpleadaId,
                 ClienteId = t.ClienteId,
-                Realizado = t.Realizado,
+                Estado = t.Estado,
                 SucursalId = t.SucursalId,
                 SectorId = t.SectorId,
                 Detalles = t.Detalles.Select(d => new DetalleTurnoDTO
