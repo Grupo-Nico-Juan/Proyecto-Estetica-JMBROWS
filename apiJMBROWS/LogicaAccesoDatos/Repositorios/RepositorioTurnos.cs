@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.Entidades;
+using LogicaNegocio.Entidades.Enums;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -107,7 +108,7 @@ namespace LogicaAccesoDatos.EF
                            .Include(t => t.Detalles)
                                .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
-                           .Where(t => t.EmpleadaId == empleadaId && !t.Cancelado)
+                           .Where(t => t.EmpleadaId == empleadaId && t.Estado != EstadoTurno.Cancelado)
                            .ToList();
         }
 
@@ -121,8 +122,8 @@ namespace LogicaAccesoDatos.EF
                 .Include(t => t.Cliente)
                 .Where(t => t.EmpleadaId == empleadaId
                             && t.FechaHora.Date == dia.Date
-                            && !t.Cancelado
-                            && !t.Realizado)
+                            && t.Estado != EstadoTurno.Cancelado
+                            && t.Estado == EstadoTurno.Pendiente)
                 .ToList();
         }
 
@@ -133,8 +134,8 @@ namespace LogicaAccesoDatos.EF
                                .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
                            .Where(t => t.FechaHora.Date == dia.Date
-                                       && !t.Cancelado
-                                       && !t.Realizado)
+                                       && t.Estado != EstadoTurno.Cancelado
+                                       && t.Estado == EstadoTurno.Pendiente)
                            .ToList();
         }
 
@@ -143,7 +144,7 @@ namespace LogicaAccesoDatos.EF
             return _context.Turnos
                 .Include(t => t.Detalles)
                     .ThenInclude(d => d.Extras)
-                .Where(t => t.EmpleadaId == empleadaId && t.FechaHora.Date == fecha.Date && !t.Cancelado)
+                .Where(t => t.EmpleadaId == empleadaId && t.FechaHora.Date == fecha.Date && t.Estado != EstadoTurno.Cancelado)
                 .ToList();
         }
 

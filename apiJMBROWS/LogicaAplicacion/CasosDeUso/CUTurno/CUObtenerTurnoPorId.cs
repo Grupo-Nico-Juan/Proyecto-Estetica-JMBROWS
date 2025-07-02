@@ -1,6 +1,7 @@
 using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.InterfacesRepositorio;
+using LogicaNegocio.Entidades.Enums;
 using System.Linq;
 
 namespace LogicaAplicacion.CasosDeUso.CUTurno
@@ -25,7 +26,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 FechaHora = t.FechaHora,
                 EmpleadaId = t.EmpleadaId,
                 ClienteId = t.ClienteId,
-                Realizado = t.Realizado,
+                Estado = t.Estado,
                 SucursalId = t.SucursalId,
                 SectorId = t.SectorId,
                 Detalles = t.Detalles.Select(d => new DetalleTurnoDTO
