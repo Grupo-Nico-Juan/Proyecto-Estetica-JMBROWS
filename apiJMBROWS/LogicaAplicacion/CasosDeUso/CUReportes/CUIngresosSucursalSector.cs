@@ -4,7 +4,6 @@ using LogicaNegocio.InterfacesRepositorio;
 using System.Collections.Generic;
 using System.Linq;
 
-using LogicaNegocio.Entidades.Enums;
 namespace LogicaAplicacion.CasosDeUso.CUReportes
 {
     public class CUIngresosSucursalSector : ICUIngresosSucursalSector
@@ -28,7 +27,7 @@ namespace LogicaAplicacion.CasosDeUso.CUReportes
                 .ToDictionary(s => s.Id, s => s.Nombre.ToLower());
             var turnos = _repoTurnos.GetAll()
                 .Where(t => t.FechaHora.Year == anio && t.FechaHora.Month == mes &&
-                            t.Estado == EstadoTurno.Realizado);
+                            t.Realizado && !t.Cancelado);
             var sucursales = _repoSucursales.GetAll();
             var lista = new List<IngresosSucursalDTO>();
 
