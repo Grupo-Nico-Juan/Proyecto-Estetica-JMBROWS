@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.Dtos.SectorDTO
 {
-    public class SectorDTO
+    public class SectorDTSSuc
     {
         public int Id { get; set; }
         public string Nombre { get; set; }

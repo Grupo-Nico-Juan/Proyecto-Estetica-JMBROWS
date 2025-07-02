@@ -32,8 +32,9 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
-                           .Include(t => t.Empleada) 
-                           .Include(t => t.Cliente)  
+                               .ThenInclude(d => d.Extras)
+                           .Include(t => t.Empleada)
+                           .Include(t => t.Cliente)
                            .ToList();
         }
 
@@ -41,6 +42,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Empleada)
                            .Include(t => t.Cliente)
                            .FirstOrDefault(t => t.Id == id);
@@ -71,13 +73,39 @@ namespace LogicaAccesoDatos.EF
 
         public void Update(int id, Turno obj)
         {
-            //falta hacer
+            var existente = _context.Turnos
+                .Include(t => t.Detalles)
+                .FirstOrDefault(t => t.Id == id);
+
+            if (existente == null)
+                throw new Exception("Turno no encontrado.");
+
+            // Limpia los detalles existentes si necesitás reemplazarlos (opcional)
+            // existente.Detalles.Clear(); 
+
+            // Agrega los nuevos detalles del objeto entrante
+            foreach (var detalle in obj.Detalles)
+            {
+                // Asegura que no se agreguen duplicados si estás agregando incrementalmente
+                if (!existente.Detalles.Any(d => d.ServicioId == detalle.ServicioId))
+                {
+                    existente.Detalles.Add(new DetalleTurno
+                    {
+                        TurnoId = id,
+                        ServicioId = detalle.ServicioId
+                    });
+                }
+            }
+
+            _context.SaveChanges();
         }
+
 
         public IEnumerable<Turno> BuscarPorEmpleada(int empleadaId)
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
                            .Where(t => t.EmpleadaId == empleadaId && !t.Cancelado)
                            .ToList();
@@ -86,19 +114,23 @@ namespace LogicaAccesoDatos.EF
         public IEnumerable<Turno> ObtenerTurnosDelDiaPorEmpleada(int empleadaId, DateTime dia)
         {
             return _context.Turnos
-                           .Include(t => t.Detalles)
-                           .Include(t => t.Cliente)
-                           .Where(t => t.EmpleadaId == empleadaId
-                                       && t.FechaHora.Date == dia.Date
-                                       && !t.Cancelado
-                                       && !t.Realizado)
-                           .ToList();
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Servicio)
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Extras)
+                .Include(t => t.Cliente)
+                .Where(t => t.EmpleadaId == empleadaId
+                            && t.FechaHora.Date == dia.Date
+                            && !t.Cancelado
+                            && !t.Realizado)
+                .ToList();
         }
 
         public IEnumerable<Turno> ObtenerTurnosDelDia(DateTime dia)
         {
             return _context.Turnos
                            .Include(t => t.Detalles)
+                               .ThenInclude(d => d.Extras)
                            .Include(t => t.Cliente)
                            .Where(t => t.FechaHora.Date == dia.Date
                                        && !t.Cancelado
@@ -106,6 +138,17 @@ namespace LogicaAccesoDatos.EF
                            .ToList();
         }
 
-     
+        public List<Turno> ObtenerParaFechaYEmpleado(DateTime fecha, int empleadaId)
+        {
+            return _context.Turnos
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Extras)
+                .Where(t => t.EmpleadaId == empleadaId && t.FechaHora.Date == fecha.Date && !t.Cancelado)
+                .ToList();
+        }
+
+
+
+
     }
 }

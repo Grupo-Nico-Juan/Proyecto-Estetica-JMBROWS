@@ -1,4 +1,5 @@
 ﻿using LogicaAplicacion.Dtos;
+using LogicaAplicacion.Dtos.ClienteDTO;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
 using System;
 using System.Collections.Generic;

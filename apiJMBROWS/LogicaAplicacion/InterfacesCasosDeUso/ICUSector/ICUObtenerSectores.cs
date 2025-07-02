@@ -3,5 +3,5 @@ using LogicaAplicacion.Dtos.SectorDTO;
 
 public interface ICUObtenerSectores
 {
-    IEnumerable<SectorDTO> Ejecutar();
+    IEnumerable<SectorDTSSuc> Ejecutar();
 }

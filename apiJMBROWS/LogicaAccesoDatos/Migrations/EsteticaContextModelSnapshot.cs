@@ -22,6 +22,21 @@ namespace LogicaAccesoDatos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DetalleTurnoExtraServicio", b =>
+                {
+                    b.Property<int>("DetalleTurnoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExtrasId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleTurnoId", "ExtrasId");
+
+                    b.HasIndex("ExtrasId");
+
+                    b.ToTable("DetalleTurnoExtra", (string)null);
+                });
+
             modelBuilder.Entity("EmpleadoHabilidad", b =>
                 {
                     b.Property<int>("EmpleadoId")
@@ -82,6 +97,9 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EsRegistrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -94,12 +112,15 @@ namespace LogicaAccesoDatos.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<bool>("TelefonoVerificado")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Telefono")
                         .IsUnique();
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.DetalleTurno", b =>
@@ -109,12 +130,6 @@ namespace LogicaAccesoDatos.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DuracionMinutos")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Precio")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ServicioId")
                         .HasColumnType("int");
@@ -129,6 +144,34 @@ namespace LogicaAccesoDatos.Migrations
                     b.HasIndex("TurnoId");
 
                     b.ToTable("DetallesTurno");
+                });
+
+            modelBuilder.Entity("LogicaNegocio.Entidades.ExtraServicio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DuracionMinutos")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ServicioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServicioId");
+
+                    b.ToTable("ExtrasServicio");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Habilidad", b =>
@@ -209,20 +252,29 @@ namespace LogicaAccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Desde")
+                    b.Property<DateTime?>("Desde")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DiaSemana")
+                        .HasColumnType("int");
 
                     b.Property<int>("EmpleadaId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("EsLicencia")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Hasta")
+                    b.Property<DateTime?>("Hasta")
                         .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("HoraInicio")
+                        .HasColumnType("time");
 
                     b.Property<string>("Motivo")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -345,11 +397,21 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<bool>("Realizado")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("SectorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SucursalId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("EmpleadaId");
+
+                    b.HasIndex("SectorId");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Turnos");
                 });
@@ -394,13 +456,13 @@ namespace LogicaAccesoDatos.Migrations
 
             modelBuilder.Entity("SectorServicio", b =>
                 {
-                    b.Property<int>("SectorId")
+                    b.Property<int>("SectoresId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiciosId")
                         .HasColumnType("int");
 
-                    b.HasKey("SectorId", "ServiciosId");
+                    b.HasKey("SectoresId", "ServiciosId");
 
                     b.HasIndex("ServiciosId");
 
@@ -454,7 +516,27 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SucursalId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("SucursalId");
+
                     b.HasDiscriminator().HasValue("Empleado");
+                });
+
+            modelBuilder.Entity("DetalleTurnoExtraServicio", b =>
+                {
+                    b.HasOne("LogicaNegocio.Entidades.DetalleTurno", null)
+                        .WithMany()
+                        .HasForeignKey("DetalleTurnoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LogicaNegocio.Entidades.ExtraServicio", null)
+                        .WithMany()
+                        .HasForeignKey("ExtrasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EmpleadoHabilidad", b =>
@@ -521,6 +603,17 @@ namespace LogicaAccesoDatos.Migrations
                     b.Navigation("Turno");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.ExtraServicio", b =>
+                {
+                    b.HasOne("Servicio", "Servicio")
+                        .WithMany("Extras")
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Servicio");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Notificacion", b =>
                 {
                     b.HasOne("LogicaNegocio.Entidades.Cliente", null)
@@ -561,7 +654,7 @@ namespace LogicaAccesoDatos.Migrations
             modelBuilder.Entity("LogicaNegocio.Entidades.Sector", b =>
                 {
                     b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
-                        .WithMany()
+                        .WithMany("Sectores")
                         .HasForeignKey("SucursalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -583,16 +676,28 @@ namespace LogicaAccesoDatos.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LogicaNegocio.Entidades.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorId");
+
+                    b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
+                        .WithMany()
+                        .HasForeignKey("SucursalId");
+
                     b.Navigation("Cliente");
 
                     b.Navigation("Empleada");
+
+                    b.Navigation("Sector");
+
+                    b.Navigation("Sucursal");
                 });
 
             modelBuilder.Entity("SectorServicio", b =>
                 {
                     b.HasOne("LogicaNegocio.Entidades.Sector", null)
                         .WithMany()
-                        .HasForeignKey("SectorId")
+                        .HasForeignKey("SectoresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -610,6 +715,15 @@ namespace LogicaAccesoDatos.Migrations
                         .HasForeignKey("PromocionId");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.Empleado", b =>
+                {
+                    b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
+                        .WithMany()
+                        .HasForeignKey("SucursalId");
+
+                    b.Navigation("Sucursal");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Cliente", b =>
                 {
                     b.Navigation("Notificaciones");
@@ -624,9 +738,19 @@ namespace LogicaAccesoDatos.Migrations
                     b.Navigation("ServiciosIncluidos");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.Sucursal", b =>
+                {
+                    b.Navigation("Sectores");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Turno", b =>
                 {
                     b.Navigation("Detalles");
+                });
+
+            modelBuilder.Entity("Servicio", b =>
+                {
+                    b.Navigation("Extras");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Empleado", b =>

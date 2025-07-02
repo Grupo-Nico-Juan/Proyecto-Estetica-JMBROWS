@@ -8,9 +8,9 @@ public class CUObtenerSectores : ICUObtenerSectores
     private readonly IRepositorioSectores _repo;
     public CUObtenerSectores(IRepositorioSectores repo) { _repo = repo; }
 
-    public IEnumerable<SectorDTO> Ejecutar()
+    public IEnumerable<SectorDTSSuc> Ejecutar()
     {
-        return _repo.GetAll().Select(s => new SectorDTO
+        return _repo.GetAll().Select(s => new SectorDTSSuc
         {
             Id = s.Id,
             Nombre = s.Nombre,

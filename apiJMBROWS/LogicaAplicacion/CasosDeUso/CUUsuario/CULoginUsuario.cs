@@ -3,6 +3,7 @@ using Libreria.LogicaNegocio.Excepciones;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.InterfacesRepositorio;
 
 public class CULoginUsuario : ICULoginUsuario
 {

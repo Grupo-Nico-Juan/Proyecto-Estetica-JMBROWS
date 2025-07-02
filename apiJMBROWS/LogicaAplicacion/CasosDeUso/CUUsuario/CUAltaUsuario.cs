@@ -3,6 +3,7 @@ using Libreria.LogicaNegocio.Entidades;
 using Libreria.LogicaNegocio.Excepciones;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Identity;
 
 namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios

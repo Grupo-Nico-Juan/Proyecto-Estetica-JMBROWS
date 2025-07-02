@@ -8,23 +8,30 @@ using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
 using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
 using LogicaAplicacion.CasosDeUso.CUServicio;
+using LogicaAplicacion.CasosDeUso.CUExtraServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
+using LogicaAplicacion.CasosDeUso.CUReportes;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
+using LogicaAplicacion.Infraestructura.ServiciosExternos;
 
 namespace apiJMBROWS
 {
@@ -35,15 +42,20 @@ namespace apiJMBROWS
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://*:8080");
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+             });
 
             // Repositorios
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
+            builder.Services.AddScoped<IRepositorioExtrasServicio, RepositorioExtrasServicio>();
             builder.Services.AddScoped<IRepositorioHabilidades, RepositorioHabilidades>();
-            builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioTurnos, RepositorioTurnos>();
+            builder.Services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             builder.Services.AddScoped<IRepositorioSectores, RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
             builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
@@ -51,9 +63,12 @@ namespace apiJMBROWS
             // Casos de uso
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
+
             builder.Services.AddScoped<ICUAltaCliente, CUAltaCliente>();
+            builder.Services.AddScoped<ICUObtenerClientePorTelefono, CUObtenerClientePorTelefono>();
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
             builder.Services.AddScoped<ICUGetClientes, CUGetClientes>();
+            builder.Services.AddScoped<ICURegistrarClienteSinCuenta, CURegistrarClienteSinCuenta>();
 
             builder.Services.AddScoped<ICUModificarSucursal, CUModificarSucursal>();
             builder.Services.AddScoped<ICUAltaSucursal, CUAltaSucursal>();
@@ -67,6 +82,17 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerServicios, CUObtenerServicios>();
             builder.Services.AddScoped<ICUObtenerServicioPorId, CUObtenerServicioPorId>();
             builder.Services.AddScoped<ICUBuscarServiciosPorNombre, CUBuscarServiciosPorNombre>();
+            builder.Services.AddScoped<ICUAsignarSectorAServicio, CUAsignarSectorAServicio>();
+            builder.Services.AddScoped<ICUQuitarSectorDeServicio, CUQuitarSectorDeServicio>();
+            builder.Services.AddScoped<ICUAsignarHabilidadAServicio, CUAsignarHabilidadAServicio>();
+            builder.Services.AddScoped<ICUQuitarHabilidadDeServicio, CUQuitarHabilidadDeServicio>();
+            builder.Services.AddScoped<ICUObtenerSectoresServicio, CUObtenerSectoresServicio>();
+            builder.Services.AddScoped<ICUObtenerHabilidadesServicio, CUObtenerHabilidadesServicio>();
+            builder.Services.AddScoped<ICUAltaExtraServicio, CUAltaExtraServicio>();
+            builder.Services.AddScoped<ICUObtenerExtrasDeServicio, CUObtenerExtrasDeServicio>();
+            builder.Services.AddScoped<ICUActualizarExtraServicio, CUActualizarExtraServicio>();
+            builder.Services.AddScoped<ICUEliminarExtraServicio, CUEliminarExtraServicio>();
+            builder.Services.AddScoped<ICUObtenerExtraServicioPorId, CUObtenerExtraServicioPorId>();
 
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
@@ -77,6 +103,7 @@ namespace apiJMBROWS
 
             builder.Services.AddScoped<ICUAltaEmpleado, CUAltaEmpleado>();
             builder.Services.AddScoped<ICUObtenerEmpleados, CUObtenerEmpleados>();
+            builder.Services.AddScoped<ICUObtenerEmpleadasDisponibles, CUObtenerEmpleadasDisponibles>();
             builder.Services.AddScoped<ICUObtenerEmpleadoPorId, CUObtenerEmpleadoPorId>();
             builder.Services.AddScoped<ICUActualizarEmpleado, CUActualizarEmpleado>();
             builder.Services.AddScoped<ICUEliminarEmpleado, CUEliminarEmpleado>();
@@ -87,6 +114,9 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUAsignarSectorEmpleado, CUAsignarSectorEmpleado>();
             builder.Services.AddScoped<ICUQuitarSectorEmpleado, CUQuitarSectorEmpleado>();
             builder.Services.AddScoped<ICUObtenerSectoresDeEmpleado, CUObtenerSectoresDeEmpleado>();
+            builder.Services.AddScoped<ICUObtenerEmpleadoPorHabilidad, CUObtenerEmpleadoPorHabilidad>();
+            builder.Services.AddScoped<ICUObtenerTurnosDelDiaPorEmpleada, CUObtenerTurnosDelDiaPorEmpleada>();
+            builder.Services.AddScoped<ICUObtenerEmpleadasPorSector, CUObtenerEmpleadasPorSector>();
 
             builder.Services.AddScoped<ICUActualizarTurno, CUActualizarTurno>();
             builder.Services.AddScoped<ICUEliminarTurno, CUEliminarTurno>();
@@ -95,6 +125,8 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerTurnoPorId, CUObtenerTurnoPorId>();
             builder.Services.AddScoped<ICUObtenerTurnosPorEmpleada, CUObtenerTurnosPorEmpleada>();
             builder.Services.AddScoped<ICUObtenerTurnosDelDiaPorEmpleada, CUObtenerTurnosDelDiaPorEmpleada>();
+            builder.Services.AddScoped<ICUObtenerHorariosDisponibles, CUObtenerHorariosDisponibles>();
+            builder.Services.AddScoped<ICUObtenerHorariosPorEmpleada, CUObtenerHorariosPorEmpleada>();
 
             builder.Services.AddScoped<ICUAltaDetalleTurno, CUAltaDetalleTurno>();
             builder.Services.AddScoped<ICUActualizarDetalleTurno, CUActualizarDetalleTurno>();
@@ -112,11 +144,24 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarSector, CUEliminarSector>();
             builder.Services.AddScoped<ICUObtenerSectorPorId, CUObtenerSectorPorId>();
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
+            builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
+
+            // Reportes
+            builder.Services.AddScoped<ICUIngresosSucursalSector, CUIngresosSucursalSector>();
+            builder.Services.AddScoped<ICUEstadoTurnos, CUEstadoTurnos>();
+            builder.Services.AddScoped<ICUTurnosPorServicio, CUTurnosPorServicio>();
+            builder.Services.AddScoped<ICUHorarioMayorTurnos, CUHorarioMayorTurnos>();
+
+            //Whatsapp Services
+            builder.Services.AddMemoryCache();
+            builder.Services.AddScoped<WhatsAppService>();
+
 
             // CORS
             var allowedOrigins = new[] {
                 "https://calm-tree-09940dd0f.6.azurestaticapps.net",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://www.jmbrows.site"
             };
             builder.Services.AddCors(options =>
             {

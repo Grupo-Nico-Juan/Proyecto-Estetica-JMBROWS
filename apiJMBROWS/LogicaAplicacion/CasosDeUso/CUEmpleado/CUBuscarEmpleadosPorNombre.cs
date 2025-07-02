@@ -1,5 +1,6 @@
 using LogicaAplicacion.Dtos.EmpleadoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepositorio;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,8 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
                     Nombre = e.Nombre,
                     Apellido = e.Apellido,
                     Email = e.Email,
-                    Cargo = e.Cargo
+                    Cargo = e.Cargo,
+                    SucursalId = e.SucursalId
                 });
         }
     }

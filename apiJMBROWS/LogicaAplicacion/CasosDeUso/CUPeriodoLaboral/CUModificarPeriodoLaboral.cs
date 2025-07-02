@@ -20,14 +20,20 @@ namespace LogicaAplicacion.CasosDeUso.CUPeriodoLaboral
 
         public void Ejecutar(PeriodoLaboralDTO dto)
         {
-            var periodo = _repo.ObtenerPorId(dto.Id);
+            if (!dto.Id.HasValue)
+                throw new ArgumentException("El ID del periodo laboral no puede ser nulo.");
+
+            var periodo = _repo.ObtenerPorId(dto.Id.Value);
             if (periodo == null)
                 throw new PeriodoLaboralException("Periodo laboral no encontrado.");
 
+            periodo.Tipo = dto.Tipo;
+            periodo.DiaSemana = dto.DiaSemana;
+            periodo.HoraInicio = dto.HoraInicio;
+            periodo.HoraFin = dto.HoraFin;
             periodo.Desde = dto.Desde;
             periodo.Hasta = dto.Hasta;
             periodo.Motivo = dto.Motivo;
-            periodo.EsLicencia = dto.EsLicencia;
 
             periodo.EsValido();
             _repo.Modificar(periodo);

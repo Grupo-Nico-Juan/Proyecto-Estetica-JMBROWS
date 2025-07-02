@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LogicaAplicacion.Dtos.ClienteDTO;
+
 
 namespace LogicaAplicacion.InterfacesCasosDeUso.ICUCliente
 {
-    internal class ICUObtenerClientePorTelefono
+    public interface ICUObtenerClientePorTelefono
     {
+        ClienteDTO? Ejecutar(string telefono);
     }
 }

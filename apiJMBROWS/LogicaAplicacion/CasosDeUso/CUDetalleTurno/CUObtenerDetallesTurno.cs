@@ -21,8 +21,7 @@ namespace LogicaAplicacion.CasosDeUso.CUDetalleTurno
                 Id = detalle.Id,
                 TurnoId = detalle.TurnoId,
                 ServicioId = detalle.ServicioId,
-                DuracionMinutos = detalle.DuracionMinutos,
-                Precio = detalle.Precio
+
             });
         }
     }

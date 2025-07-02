@@ -15,6 +15,7 @@ namespace LogicaNegocio.InterfacesRepositorio
         public IEnumerable<Turno> BuscarPorEmpleada(int empleadaId);
 
         public IEnumerable<Turno> ObtenerTurnosDelDia(DateTime dia);
+        public List<Turno> ObtenerParaFechaYEmpleado(DateTime fecha, int empleadaId);
 
     }
 }

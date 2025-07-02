@@ -26,6 +26,8 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             turno.EmpleadaId = dto.EmpleadaId;
             turno.ClienteId = dto.ClienteId;
             turno.Realizado = dto.Realizado;
+            turno.SucursalId = dto.SucursalId;
+            turno.SectorId = dto.SectorId;
 
             turno.Detalles.Clear();
             foreach (var det in dto.Detalles)
@@ -33,8 +35,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 turno.Detalles.Add(new DetalleTurno
                 {
                     ServicioId = det.ServicioId,
-                    DuracionMinutos = det.DuracionMinutos,
-                    Precio = det.Precio
+
                 });
             }
 

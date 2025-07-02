@@ -1,4 +1,6 @@
 ﻿using Libreria.LogicaNegocio.InterfacesRepositorio;
+using LogicaAplicacion.Dtos.ClienteDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.CasosDeUso.CUCliente
 {
-    public class CUObtenerClientePorTelefono
+    public class CUObtenerClientePorTelefono : ICUObtenerClientePorTelefono
     {
         private readonly IRepositorioClientes _repo;
         public CUObtenerClientePorTelefono(IRepositorioClientes repo) { _repo = repo; }

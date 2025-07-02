@@ -1,4 +1,5 @@
 using LogicaAplicacion.Dtos.SectorDTO;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,19 +16,22 @@ namespace apiJMBROWS.Controllers
         private readonly ICUEliminarSector _eliminarSector;
         private readonly ICUObtenerSectorPorId _obtenerSectorPorId;
         private readonly ICUObtenerSectores _obtenerSectores;
+        private readonly ICUObtenerSectoresPorSucursal _obtenerSectoresPorSucursal;
 
         public SectorController(
             ICUAltaSector altaSector,
             ICUActualizarSector actualizarSector,
             ICUEliminarSector eliminarSector,
             ICUObtenerSectorPorId obtenerSectorPorId,
-            ICUObtenerSectores obtenerSectores)
+            ICUObtenerSectores obtenerSectores,
+            ICUObtenerSectoresPorSucursal obtenerSectoresSucursal)
         {
             _altaSector = altaSector;
             _actualizarSector = actualizarSector;
             _eliminarSector = eliminarSector;
             _obtenerSectorPorId = obtenerSectorPorId;
             _obtenerSectores = obtenerSectores;
+            _obtenerSectoresPorSucursal = obtenerSectoresSucursal;
         }
 
         /// <summary>
@@ -35,7 +39,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         [HttpGet]
         [SwaggerOperation(Summary = "Obtiene todos los sectores")]
-        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTO>))]
+        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
         public IActionResult Get()
         {
             var sectores = _obtenerSectores.Ejecutar();
@@ -47,7 +51,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Obtiene un sector por ID")]
-        [SwaggerResponse(200, "Sector encontrado", typeof(SectorDTO))]
+        [SwaggerResponse(200, "Sector encontrado", typeof(SectorDTSSuc))]
         [SwaggerResponse(404, "Sector no encontrado")]
         public IActionResult GetById(int id)
         {
@@ -128,5 +132,27 @@ namespace apiJMBROWS.Controllers
                 return NotFound(new { error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// obtiene sectores por sucursal.
+        /// </summary>
+        [HttpGet("sucursal/{sucursalId}")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene sectores por sucursal con servicios")]
+        [SwaggerResponse(200, "Sectores con servicios", typeof(IEnumerable<SectorDTSSuc>))]
+        [SwaggerResponse(404, "Sectores no encontrados")]
+        public IActionResult GetPorSucursal(int sucursalId)
+        {
+            try
+            {
+                var sectores = _obtenerSectoresPorSucursal.Ejecutar(sucursalId);
+                return Ok(sectores);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+        }
+
     }
 }

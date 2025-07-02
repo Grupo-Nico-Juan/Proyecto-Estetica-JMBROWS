@@ -20,6 +20,7 @@ namespace LogicaNegocio.Entidades
         [Required]
         [Phone]
         public required string Telefono { get; set; }
+        public List<Sector> Sectores { get; set; } = new();
 
 
         public void EsValido()

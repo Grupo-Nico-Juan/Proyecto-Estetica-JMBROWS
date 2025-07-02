@@ -6,6 +6,8 @@ namespace Libreria.LogicaNegocio.InterfacesRepositorio
     {
         Cliente GetByEmail(string email);
         bool ExisteCorreoElectronico(string email);
+        Cliente? GetByTelefono(string telefono);
+        bool ExisteTelefono(string telefono);
 
     }
 }

@@ -1,11 +1,15 @@
 ﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.Excepciones;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.Dtos.EmpleadoDTO;
+using LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO;
 using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.Dtos.SectorDTO;
+using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepositorio;
@@ -32,7 +36,10 @@ namespace apiJMBROWS.Controllers
         private readonly ICUAsignarSectorEmpleado _asignarSectorEmpleado;
         private readonly ICUQuitarSectorEmpleado _quitarSectorEmpleado;
         private readonly ICUObtenerSectoresDeEmpleado _obtenerSectoresDeEmpleado;
-
+        private readonly ICUObtenerEmpleadasDisponibles _obtenerDisponibles;
+        private readonly ICUObtenerEmpleadoPorHabilidad _obtenerEmpleadoPorHabilidad;
+        private readonly ICUObtenerTurnosDelDiaPorEmpleada _cuObtenerTurnosDelDia;
+        private readonly ICUObtenerEmpleadasPorSector _obtenerEmpleadasPorSector;
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
             ICUObtenerEmpleados obtenerEmpleados,
@@ -45,7 +52,11 @@ namespace apiJMBROWS.Controllers
             ICUObtenerHabilidadesDeEmpleado obtenerHabilidadesDeEmpleado,
             ICUAsignarSectorEmpleado asignarSectorEmpleado,
             ICUQuitarSectorEmpleado quitarSectorEmpleado,
-            ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado)
+            ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado,
+            ICUObtenerEmpleadasDisponibles obtenerDisponibles,
+            ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad,
+            ICUObtenerTurnosDelDiaPorEmpleada ObtenerTurnosDelDia,
+            ICUObtenerEmpleadasPorSector obtenerEmpleadasPorSector)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -59,12 +70,18 @@ namespace apiJMBROWS.Controllers
             _asignarSectorEmpleado = asignarSectorEmpleado;
             _quitarSectorEmpleado = quitarSectorEmpleado;
             _obtenerSectoresDeEmpleado = obtenerSectoresDeEmpleado;
+            _obtenerDisponibles = obtenerDisponibles;
+            _obtenerEmpleadoPorHabilidad = obtenerEmpleadoPorHabilidad;
+            _cuObtenerTurnosDelDia = ObtenerTurnosDelDia;
+            _obtenerEmpleadasPorSector = obtenerEmpleadasPorSector;
+
         }
 
         /// <summary>
         /// Obtiene todos los empleados.
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene todos los empleados")]
         [SwaggerResponse(200, "Lista de empleados", typeof(IEnumerable<EmpleadoDTO>))]
         public IActionResult Get()
@@ -72,12 +89,32 @@ namespace apiJMBROWS.Controllers
             var empleados = _obtenerEmpleados.Ejecutar();
             return Ok(empleados);
         }
+        /// <summary>
+        /// Obtiene la lista de empleadas disponibles que pueden realizar los servicios indicados.
+        /// </summary>
+        [HttpPost("disponibles")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Empleadas disponibles para servicios")]
+        [SwaggerResponse(200, "Lista de empleadas válidas", typeof(List<EmpleadaDisponibleDTO>))]
+        public IActionResult GetEmpleadasDisponibles([FromBody] ConsultaEmpleadasDisponiblesDTO dto)
+        {
+            try
+            {
+                var result = _obtenerDisponibles.Ejecutar(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
         /// <summary>
         /// Obtiene un empleado por su ID.
         /// </summary>
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Obtiene un empleado por ID")]
+        [AllowAnonymous]
         [SwaggerResponse(200, "Empleado encontrado", typeof(EmpleadoDTO))]
         [SwaggerResponse(404, "Empleado no encontrado")]
         public IActionResult Get(int id)
@@ -280,7 +317,7 @@ namespace apiJMBROWS.Controllers
         /// </summary>
         [HttpGet("{empleadoId}/sectores")]
         [SwaggerOperation(Summary = "Obtiene los sectores de un empleado")]
-        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTO>))]
+        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
         [SwaggerResponse(404, "Empleado no encontrado")]
         public IActionResult GetSectores(int empleadoId)
         {
@@ -294,5 +331,49 @@ namespace apiJMBROWS.Controllers
                 return NotFound(new { error = ex.Message });
             }
         }
+
+        [HttpGet("habilidad/{habilidadId}")]
+        [SwaggerOperation(Summary = "Obtiene empleados que tienen una habilidad específica")]
+        public IActionResult GetPorHabilidad(int habilidadId)
+        {
+            var empleados = _obtenerEmpleadoPorHabilidad.Ejecutar(habilidadId);
+            return Ok(empleados);
+        }
+
+
+        [HttpGet("{empleadoId}/turnos-del-dia")]
+        [SwaggerOperation(Summary = "Obtiene los turnos del día de una empleada")]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Lista de turnos del día", typeof(IEnumerable<TurnoDTO>))]
+        public IActionResult GetTurnosDelDia(int empleadoId)
+        {
+            try
+            {
+                var turnos = _cuObtenerTurnosDelDia.Ejecutar(empleadoId, DateTime.Today);
+                return Ok(turnos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("sector/{sectorId}/empleadas")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene las empleadas asignadas a un sector")]
+        [SwaggerResponse(200, "Lista de empleadas", typeof(IEnumerable<EmpleadoDTO>))]
+        public IActionResult GetEmpleadasPorSector(int sectorId)
+        {
+            try
+            {
+                var empleadas = _obtenerEmpleadasPorSector.Ejecutar(sectorId);
+                return Ok(empleadas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
     }
 }

@@ -7,6 +7,7 @@ namespace LogicaAplicacion.Dtos.EmpleadoDTO
         public string Apellido { get; set; }
         public string Email { get; set; }
         public string Cargo { get; set; }
+        public int SucursalId { get; set; }
         // Puedes agregar más campos si tu entidad lo requiere
     }
 }

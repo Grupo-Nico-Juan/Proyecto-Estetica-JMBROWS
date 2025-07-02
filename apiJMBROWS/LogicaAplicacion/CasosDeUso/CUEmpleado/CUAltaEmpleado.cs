@@ -23,7 +23,8 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
                 Email = dto.Email,
                 PasswordPlano = dto.PasswordPlano,
                 Password = HashPassword(dto.PasswordPlano), // Fix: Set the required 'Password' property
-                Cargo = dto.Cargo
+                Cargo = dto.Cargo,
+                SucursalId = dto.SucursalId
             };
             nuevo.EsValidoEmpleado();
             _repo.AddEmpleado(nuevo);

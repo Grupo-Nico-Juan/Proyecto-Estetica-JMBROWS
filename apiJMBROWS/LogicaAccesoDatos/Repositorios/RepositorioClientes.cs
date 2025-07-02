@@ -58,6 +58,7 @@ namespace LogicaAccesoDatos.Repositorios
             _context.Entry(original).CurrentValues.SetValues(obj);
             _context.SaveChanges();
         }
+
         public Cliente? GetByTelefono(string telefono)
         {
             return _context.Clientes.FirstOrDefault(c => c.Telefono == telefono);

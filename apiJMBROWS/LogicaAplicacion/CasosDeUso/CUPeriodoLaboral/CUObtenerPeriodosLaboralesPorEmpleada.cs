@@ -21,10 +21,13 @@ namespace LogicaAplicacion.CasosDeUso.CUPeriodoLaboral
             {
                 Id = p.Id,
                 EmpleadaId = p.EmpleadaId,
+                Tipo = p.Tipo,
+                DiaSemana = p.DiaSemana,
+                HoraInicio = p.HoraInicio,
+                HoraFin = p.HoraFin,
                 Desde = p.Desde,
                 Hasta = p.Hasta,
-                Motivo = p.Motivo,
-                EsLicencia = p.EsLicencia
+                Motivo = p.Motivo
             });
         }
     }

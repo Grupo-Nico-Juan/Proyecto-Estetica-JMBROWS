@@ -12,8 +12,14 @@ namespace LogicaNegocio.Entidades
         public int Id { get; set; }
 
         [Required]
+        [Phone]
+        [MaxLength(20)]
+        public required string Telefono { get; set; }
+
         [EmailAddress]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
+
+        public string? Password { get; set; }
 
         [Required]
         public required string Nombre { get; set; }
@@ -23,26 +29,28 @@ namespace LogicaNegocio.Entidades
 
         [JsonIgnore]
         [NotMapped]
-        public string PasswordPlano { get; set; } = string.Empty;
+        public string? PasswordPlano { get; set; } = string.Empty;
+        public bool EsRegistrado { get; set; } // true si tiene cuenta con contraseña, false si es ocasional
 
-        [Required]
-        [MinLength(6)]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.,;!?])[A-Za-z\d.,;!?]+$", ErrorMessage = "Debe tener mayúsculas, minúsculas, dígitos y puntuación.")]
-        public required string Password { get; set; }
-
-
+        public bool TelefonoVerificado { get; set; } = false;
         public List<Turno> Turnos { get; set; } = new();
         public List<Promocion> Promociones { get; set; } = new();
         public List<Notificacion> Notificaciones { get; set; } = new();
 
         public bool Equals(Cliente? other)
         {
-            return other != null && Id == other.Id && Email == other.Email;
+            return other != null && Telefono == other.Telefono;
         }
 
         public virtual void EsValido()
         {
-            if (string.IsNullOrWhiteSpace(Email) ||
+            // Teléfono Uruguay: +598XXXXXXXX o 09XXXXXXX
+            bool esTelInt = Regex.IsMatch(Telefono, @"^\+598[1-9]\d{7}$");
+            bool esTelNac = Regex.IsMatch(Telefono, @"^09\d{7}$");
+            if (!esTelInt && !esTelNac)
+                throw new UsuarioException("El teléfono debe ser uruguayo y tener formato +598XXXXXXXX o 09XXXXXXX.");
+
+            if (!string.IsNullOrWhiteSpace(Email) &&
                 !Regex.IsMatch(Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
                 throw new UsuarioException("El email no tiene un formato válido.");
 
@@ -53,8 +61,10 @@ namespace LogicaNegocio.Entidades
                 !Regex.IsMatch(Apellido, @"^[a-zA-ZáéíóúÁÉÍÓÚ\s'-]+$"))
                 throw new UsuarioException("Nombre y apellido solo pueden contener letras, espacios, guiones o apóstrofes.");
 
-            if (string.IsNullOrWhiteSpace(PasswordPlano) || PasswordPlano.Length < 6 ||
-                !Regex.IsMatch(PasswordPlano, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.,;!?])[A-Za-z\d.,;!?]+$"))
+            // Solo valida la password si se provee
+            if (!string.IsNullOrWhiteSpace(PasswordPlano) && PasswordPlano.Length < 6 ||
+                (!string.IsNullOrWhiteSpace(PasswordPlano) &&
+                !Regex.IsMatch(PasswordPlano, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.,;!?])[A-Za-z\d.,;!?]+$")))
             {
                 throw new UsuarioException("La contraseña debe tener al menos una letra mayúscula, una minúscula, un número y un signo de puntuación (.,;!?).");
             }

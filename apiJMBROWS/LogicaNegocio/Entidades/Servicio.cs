@@ -21,9 +21,13 @@ public class Servicio
     [Required]
     [Range(0.0, 10000.0)]
     public decimal Precio { get; set; }
-
+    [Required]
+    public List<Sector> Sectores { get; set; } = new();
     // Relación solo con Habilidades (si la usás)
     public List<Habilidad> Habilidades { get; set; } = new();
+
+    public List<ExtraServicio> Extras { get; set; } = new();
+
 
     public void EsValido()
     {

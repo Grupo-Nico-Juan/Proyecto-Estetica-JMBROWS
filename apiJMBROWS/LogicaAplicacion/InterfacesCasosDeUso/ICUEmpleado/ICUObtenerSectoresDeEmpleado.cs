@@ -5,6 +5,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado
 {
     public interface ICUObtenerSectoresDeEmpleado
     {
-        IEnumerable<SectorDTO> Ejecutar(int empleadoId);
+        IEnumerable<SectorDTSSuc> Ejecutar(int empleadoId);
     }
 }
