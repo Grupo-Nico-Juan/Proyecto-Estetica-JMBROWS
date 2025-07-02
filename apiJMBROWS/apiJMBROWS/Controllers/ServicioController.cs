@@ -285,7 +285,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene las habilidades de un servicio.
         /// </summary>
         [HttpGet("{servicioId}/habilidades")]
-        [Authorize(Roles = "Administrador")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene las habilidades de un servicio")]
         [SwaggerResponse(200, "Lista de habilidades", typeof(IEnumerable<HabilidadDTO>))]
         [SwaggerResponse(404, "Servicio no encontrado")]
@@ -307,7 +307,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene los sectores de un servicio.
         /// </summary>
         [HttpGet("{servicioId}/sectores")]
-        [Authorize(Roles = "Administrador")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene los sectores de un servicio")]
         [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
         [SwaggerResponse(404, "Servicio no encontrado")]
