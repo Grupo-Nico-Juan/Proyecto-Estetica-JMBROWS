@@ -115,6 +115,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUQuitarSectorEmpleado, CUQuitarSectorEmpleado>();
             builder.Services.AddScoped<ICUObtenerSectoresDeEmpleado, CUObtenerSectoresDeEmpleado>();
             builder.Services.AddScoped<ICUObtenerEmpleadoPorHabilidad, CUObtenerEmpleadoPorHabilidad>();
+            builder.Services.AddScoped<ICUObtenerTurnosDelDiaPorEmpleada, CUObtenerTurnosDelDiaPorEmpleada>();
 
             builder.Services.AddScoped<ICUActualizarTurno, CUActualizarTurno>();
             builder.Services.AddScoped<ICUEliminarTurno, CUEliminarTurno>();
