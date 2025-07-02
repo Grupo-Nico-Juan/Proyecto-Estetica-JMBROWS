@@ -57,15 +57,15 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             var inicioNuevoTurno = turno.FechaHora;
             var finNuevoTurno = inicioNuevoTurno.AddMinutes(turno.DuracionTotal());
 
-                if (t.Estado == EstadoTurno.Cancelado) continue;
             var turnosDelDia = _repo.ObtenerTurnosDelDiaPorEmpleada(dto.EmpleadaId, dto.FechaHora.Date);
+
             foreach (var t in turnosDelDia)
             {
-                if (t.Cancelado) continue;
+                if (t.Estado == EstadoTurno.Cancelado) continue;
                 var inicioExistente = t.FechaHora;
                 var finExistente = inicioExistente.AddMinutes(t.DuracionTotal());
                 if (inicioNuevoTurno < finExistente && finNuevoTurno > inicioExistente)
-                    throw new TurnoException("La empleada no está disponible en el horario seleccionado.");
+                    throw new TurnoException("La empleada no est disponible en el horario seleccionado.");
             }
 
             // --- Validación de disponibilidad según periodos laborales ---
