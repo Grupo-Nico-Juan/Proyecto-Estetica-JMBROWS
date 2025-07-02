@@ -3,6 +3,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.InterfacesRepositorio;
 using LogicaNegocio.Entidades;
 using System;
+using LogicaNegocio.Entidades.Enums;
 using System.Linq;
 
 namespace LogicaAplicacion.CasosDeUso.CUTurno
@@ -25,7 +26,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             turno.FechaHora = dto.FechaHora;
             turno.EmpleadaId = dto.EmpleadaId;
             turno.ClienteId = dto.ClienteId;
-            turno.Realizado = dto.Realizado;
+            turno.Estado = dto.Estado;
             turno.SucursalId = dto.SucursalId;
             turno.SectorId = dto.SectorId;
 
@@ -39,7 +40,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 });
             }
 
-            turno.EsValido(); // <-- Validación de solapamiento
+            turno.EsValido(); // <-- ValidaciÃ³n de solapamiento
 
             _repo.Update(dto.Id, turno);
         }

@@ -35,7 +35,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 ClienteId = dto.ClienteId,
                 SucursalId = dto.SucursalId,
                 SectorId = dto.SectorId,
-                Realizado = false,
+                Estado = EstadoTurno.Pendiente,
                 Detalles = new List<DetalleTurno>()
             };
 
@@ -57,7 +57,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             var inicioNuevoTurno = turno.FechaHora;
             var finNuevoTurno = inicioNuevoTurno.AddMinutes(turno.DuracionTotal());
 
-            // Validación de solapamiento con otros turnos
+                if (t.Estado == EstadoTurno.Cancelado) continue;
             var turnosDelDia = _repo.ObtenerTurnosDelDiaPorEmpleada(dto.EmpleadaId, dto.FechaHora.Date);
             foreach (var t in turnosDelDia)
             {
@@ -65,10 +65,10 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 var inicioExistente = t.FechaHora;
                 var finExistente = inicioExistente.AddMinutes(t.DuracionTotal());
                 if (inicioNuevoTurno < finExistente && finNuevoTurno > inicioExistente)
-                    throw new TurnoException("La empleada no está disponible en el horario seleccionado.");
+                    throw new TurnoException("La empleada no estÃ¡ disponible en el horario seleccionado.");
             }
 
-            // --- Validación de disponibilidad según periodos laborales ---
+            // --- ValidaciÃ³n de disponibilidad segÃºn periodos laborales ---
             var empleada = _repoUsuarios.GetEmpleadoById(dto.EmpleadaId);
             if (empleada == null)
                 throw new TurnoException("La empleada no existe.");
@@ -77,7 +77,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             if (!(empleada is Empleado))
                 throw new TurnoException("El usuario seleccionado no es una empleada.");
 
-            // 1. Validar que el turno esté dentro de algún horario habitual
+            // 1. Validar que el turno estÃ© dentro de algÃºn horario habitual
             var horarios = empleada.PeriodosLaborales
                 .Where(p => p.Tipo == TipoPeriodoLaboral.HorarioHabitual)
                 .ToList();
@@ -88,13 +88,13 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 h.HoraFin >= finNuevoTurno.TimeOfDay);
 
             if (!enHorario)
-               throw new TurnoException("El turno está fuera del horario laboral habitual de la empleada.");
+               throw new TurnoException("El turno estÃ¡ fuera del horario laboral habitual de la empleada.");
 
             // 2. Validar que no se solape con ninguna licencia
             foreach (var periodo in empleada.PeriodosLaborales.Where(p => p.Tipo == TipoPeriodoLaboral.Licencia))
             {
                 if (periodo.SeSuperpone(inicioNuevoTurno, finNuevoTurno))
-                    throw new TurnoException("La empleada está de licencia o no disponible en el horario seleccionado.");
+                    throw new TurnoException("La empleada estÃ¡ de licencia o no disponible en el horario seleccionado.");
             }
 
             _repo.Add(turno);
