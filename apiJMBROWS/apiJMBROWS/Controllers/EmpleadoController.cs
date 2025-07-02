@@ -7,7 +7,9 @@ using LogicaAplicacion.Dtos.EmpleadoDTO;
 using LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO;
 using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.Dtos.SectorDTO;
+using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepositorio;
@@ -36,6 +38,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerSectoresDeEmpleado _obtenerSectoresDeEmpleado;
         private readonly ICUObtenerEmpleadasDisponibles _obtenerDisponibles;
         private readonly ICUObtenerEmpleadoPorHabilidad _obtenerEmpleadoPorHabilidad;
+        private readonly ICUObtenerTurnosDelDiaPorEmpleada _cuObtenerTurnosDelDia;
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
             ICUObtenerEmpleados obtenerEmpleados,
@@ -50,7 +53,8 @@ namespace apiJMBROWS.Controllers
             ICUQuitarSectorEmpleado quitarSectorEmpleado,
             ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado,
             ICUObtenerEmpleadasDisponibles obtenerDisponibles,
-            ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad)
+            ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad,
+            ICUObtenerTurnosDelDiaPorEmpleada ObtenerTurnosDelDia)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -66,6 +70,8 @@ namespace apiJMBROWS.Controllers
             _obtenerSectoresDeEmpleado = obtenerSectoresDeEmpleado;
             _obtenerDisponibles = obtenerDisponibles;
             _obtenerEmpleadoPorHabilidad = obtenerEmpleadoPorHabilidad;
+            _cuObtenerTurnosDelDia = ObtenerTurnosDelDia;
+
         }
 
         /// <summary>
@@ -331,6 +337,23 @@ namespace apiJMBROWS.Controllers
             return Ok(empleados);
         }
 
+
+        [HttpGet("{empleadoId}/turnos-del-dia")]
+        [SwaggerOperation(Summary = "Obtiene los turnos del día de una empleada")]
+        [AllowAnonymous]
+        [SwaggerResponse(200, "Lista de turnos del día", typeof(IEnumerable<TurnoDTO>))]
+        public IActionResult GetTurnosDelDia(int empleadoId)
+        {
+            try
+            {
+                var turnos = _cuObtenerTurnosDelDia.Ejecutar(empleadoId, DateTime.Today);
+                return Ok(turnos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
     }
 }
