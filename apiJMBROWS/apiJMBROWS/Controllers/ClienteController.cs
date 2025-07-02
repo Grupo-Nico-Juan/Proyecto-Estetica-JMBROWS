@@ -1,8 +1,11 @@
 ﻿using apiJMBROWS.UtilidadesJwt;
 using Libreria.LogicaNegocio.Excepciones;
+using LogicaAplicacion.CasosDeUso.CUCliente;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
 using LogicaAplicacion.Dtos;
 using LogicaAplicacion.Dtos.ClienteDTO;
 using LogicaAplicacion.Dtos.DtoUsuario;
+using LogicaAplicacion.Dtos.EmpleadoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaNegocio.Entidades;
 using Microsoft.AspNetCore.Authorization;
@@ -20,19 +23,21 @@ namespace apiJMBROWS.Controllers
         private readonly ICUGetClientes _getClientes;
         private readonly ICULoginCliente _loginCliente;
         private readonly ICURegistrarClienteSinCuenta _registrarSinCuenta;
-
+        private readonly ICUObtenerClientePorId _obtenerClientePorId;
         public ClienteController(
             ICUAltaCliente altaCliente,
             ICUObtenerClientePorTelefono obtenerClientePorTelefono,
             ICUGetClientes getClientes,
             ICULoginCliente loginCliente,
-            ICURegistrarClienteSinCuenta registrarSinCuenta)
+            ICURegistrarClienteSinCuenta registrarSinCuenta,
+            ICUObtenerClientePorId obtenerClientePorId)
         {
             _altaCliente = altaCliente;
             _obtenerClientePorTelefono = obtenerClientePorTelefono;
             _getClientes = getClientes;
             _loginCliente = loginCliente;
             _registrarSinCuenta = registrarSinCuenta;
+            _obtenerClientePorId = obtenerClientePorId;
         }
         /// <summary>
         /// Registra un cliente que agenda una cita sin crear una cuenta.
@@ -119,6 +124,24 @@ namespace apiJMBROWS.Controllers
             if (cliente == null)
                 return Unauthorized(new { error = "Credenciales inválidas." });
             return Ok(cliente);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador")] // o AllowAnonymous si querés permitir acceso libre
+        [SwaggerOperation(Summary = "Obtiene un cliente por su ID")]
+        [SwaggerResponse(200, "Cliente encontrado", typeof(ClienteDTO))]
+        [SwaggerResponse(404, "Cliente no encontrado")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                var cliente = _obtenerClientePorId.Ejecutar(id);
+                return Ok(cliente);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
         }
     }
 }

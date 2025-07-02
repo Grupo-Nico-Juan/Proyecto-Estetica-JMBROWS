@@ -69,6 +69,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICULoginCliente, CULoginCliente>();
             builder.Services.AddScoped<ICUGetClientes, CUGetClientes>();
             builder.Services.AddScoped<ICURegistrarClienteSinCuenta, CURegistrarClienteSinCuenta>();
+            builder.Services.AddScoped<ICUObtenerClientePorId, CUObtenerClientePorId>();
 
             builder.Services.AddScoped<ICUModificarSucursal, CUModificarSucursal>();
             builder.Services.AddScoped<ICUAltaSucursal, CUAltaSucursal>();
