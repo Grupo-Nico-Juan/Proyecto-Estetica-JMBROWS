@@ -124,6 +124,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerTurnosPorEmpleada, CUObtenerTurnosPorEmpleada>();
             builder.Services.AddScoped<ICUObtenerTurnosDelDiaPorEmpleada, CUObtenerTurnosDelDiaPorEmpleada>();
             builder.Services.AddScoped<ICUObtenerHorariosDisponibles, CUObtenerHorariosDisponibles>();
+            builder.Services.AddScoped<ICUObtenerHorariosPorEmpleada, CUObtenerHorariosPorEmpleada>();
 
             builder.Services.AddScoped<ICUAltaDetalleTurno, CUAltaDetalleTurno>();
             builder.Services.AddScoped<ICUActualizarDetalleTurno, CUActualizarDetalleTurno>();
