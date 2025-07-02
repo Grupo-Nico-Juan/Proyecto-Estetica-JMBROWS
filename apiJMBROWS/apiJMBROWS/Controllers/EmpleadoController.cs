@@ -39,6 +39,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerEmpleadasDisponibles _obtenerDisponibles;
         private readonly ICUObtenerEmpleadoPorHabilidad _obtenerEmpleadoPorHabilidad;
         private readonly ICUObtenerTurnosDelDiaPorEmpleada _cuObtenerTurnosDelDia;
+        private readonly ICUObtenerEmpleadasPorSector _obtenerEmpleadasPorSector;
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
             ICUObtenerEmpleados obtenerEmpleados,
@@ -54,7 +55,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerSectoresDeEmpleado obtenerSectoresDeEmpleado,
             ICUObtenerEmpleadasDisponibles obtenerDisponibles,
             ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad,
-            ICUObtenerTurnosDelDiaPorEmpleada ObtenerTurnosDelDia)
+            ICUObtenerTurnosDelDiaPorEmpleada ObtenerTurnosDelDia,
+            ICUObtenerEmpleadasPorSector obtenerEmpleadasPorSector)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -71,6 +73,7 @@ namespace apiJMBROWS.Controllers
             _obtenerDisponibles = obtenerDisponibles;
             _obtenerEmpleadoPorHabilidad = obtenerEmpleadoPorHabilidad;
             _cuObtenerTurnosDelDia = ObtenerTurnosDelDia;
+            _obtenerEmpleadasPorSector = obtenerEmpleadasPorSector;
 
         }
 
@@ -348,6 +351,23 @@ namespace apiJMBROWS.Controllers
             {
                 var turnos = _cuObtenerTurnosDelDia.Ejecutar(empleadoId, DateTime.Today);
                 return Ok(turnos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("sector/{sectorId}/empleadas")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene las empleadas asignadas a un sector")]
+        [SwaggerResponse(200, "Lista de empleadas", typeof(IEnumerable<EmpleadoDTO>))]
+        public IActionResult GetEmpleadasPorSector(int sectorId)
+        {
+            try
+            {
+                var empleadas = _obtenerEmpleadasPorSector.Ejecutar(sectorId);
+                return Ok(empleadas);
             }
             catch (Exception ex)
             {
