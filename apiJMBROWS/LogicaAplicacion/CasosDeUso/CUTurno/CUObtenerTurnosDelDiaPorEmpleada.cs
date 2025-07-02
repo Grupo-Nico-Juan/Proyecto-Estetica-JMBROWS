@@ -1,6 +1,7 @@
 using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.InterfacesRepositorio;
+using LogicaNegocio.Entidades.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 ClienteId = t.ClienteId,
                 SucursalId = t.SucursalId,
                 SectorId = t.SectorId,
-                Realizado = t.Realizado,
+                Estado = t.Estado,
                 Detalles = t.Detalles.Select(d => new DetalleTurnoDTO
                 {
                     ServicioId = d.ServicioId,

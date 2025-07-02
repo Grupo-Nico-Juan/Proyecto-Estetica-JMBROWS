@@ -1,6 +1,7 @@
 using LogicaAplicacion.Dtos.ReportesDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaNegocio.InterfacesRepositorio;
+using LogicaNegocio.Entidades.Enums;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +23,7 @@ namespace LogicaAplicacion.CasosDeUso.CUReportes
             var servicios = _repoServicios.GetAll().ToDictionary(s => s.Id, s => s.Nombre);
             var conteo = new Dictionary<int, int>();
             var turnos = _repoTurnos.GetAll()
-                .Where(t => t.FechaHora.Year == anio && t.FechaHora.Month == mes && !t.Cancelado);
+                .Where(t => t.FechaHora.Year == anio && t.FechaHora.Month == mes && t.Estado != EstadoTurno.Cancelado);
 
             foreach (var t in turnos)
             {

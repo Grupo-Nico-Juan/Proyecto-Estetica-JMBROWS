@@ -1,6 +1,7 @@
 using LogicaAplicacion.Dtos.ReportesDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaNegocio.InterfacesRepositorio;
+using LogicaNegocio.Entidades.Enums;
 using System.Linq;
 
 namespace LogicaAplicacion.CasosDeUso.CUReportes
@@ -20,8 +21,8 @@ namespace LogicaAplicacion.CasosDeUso.CUReportes
                 .Where(t => t.FechaHora.Year == anio && t.FechaHora.Month == mes);
             return new EstadoTurnosDTO
             {
-                Realizados = turnos.Count(t => t.Realizado && !t.Cancelado),
-                Cancelados = turnos.Count(t => t.Cancelado)
+                Realizados = turnos.Count(t => t.Estado == EstadoTurno.Realizado),
+                Cancelados = turnos.Count(t => t.Estado == EstadoTurno.Cancelado)
             };
         }
     }

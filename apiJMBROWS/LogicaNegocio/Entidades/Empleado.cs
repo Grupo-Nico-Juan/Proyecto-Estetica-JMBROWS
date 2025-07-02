@@ -38,7 +38,7 @@ namespace LogicaNegocio.Entidades
         public bool EstaDisponible(DateTime inicio, DateTime fin)
         {
             // 1. Verificar solapamiento con otros turnos asignados (que no estén cancelados)
-            foreach (var turno in TurnosAsignados.Where(t => !t.Cancelado))
+            foreach (var turno in TurnosAsignados.Where(t => t.Estado != EstadoTurno.Cancelado))
             {
                 var turnoInicio = turno.FechaHora;
                 var turnoFin = turno.FechaHora.AddMinutes(turno.DuracionTotal());
