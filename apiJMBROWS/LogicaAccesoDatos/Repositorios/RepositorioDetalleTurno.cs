@@ -66,5 +66,6 @@ namespace LogicaAccesoDatos.Repositorios
                 .Where(d => d.TurnoId == id)
                 .ToList();
         }
+
     }
 }

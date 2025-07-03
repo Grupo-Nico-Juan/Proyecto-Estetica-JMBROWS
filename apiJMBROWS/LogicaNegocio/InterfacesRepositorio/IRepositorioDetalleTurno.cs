@@ -1,7 +1,7 @@
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaNegocio.Entidades;
 
-public interface IRepositorioDetalleTurno : IRepositorio<DetalleTurno>
+public interface IRepositorioDetalleTurno 
 {
     void Add(DetalleTurno detalle);
     void Update(int id, DetalleTurno detalle);
