@@ -28,6 +28,13 @@ namespace LogicaAccesoDatos.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Servicio>()
+             .Property(s => s.Precio)
+            .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ExtraServicio>()
+                .Property(e => e.Precio)
+                .HasPrecision(18, 2);
 
             // Herencia TPH para Usuario
             modelBuilder.Entity<Usuario>().HasKey(u => u.Id);

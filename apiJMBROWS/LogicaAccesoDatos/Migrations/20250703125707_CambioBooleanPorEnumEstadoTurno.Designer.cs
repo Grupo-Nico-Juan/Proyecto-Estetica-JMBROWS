@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(EsteticaContext))]
-    [Migration("20250701003639_AgregarSucursalAEmpleado3")]
-    partial class AgregarSucursalAEmpleado3
+    [Migration("20250703125707_CambioBooleanPorEnumEstadoTurno")]
+    partial class CambioBooleanPorEnumEstadoTurno
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -385,26 +385,33 @@ namespace LogicaAccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Cancelado")
-                        .HasColumnType("bit");
-
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
                     b.Property<int>("EmpleadaId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaHora")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Realizado")
-                        .HasColumnType("bit");
+                    b.Property<int?>("SectorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SucursalId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("EmpleadaId");
+
+                    b.HasIndex("SectorId");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Turnos");
                 });
@@ -509,7 +516,7 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SucursalId")
+                    b.Property<int?>("SucursalId")
                         .HasColumnType("int");
 
                     b.HasIndex("SucursalId");
@@ -669,9 +676,21 @@ namespace LogicaAccesoDatos.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LogicaNegocio.Entidades.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorId");
+
+                    b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
+                        .WithMany()
+                        .HasForeignKey("SucursalId");
+
                     b.Navigation("Cliente");
 
                     b.Navigation("Empleada");
+
+                    b.Navigation("Sector");
+
+                    b.Navigation("Sucursal");
                 });
 
             modelBuilder.Entity("SectorServicio", b =>
@@ -700,9 +719,7 @@ namespace LogicaAccesoDatos.Migrations
                 {
                     b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("SucursalId");
 
                     b.Navigation("Sucursal");
                 });
