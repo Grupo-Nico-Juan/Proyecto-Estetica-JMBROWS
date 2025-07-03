@@ -254,6 +254,7 @@ namespace apiJMBROWS.Controllers
         /// Obtiene las habilidades de un empleado.
         /// </summary>
         [HttpGet("{empleadoId}/habilidades")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene las habilidades de un empleado")]
         [SwaggerResponse(200, "Lista de habilidades", typeof(IEnumerable<HabilidadDTO>))]
         [SwaggerResponse(404, "Empleado no encontrado")]    
