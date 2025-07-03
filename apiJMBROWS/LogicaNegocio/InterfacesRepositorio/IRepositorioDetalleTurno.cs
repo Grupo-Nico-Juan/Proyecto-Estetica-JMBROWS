@@ -1,10 +1,12 @@
+using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaNegocio.Entidades;
 
-public interface IRepositorioDetalleTurno
+public interface IRepositorioDetalleTurno : IRepositorio<DetalleTurno>
 {
     void Add(DetalleTurno detalle);
     void Update(int id, DetalleTurno detalle);
     void Remove(int id);
     DetalleTurno GetById(int id);
     IEnumerable<DetalleTurno> GetAll();
+    IEnumerable<DetalleTurno> GetByTurnoId(int id);
 }

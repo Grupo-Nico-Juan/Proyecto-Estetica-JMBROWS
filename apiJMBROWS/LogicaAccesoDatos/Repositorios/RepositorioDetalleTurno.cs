@@ -58,5 +58,13 @@ namespace LogicaAccesoDatos.Repositorios
                 .AsNoTracking()
                 .ToList();
         }
+        public IEnumerable<DetalleTurno> GetByTurnoId(int id)
+        {
+            return _context.DetallesTurno
+                .Include(d => d.Extras)
+                .AsNoTracking()
+                .Where(d => d.TurnoId == id)
+                .ToList();
+        }
     }
 }

@@ -27,10 +27,7 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
 
         public List<EmpleadaDisponibleDTO> Ejecutar(ConsultaEmpleadasDisponiblesDTO dto)
         {
-            var servicios = dto.ServiciosSeleccionados
-                .Select(id => _repoServicios.GetById(id))
-                .Where(s => s != null)
-                .ToList();
+            var servicios = _repoServicios.ObtenerPorIds(dto.ServiciosSeleccionados);
 
             var habilidadesRequeridas = servicios
                 .SelectMany(s => s.Habilidades.Select(h => h.Id))

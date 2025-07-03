@@ -5,6 +5,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno
 {
     public interface ICUObtenerDetallesTurno
     {
-        IEnumerable<DetalleTurnoDTO> Ejecutar();
+        IEnumerable<DetalleTurnoDTO> Ejecutar(int turnoId);
     }
 }

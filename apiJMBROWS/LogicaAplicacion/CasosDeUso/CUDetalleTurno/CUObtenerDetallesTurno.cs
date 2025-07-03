@@ -14,9 +14,9 @@ namespace LogicaAplicacion.CasosDeUso.CUDetalleTurno
             _repo = repo;
         }
 
-        public IEnumerable<DetalleTurnoDTO> Ejecutar()
+        public IEnumerable<DetalleTurnoDTO> Ejecutar(int turnoId)
         {
-            return _repo.GetAll().Select(detalle => new DetalleTurnoDTO
+            return _repo.GetByTurnoId(turnoId).Select(detalle => new DetalleTurnoDTO
             {
                 Id = detalle.Id,
                 TurnoId = detalle.TurnoId,

@@ -101,7 +101,7 @@ namespace apiJMBROWS.Controllers
         {
             try
             {
-                var detalles = _obtenerDetallesTurno.Ejecutar().Where(d => d.TurnoId == id);
+                var detalles = _obtenerDetallesTurno.Ejecutar(id);
                 return Ok(detalles);
             }
             catch (Exception ex)
