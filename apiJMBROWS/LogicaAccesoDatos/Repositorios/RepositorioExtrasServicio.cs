@@ -36,6 +36,11 @@ namespace LogicaAccesoDatos.Repositorios
             return _context.ExtrasServicio.Where(e => e.ServicioId == servicioId).ToList();
         }
 
+        public List<ExtraServicio> ObtenerPorIds(IEnumerable<int> ids)
+        {
+            return _context.ExtrasServicio.Where(e => ids.Contains(e.Id)).ToList();
+        }
+
         public void Remove(int id)
         {
             var obj = _context.ExtrasServicio.Find(id);

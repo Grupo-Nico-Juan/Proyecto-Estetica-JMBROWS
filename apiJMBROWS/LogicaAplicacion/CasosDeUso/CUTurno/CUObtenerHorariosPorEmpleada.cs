@@ -14,14 +14,17 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
         private readonly IRepositorioTurnos _repoTurno;
         private readonly IRepositorioUsuarios _repoEmpleado;
         private readonly IRepositorioServicios _repoServicio;
+        private readonly IRepositorioExtrasServicio _repoExtras;
 
         public CUObtenerHorariosPorEmpleada(IRepositorioTurnos repoTurno,
                                              IRepositorioUsuarios repoEmpleado,
-                                             IRepositorioServicios repoServicio)
+                                             IRepositorioServicios repoServicio,
+                                             IRepositorioExtrasServicio repoExtras)
         {
             _repoTurno = repoTurno;
             _repoEmpleado = repoEmpleado;
             _repoServicio = repoServicio;
+            _repoExtras = repoExtras;
         }
 
         public List<HorarioDisponibleDTO> Ejecutar(HorariosPorEmpleadaFiltroDTO filtro)
@@ -31,7 +34,10 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 return new List<HorarioDisponibleDTO>();
 
             var servicios = _repoServicio.ObtenerPorIds(filtro.ServicioIds);
-            int duracionTotal = servicios.Sum(s => s.DuracionMinutos);
+            var extras = filtro.ExtraIds != null && filtro.ExtraIds.Any()
+                ? _repoExtras.ObtenerPorIds(filtro.ExtraIds)
+                : new List<ExtraServicio>();
+            int duracionTotal = servicios.Sum(s => s.DuracionMinutos) + extras.Sum(e => e.DuracionMinutos);
 
             var habilidadesNecesarias = servicios
                 .SelectMany(s => s.Habilidades)

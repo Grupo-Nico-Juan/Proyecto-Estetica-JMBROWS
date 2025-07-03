@@ -28,6 +28,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUEliminarDetalleTurno _eliminarDetalleTurno;
         private readonly ICUObtenerHorariosDisponibles _horariosDisponibles;
         private readonly ICUObtenerHorariosPorEmpleada _horariosPorEmpleada;
+        private readonly ICUObtenerHorariosOcupados _horariosOcupados;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -42,7 +43,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerDetalleTurnoPorId obtenerDetalleTurnoPorId,
             ICUEliminarDetalleTurno eliminarDetalleTurno,
             ICUObtenerHorariosDisponibles horariosDisponibles,
-            ICUObtenerHorariosPorEmpleada horariosPorEmpleada
+            ICUObtenerHorariosPorEmpleada horariosPorEmpleada,
+            ICUObtenerHorariosOcupados horariosOcupados
             )
         {
             _altaTurno = altaTurno;
@@ -59,6 +61,7 @@ namespace apiJMBROWS.Controllers
             _eliminarDetalleTurno = eliminarDetalleTurno;
             _horariosDisponibles = horariosDisponibles;
             _horariosPorEmpleada = horariosPorEmpleada;
+            _horariosOcupados = horariosOcupados;
         }
 
         /// <summary>
@@ -303,6 +306,28 @@ namespace apiJMBROWS.Controllers
                     return BadRequest("Debe seleccionar al menos un servicio.");
 
                 var horarios = _horariosPorEmpleada.Ejecutar(filtro);
+                return Ok(horarios);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener horarios: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Obtiene las franjas horarias sin disponibilidad
+        /// </summary>
+        [HttpPost("horarios-ocupados")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Horarios sin disponibilidad para la fecha seleccionada")]
+        public ActionResult<List<HorarioOcupadoDTO>> ObtenerHorariosOcupados([FromBody] HorariosDisponiblesFiltroDTO filtro)
+        {
+            try
+            {
+                if (filtro.ServicioIds == null || !filtro.ServicioIds.Any())
+                    return BadRequest("Debe seleccionar al menos un servicio.");
+
+                var horarios = _horariosOcupados.Ejecutar(filtro);
                 return Ok(horarios);
             }
             catch (Exception ex)
