@@ -1,4 +1,4 @@
-﻿using LogicaNegocio.Entidades;
+﻿    using LogicaNegocio.Entidades;
 using System.ComponentModel.DataAnnotations;
 
 public class Servicio
