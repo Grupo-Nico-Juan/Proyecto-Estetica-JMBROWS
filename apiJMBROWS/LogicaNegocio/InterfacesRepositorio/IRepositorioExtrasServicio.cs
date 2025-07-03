@@ -6,5 +6,6 @@ namespace LogicaNegocio.InterfacesRepositorio
     public interface IRepositorioExtrasServicio : IRepositorio<ExtraServicio>
     {
         IEnumerable<ExtraServicio> ObtenerPorServicio(int servicioId);
+        List<ExtraServicio> ObtenerPorIds(IEnumerable<int> ids);
     }
 }

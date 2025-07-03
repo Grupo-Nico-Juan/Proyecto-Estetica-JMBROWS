@@ -1,7 +1,7 @@
-﻿using LogicaAplicacion.Dtos.TurnoDTO;
+using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
-using LogicaNegocio.Entidades.Enums;
 using LogicaNegocio.Entidades;
+using LogicaNegocio.Entidades.Enums;
 using LogicaNegocio.InterfacesRepositorio;
 using System;
 using System.Collections.Generic;
@@ -9,17 +9,17 @@ using System.Linq;
 
 namespace LogicaAplicacion.CasosDeUso.CUTurno
 {
-    public class CUObtenerHorariosDisponibles : ICUObtenerHorariosDisponibles
+    public class CUObtenerHorariosOcupados : ICUObtenerHorariosOcupados
     {
         private readonly IRepositorioTurnos _repoTurno;
         private readonly IRepositorioUsuarios _repoEmpleado;
         private readonly IRepositorioServicios _repoServicio;
         private readonly IRepositorioExtrasServicio _repoExtras;
 
-        public CUObtenerHorariosDisponibles(IRepositorioTurnos repoTurno,
-                                       IRepositorioUsuarios repoEmpleado,
-                                       IRepositorioServicios repoServicio,
-                                       IRepositorioExtrasServicio repoExtras)
+        public CUObtenerHorariosOcupados(IRepositorioTurnos repoTurno,
+                                         IRepositorioUsuarios repoEmpleado,
+                                         IRepositorioServicios repoServicio,
+                                         IRepositorioExtrasServicio repoExtras)
         {
             _repoTurno = repoTurno;
             _repoEmpleado = repoEmpleado;
@@ -27,35 +27,31 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             _repoExtras = repoExtras;
         }
 
-        public List<HorarioDisponibleDTO> Ejecutar(HorariosDisponiblesFiltroDTO filtro)
+        public List<HorarioOcupadoDTO> Ejecutar(HorariosDisponiblesFiltroDTO filtro)
         {
-            // 1. Obtener los servicios y calcular duración total
             var servicios = _repoServicio.ObtenerPorIds(filtro.ServicioIds);
             var extras = filtro.ExtraIds != null && filtro.ExtraIds.Any()
                 ? _repoExtras.ObtenerPorIds(filtro.ExtraIds)
                 : new List<ExtraServicio>();
-
             int duracionTotal = servicios.Sum(s => s.DuracionMinutos) + extras.Sum(e => e.DuracionMinutos);
 
-            // 2. Determinar habilidades necesarias
             var habilidadesNecesarias = servicios
                 .SelectMany(s => s.Habilidades)
                 .Select(h => h.Id)
                 .Distinct()
                 .ToList();
 
-            // 3. Obtener empleadas de la sucursal con todas las habilidades necesarias
             var empleadas = _repoEmpleado.GetEmpleados()
                 .Where(e =>
                     e.SectoresAsignados.Any(s => s.SucursalId == filtro.SucursalId) &&
                     habilidadesNecesarias.All(h => e.Habilidades.Any(eh => eh.Id == h)))
                 .ToList();
 
-            var horarios = new List<HorarioDisponibleDTO>();
+            var todosBloques = new HashSet<(DateTime inicio, DateTime fin)>();
+            var disponibles = new HashSet<(DateTime inicio, DateTime fin)>();
 
             foreach (var empleada in empleadas)
             {
-                // 4. Filtrar periodos laborales tipo HorarioHabitual para el día seleccionado
                 var periodos = empleada.PeriodosLaborales
                     .Where(p =>
                         p.Tipo == TipoPeriodoLaboral.HorarioHabitual &&
@@ -64,55 +60,37 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                         p.HoraFin.HasValue)
                     .ToList();
 
-                // 5. Obtener turnos tomados de la empleada en esa fecha
                 var turnos = _repoTurno.ObtenerTurnosDelDiaPorEmpleada(empleada.Id, filtro.Fecha);
 
                 foreach (var p in periodos)
                 {
                     var bloques = GenerarBloques(p.HoraInicio.Value, p.HoraFin.Value, filtro.Fecha, duracionTotal);
 
-                    foreach (var bloque in bloques)
+                    foreach (var b in bloques)
                     {
-                        // 6. Verificar disponibilidad
-                        bool ocupado = turnos.Any(t =>
-                            bloque.inicio < t.FechaHora.AddMinutes(t.DuracionTotal()) &&
-                            bloque.fin > t.FechaHora);
-
+                        todosBloques.Add(b);
+                        bool ocupado = turnos.Any(t => b.inicio < t.FechaHora.AddMinutes(t.DuracionTotal()) && b.fin > t.FechaHora);
                         bool enLicencia = empleada.PeriodosLaborales.Any(l =>
                             l.Tipo == TipoPeriodoLaboral.Licencia &&
-                            l.Desde <= bloque.inicio &&
-                            l.Hasta >= bloque.fin);
-
+                            l.Desde <= b.inicio &&
+                            l.Hasta >= b.fin);
                         if (!ocupado && !enLicencia)
                         {
-                            var existente = horarios.FirstOrDefault(h =>
-                                h.FechaHoraInicio == bloque.inicio && h.FechaHoraFin == bloque.fin);
-
-                            if (existente == null)
-                            {
-                                existente = new HorarioDisponibleDTO
-                                {
-                                    FechaHoraInicio = bloque.inicio,
-                                    FechaHoraFin = bloque.fin,
-                                    EmpleadasDisponibles = new List<EmpleadoTurnoDTO>()
-                                };
-                                horarios.Add(existente);
-                            }
-
-                            existente.EmpleadasDisponibles.Add(new EmpleadoTurnoDTO
-                            {
-                                Id = empleada.Id,
-                                Nombre = empleada.Nombre,
-                                Apellido = empleada.Apellido,
-                                Email = empleada.Email,
-                                Cargo = empleada.Cargo
-                            });
+                            disponibles.Add(b);
                         }
                     }
                 }
             }
 
-            return horarios;
+            var ocupados = todosBloques.Except(disponibles)
+                .Select(b => new HorarioOcupadoDTO
+                {
+                    FechaHoraInicio = b.inicio,
+                    FechaHoraFin = b.fin
+                })
+                .ToList();
+
+            return ocupados;
         }
 
         private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
