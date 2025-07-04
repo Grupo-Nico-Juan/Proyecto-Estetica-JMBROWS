@@ -2,6 +2,7 @@
 using LogicaAplicacion.CasosDeUso.CUTurno;
 using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerHorariosDisponibles _horariosDisponibles;
         private readonly ICUObtenerHorariosPorEmpleada _horariosPorEmpleada;
         private readonly ICUObtenerHorariosOcupados _horariosOcupados;
+        private readonly ICUMarcarTurnoComoRealizado _marcarTurnoComoRealizado;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -44,7 +46,8 @@ namespace apiJMBROWS.Controllers
             ICUEliminarDetalleTurno eliminarDetalleTurno,
             ICUObtenerHorariosDisponibles horariosDisponibles,
             ICUObtenerHorariosPorEmpleada horariosPorEmpleada,
-            ICUObtenerHorariosOcupados horariosOcupados
+            ICUObtenerHorariosOcupados horariosOcupados,
+            ICUMarcarTurnoComoRealizado marcarTurnoComoRealizado
             )
         {
             _altaTurno = altaTurno;
@@ -62,6 +65,7 @@ namespace apiJMBROWS.Controllers
             _horariosDisponibles = horariosDisponibles;
             _horariosPorEmpleada = horariosPorEmpleada;
             _horariosOcupados = horariosOcupados;
+            _marcarTurnoComoRealizado = marcarTurnoComoRealizado;
         }
 
         /// <summary>
@@ -335,5 +339,26 @@ namespace apiJMBROWS.Controllers
                 return StatusCode(500, $"Error al obtener horarios: {ex.Message}");
             }
         }
+
+
+        [HttpPut("{id}/marcar-realizado")]
+        [Authorize(Roles = "Administrador,Empleado")] // o como prefieras
+        [SwaggerOperation(Summary = "Marca un turno como realizado")]
+        [SwaggerResponse(200, "Turno marcado como realizado")]
+        [SwaggerResponse(404, "Turno no encontrado")]
+        public IActionResult MarcarRealizado(int id)
+        {
+            try
+            {
+                _marcarTurnoComoRealizado.Ejecutar(id);
+                return Ok("Turno marcado como realizado.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
     }
+
 }
