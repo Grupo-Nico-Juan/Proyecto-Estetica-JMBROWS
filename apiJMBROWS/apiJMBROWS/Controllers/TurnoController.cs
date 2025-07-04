@@ -342,7 +342,7 @@ namespace apiJMBROWS.Controllers
 
 
         [HttpPut("{id}/marcar-realizado")]
-        [Authorize(Roles = "Administrador,Empleado")] // o como prefieras
+        [Authorize(Roles = "Administrador,Empleado")] 
         [SwaggerOperation(Summary = "Marca un turno como realizado")]
         [SwaggerResponse(200, "Turno marcado como realizado")]
         [SwaggerResponse(404, "Turno no encontrado")]
