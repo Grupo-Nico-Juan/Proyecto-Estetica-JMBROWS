@@ -4,6 +4,8 @@ using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Collections.Generic;
 
 namespace apiJMBROWS.Controllers
 {
@@ -16,17 +18,20 @@ namespace apiJMBROWS.Controllers
         private readonly ICUAltaPeriodoLaboral _altaPeriodoLaboral;
         private readonly ICUModificarPeriodoLaboral _modificarPeriodoLaboral;
         private readonly ICUEliminarPeriodoLaboral _eliminarPeriodoLaboral;
+        private readonly ICUObtenerPeriodosLaboralesPorSucursal _obtenerPeriodosPorSucursal;
 
         public PeriodoLaboralController(
             ICUObtenerPeriodosLaboralesPorEmpleada obtenerPeriodosPorEmpleada,
             ICUAltaPeriodoLaboral altaPeriodoLaboral,
             ICUModificarPeriodoLaboral modificarPeriodoLaboral,
-            ICUEliminarPeriodoLaboral eliminarPeriodoLaboral)
+            ICUEliminarPeriodoLaboral eliminarPeriodoLaboral,
+            ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal)
         {
             _obtenerPeriodosPorEmpleada = obtenerPeriodosPorEmpleada;
             _altaPeriodoLaboral = altaPeriodoLaboral;
             _modificarPeriodoLaboral = modificarPeriodoLaboral;
             _eliminarPeriodoLaboral = eliminarPeriodoLaboral;
+            _obtenerPeriodosPorSucursal = obtenerPeriodosPorSucursal;
         }
 
         /// <summary>
@@ -45,6 +50,29 @@ namespace apiJMBROWS.Controllers
                 var periodos = _obtenerPeriodosPorEmpleada.Ejecutar(empleadaId);
                 if (periodos == null || !periodos.Any())
                     return NotFound(new { error = "No se encontraron periodos laborales para la empleada." });
+
+                return Ok(periodos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene los periodos HorarioHabitual de las empleadas de una sucursal agrupados por día.
+        /// </summary>
+        [HttpGet("sucursal/{sucursalId}")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene periodos laborales por sucursal")]
+        [SwaggerResponse(200, "Periodos agrupados por día", typeof(Dictionary<DayOfWeek, List<PeriodoLaboralDTO>>))]
+        public IActionResult GetPorSucursal(int sucursalId)
+        {
+            try
+            {
+                var periodos = _obtenerPeriodosPorSucursal.Ejecutar(sucursalId);
+                if (periodos == null || periodos.Count == 0)
+                    return NotFound(new { error = "No se encontraron periodos laborales para la sucursal." });
 
                 return Ok(periodos);
             }
