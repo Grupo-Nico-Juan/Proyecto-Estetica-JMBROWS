@@ -326,27 +326,6 @@ namespace apiJMBROWS.Controllers
 
 
         /// <summary>
-        /// Obtiene los sectores de un servicio.
-        /// </summary>
-        [HttpGet("{servicioId}/sectores")]
-        [AllowAnonymous]
-        [SwaggerOperation(Summary = "Obtiene los sectores de un servicio")]
-        [SwaggerResponse(200, "Lista de sectores", typeof(IEnumerable<SectorDTSSuc>))]
-        [SwaggerResponse(404, "Servicio no encontrado")]
-        public IActionResult GetSectores(int servicioId)
-        {
-            try
-            {
-                var result = _obtenerSectoresServicio.Ejecutar(servicioId);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return NotFound(new { error = e.Message });
-            }
-        }
-
-        /// <summary>
         /// Obtiene los extras asociados a un servicio.
         /// </summary>
         [HttpGet("{servicioId}/extras")]
