@@ -112,7 +112,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 }
             }
 
-            return horarios;
+            return horarios.OrderBy(h => h.FechaHoraInicio).ToList(); ;
         }
 
         private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
