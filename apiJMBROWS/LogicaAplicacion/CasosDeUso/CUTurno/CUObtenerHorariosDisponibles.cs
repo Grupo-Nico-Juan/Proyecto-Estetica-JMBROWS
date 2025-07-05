@@ -124,7 +124,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             while (actual.AddMinutes(duracionMinutos) <= fin)
             {
                 bloques.Add((actual, actual.AddMinutes(duracionMinutos)));
-                actual = actual.AddMinutes(15);
+                actual = actual.AddMinutes(duracionMinutos);
             }
 
             return bloques;
