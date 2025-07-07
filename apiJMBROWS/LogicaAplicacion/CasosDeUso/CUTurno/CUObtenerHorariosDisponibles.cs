@@ -112,7 +112,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 }
             }
 
-            return horarios;
+            return horarios.OrderBy(h => h.FechaHoraInicio).ToList(); ;
         }
 
         private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
@@ -124,7 +124,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             while (actual.AddMinutes(duracionMinutos) <= fin)
             {
                 bloques.Add((actual, actual.AddMinutes(duracionMinutos)));
-                actual = actual.AddMinutes(15);
+                actual = actual.AddMinutes(duracionMinutos);
             }
 
             return bloques;
