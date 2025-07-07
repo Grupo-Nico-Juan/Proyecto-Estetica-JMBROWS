@@ -18,6 +18,7 @@ namespace LogicaNegocio.InterfacesRepositorio
         List<Habilidad> ObtenerHabilidadesDeServicio(int servicioId);
         List<Sector> ObtenerSectoresDeServicio(int servicioId);
         List<Servicio> ObtenerPorIds(IEnumerable<int> ids);
+        List<Servicio> GetServiciosPorSector(int sectorId);
     }
 
 }

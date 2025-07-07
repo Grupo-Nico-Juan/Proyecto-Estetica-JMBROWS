@@ -154,6 +154,17 @@ namespace LogicaAccesoDatos.EF
                 .Where(s => ids.Contains(s.Id))
                 .ToList();
         }
+
+        public List<Servicio> GetServiciosPorSector(int sectorId)
+        {
+            return _context.Servicios
+            .Include(s => s.Sectores)
+            .Include(s => s.Habilidades)
+            .Where(s => s.Sectores.Any(sector => sector.Id == sectorId))
+            .ToList();
+        }
+
+
     }
 
 }

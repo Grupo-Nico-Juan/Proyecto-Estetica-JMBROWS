@@ -32,6 +32,8 @@ namespace apiJMBROWS.Controllers
         private readonly ICUEliminarExtraServicio _eliminarExtra;
         private readonly ICUObtenerExtrasDeServicio _obtenerExtras;
         private readonly ICUObtenerExtraServicioPorId _obtenerExtraPorId;
+        private readonly ICUObtenerServiciosDisponiblesPorSectorYEmpleada _obtenerServiciosPorSectorYEmpleada;
+        
         public ServicioController(
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
@@ -49,7 +51,8 @@ namespace apiJMBROWS.Controllers
             ICUActualizarExtraServicio actualizarExtra,
             ICUEliminarExtraServicio eliminarExtra,
             ICUObtenerExtrasDeServicio obtenerExtras,
-            ICUObtenerExtraServicioPorId obtenerExtraPorId)
+            ICUObtenerExtraServicioPorId obtenerExtraPorId,
+            ICUObtenerServiciosDisponiblesPorSectorYEmpleada obtenerServiciosPorSectorYEmpleada)
         {
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
@@ -68,6 +71,7 @@ namespace apiJMBROWS.Controllers
             _eliminarExtra = eliminarExtra;
             _obtenerExtras = obtenerExtras;
             _obtenerExtraPorId = obtenerExtraPorId;
+            _obtenerServiciosPorSectorYEmpleada = obtenerServiciosPorSectorYEmpleada;
         }
 
         /// <summary>
@@ -396,6 +400,18 @@ namespace apiJMBROWS.Controllers
         }
 
 
-
+        [HttpPost("disponibles")]
+        public IActionResult GetServiciosDisponibles([FromBody] FiltroServiciosDTO filtro)
+        {
+            try
+            {
+                var servicios = _obtenerServiciosPorSectorYEmpleada.Ejecutar(filtro);
+                return Ok(servicios);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }
