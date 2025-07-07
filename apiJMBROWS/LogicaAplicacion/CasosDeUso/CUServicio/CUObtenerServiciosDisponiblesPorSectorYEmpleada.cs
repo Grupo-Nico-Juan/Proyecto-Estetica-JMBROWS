@@ -24,7 +24,7 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
 
         public IEnumerable<ServicioDTO> Ejecutar(FiltroServiciosDTO filtro)
         {
-            var empleado = _repoUsuarios.GetById(filtro.EmpleadaId) as Empleado;
+            var empleado = _repoUsuarios.GetEmpleadoById(filtro.EmpleadaId) as Empleado;
 
             if (empleado == null)
                 throw new Exception("Empleado no encontrado o no es un empleado válido.");
