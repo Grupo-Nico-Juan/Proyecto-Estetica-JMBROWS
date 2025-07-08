@@ -19,19 +19,22 @@ namespace apiJMBROWS.Controllers
         private readonly ICUModificarPeriodoLaboral _modificarPeriodoLaboral;
         private readonly ICUEliminarPeriodoLaboral _eliminarPeriodoLaboral;
         private readonly ICUObtenerPeriodosLaboralesPorSucursal _obtenerPeriodosPorSucursal;
+        private readonly ICUObtenerPeriodoPorId _obtenerPeriodoPorId;
 
         public PeriodoLaboralController(
             ICUObtenerPeriodosLaboralesPorEmpleada obtenerPeriodosPorEmpleada,
             ICUAltaPeriodoLaboral altaPeriodoLaboral,
             ICUModificarPeriodoLaboral modificarPeriodoLaboral,
             ICUEliminarPeriodoLaboral eliminarPeriodoLaboral,
-            ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal)
+            ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal,
+            ICUObtenerPeriodoPorId obtenerPeriodoPorId)
         {
             _obtenerPeriodosPorEmpleada = obtenerPeriodosPorEmpleada;
             _altaPeriodoLaboral = altaPeriodoLaboral;
             _modificarPeriodoLaboral = modificarPeriodoLaboral;
             _eliminarPeriodoLaboral = eliminarPeriodoLaboral;
             _obtenerPeriodosPorSucursal = obtenerPeriodosPorSucursal;
+            _obtenerPeriodoPorId = obtenerPeriodoPorId;
         }
 
         /// <summary>
@@ -95,9 +98,8 @@ namespace apiJMBROWS.Controllers
             try
             {
 
-                var periodo = _obtenerPeriodosPorEmpleada
-                    .Ejecutar(id) 
-                    .FirstOrDefault(p => p.Id == id);
+                var periodo = _obtenerPeriodoPorId
+                    .Ejecutar(id);
 
                 if (periodo == null)
                     return NotFound(new { error = "No se encontró el periodo laboral." });
