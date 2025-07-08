@@ -83,6 +83,34 @@ namespace apiJMBROWS.Controllers
         }
 
         /// <summary>
+        /// Obtiene un periodo laboral por su ID.
+        /// </summary>
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador")] // o [AllowAnonymous] si querés que sea público
+        [SwaggerOperation(Summary = "Obtiene un periodo laboral por su ID")]
+        [SwaggerResponse(200, "Periodo laboral encontrado", typeof(PeriodoLaboralDTO))]
+        [SwaggerResponse(404, "Periodo laboral no encontrado")]
+        public IActionResult GetPorId(int id)
+        {
+            try
+            {
+
+                var periodo = _obtenerPeriodosPorEmpleada
+                    .Ejecutar(id) 
+                    .FirstOrDefault(p => p.Id == id);
+
+                if (periodo == null)
+                    return NotFound(new { error = "No se encontró el periodo laboral." });
+
+                return Ok(periodo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Crea un nuevo periodo laboral para una empleada.
         /// </summary>
         [HttpPost]

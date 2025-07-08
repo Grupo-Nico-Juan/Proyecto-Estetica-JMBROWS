@@ -138,6 +138,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerDetallesTurno, CUObtenerDetallesTurno>();
 
             builder.Services.AddScoped<ICUObtenerPeriodosLaboralesPorEmpleada, CUObtenerPeriodosLaboralesPorEmpleada>();
+            builder.Services.AddScoped<ICUObtenerPeriodoPorId, CUObtenerPeriodoPorId>();
             builder.Services.AddScoped<ICUAltaPeriodoLaboral, CUAltaPeriodoLaboral>();
             builder.Services.AddScoped<ICUModificarPeriodoLaboral, CUModificarPeriodoLaboral>();
             builder.Services.AddScoped<ICUEliminarPeriodoLaboral, CUEliminarPeriodoLaboral>();
