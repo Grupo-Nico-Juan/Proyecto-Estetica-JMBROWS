@@ -1,6 +1,8 @@
 ﻿using Libreria.LogicaNegocio.Excepciones;
 using LogicaNegocio.Entidades;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Libreria.LogicaNegocio.Entidades
@@ -15,6 +17,8 @@ namespace Libreria.LogicaNegocio.Entidades
         [MinLength(6)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.,;!?])[A-Za-z\d.,;!?]+$", ErrorMessage = "Debe tener mayúsculas, minúsculas, dígitos y puntuación.")]
         public required string Password { get; set; }
+        [JsonIgnore]
+        [NotMapped]
         public string PasswordPlano { get; set; }
         public override void EsValido()
         {

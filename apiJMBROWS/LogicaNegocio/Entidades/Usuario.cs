@@ -16,8 +16,6 @@ namespace LogicaNegocio.Entidades
         public required string Nombre { get; set; }
         [Required]
         public required string Apellido { get; set; }
-        [JsonIgnore]
-        [NotMapped]
 
         public abstract string Rol { get; }
 
