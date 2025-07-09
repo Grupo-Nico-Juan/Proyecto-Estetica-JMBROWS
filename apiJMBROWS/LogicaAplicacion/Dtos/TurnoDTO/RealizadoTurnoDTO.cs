@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaAplicacion.Dtos.EmpleadoDTO
+namespace LogicaAplicacion.Dtos.TurnoDTO
 {
-    internal class EmpleadoSimpleDTO
+    public class RealizadoTurnoDTO
     {
+        public string Pin { get; set; }
     }
 }

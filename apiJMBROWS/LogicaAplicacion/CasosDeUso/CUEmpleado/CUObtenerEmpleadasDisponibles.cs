@@ -68,7 +68,8 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
                     {
                         Id = emp.Id,
                         NombreCompleto = $"{emp.Nombre} {emp.Apellido}",
-                        ServiciosQuePuedeRealizar = servicios.Select(s => s.Id).ToList()
+                        ServiciosQuePuedeRealizar = servicios.Select(s => s.Id).ToList(),
+                        Color = emp.Color
                     });
                 }
             }

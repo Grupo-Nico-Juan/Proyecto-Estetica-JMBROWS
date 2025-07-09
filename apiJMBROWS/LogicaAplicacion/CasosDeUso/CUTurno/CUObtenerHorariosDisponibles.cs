@@ -104,7 +104,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                                 Id = empleada.Id,
                                 Nombre = empleada.Nombre,
                                 Apellido = empleada.Apellido,
-                                Email = empleada.Email,
+                                Color = empleada.Color,
                                 Cargo = empleada.Cargo
                             });
                         }

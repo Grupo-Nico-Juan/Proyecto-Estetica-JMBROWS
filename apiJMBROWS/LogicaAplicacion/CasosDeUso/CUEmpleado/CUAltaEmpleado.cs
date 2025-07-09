@@ -20,9 +20,7 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
             {
                 Nombre = dto.Nombre,
                 Apellido = dto.Apellido,
-                Email = dto.Email,
-                PasswordPlano = dto.PasswordPlano,
-                Password = HashPassword(dto.PasswordPlano), // Fix: Set the required 'Password' property
+                Color = dto.Color,
                 Cargo = dto.Cargo,
                 SucursalId = dto.SucursalId
             };

@@ -40,11 +40,11 @@ namespace apiJMBROWS.Controllers
 
             try
             {
-                var usuario = _login.LoginUsuario(dto);
+                var admin = _login.LoginUsuario(dto);
 
                 var token = ManejadorJwt.GenerarToken(
-                    usuario.Email,
-                    usuario.Rol,
+                    admin.Email,
+                    admin.Rol,
                     _config["Jwt:Key"],
                     _config["Jwt:Issuer"],
                     _config["Jwt:Audience"]
@@ -53,8 +53,8 @@ namespace apiJMBROWS.Controllers
                 return Ok(new
                 {
                     token,
-                    email = usuario.Email,
-                    rol = usuario.Rol,
+                    email = admin.Email,
+                    rol = admin.Rol,
                     expires = DateTime.UtcNow.AddHours(2)
                 });
             }

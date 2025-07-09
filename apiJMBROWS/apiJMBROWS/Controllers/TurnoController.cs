@@ -4,6 +4,7 @@ using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaNegocio.Entidades.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -31,6 +32,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerHorariosPorEmpleada _horariosPorEmpleada;
         private readonly ICUObtenerHorariosOcupados _horariosOcupados;
         private readonly ICUMarcarTurnoComoRealizado _marcarTurnoComoRealizado;
+        private readonly ICUObtenerTurnosFiltrados _obtenerTurnosFiltrados;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -47,7 +49,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerHorariosDisponibles horariosDisponibles,
             ICUObtenerHorariosPorEmpleada horariosPorEmpleada,
             ICUObtenerHorariosOcupados horariosOcupados,
-            ICUMarcarTurnoComoRealizado marcarTurnoComoRealizado
+            ICUMarcarTurnoComoRealizado marcarTurnoComoRealizado,
+            ICUObtenerTurnosFiltrados obtenerTurnosFiltrados
             )
         {
             _altaTurno = altaTurno;
@@ -66,6 +69,7 @@ namespace apiJMBROWS.Controllers
             _horariosPorEmpleada = horariosPorEmpleada;
             _horariosOcupados = horariosOcupados;
             _marcarTurnoComoRealizado = marcarTurnoComoRealizado;
+            _obtenerTurnosFiltrados = obtenerTurnosFiltrados;
         }
 
         /// <summary>
@@ -78,6 +82,21 @@ namespace apiJMBROWS.Controllers
         public IActionResult GetAll()
         {
             var turnos = _obtenerTurnos.Ejecutar();
+            return Ok(turnos);
+        }
+
+        [HttpGet("filtrar")]
+        [AllowAnonymous]
+        [SwaggerOperation(Summary = "Obtiene turnos con filtros opcionales")]
+        public IActionResult Filtrar([FromQuery] int? empleadaId, [FromQuery] int? sectorId, [FromQuery] EstadoTurno? estado)
+        {
+            var filtro = new TurnoFiltroDTO
+            {
+                EmpleadaId = empleadaId,
+                SectorId = sectorId,
+                Estado = estado
+            };
+            var turnos = _obtenerTurnosFiltrados.Ejecutar(filtro);
             return Ok(turnos);
         }
 
@@ -343,14 +362,14 @@ namespace apiJMBROWS.Controllers
 
         [HttpPut("{id}/marcar-realizado")]
         [Authorize(Roles = "Administrador,Empleado")] 
-        [SwaggerOperation(Summary = "Marca un turno como realizado")]
+        [SwaggerOperation(Summary = "Marca un turno como realizado mediante PIN")]
         [SwaggerResponse(200, "Turno marcado como realizado")]
         [SwaggerResponse(404, "Turno no encontrado")]
-        public IActionResult MarcarRealizado(int id)
+        public IActionResult MarcarRealizado(int id, [FromBody] RealizadoTurnoDTO dto)
         {
             try
             {
-                _marcarTurnoComoRealizado.Ejecutar(id);
+                _marcarTurnoComoRealizado.Ejecutar(id, dto.Pin);
                 return Ok("Turno marcado como realizado.");
             }
             catch (Exception ex)

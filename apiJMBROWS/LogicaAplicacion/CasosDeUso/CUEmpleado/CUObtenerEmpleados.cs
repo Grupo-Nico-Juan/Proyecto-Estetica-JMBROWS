@@ -22,7 +22,7 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
                 Id = e.Id,
                 Nombre = e.Nombre,
                 Apellido = e.Apellido,
-                Email = e.Email,
+                Color = e.Color,
                 Cargo = e.Cargo,
                 SucursalId = e.SucursalId
             });

@@ -22,7 +22,7 @@ namespace LogicaAplicacion.CasosDeUso.CUEmpleado
 
             empleado.Nombre = dto.Nombre;
             empleado.Apellido = dto.Apellido;
-            empleado.Email = dto.Email;
+            empleado.Color = dto.Color;
             empleado.Cargo = dto.Cargo;
             empleado.SucursalId = dto.SucursalId;
             empleado.EsValidoEmpleado();

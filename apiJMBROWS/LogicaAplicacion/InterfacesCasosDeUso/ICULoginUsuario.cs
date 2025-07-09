@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.Dtos.DtoUsuario;
+﻿using Libreria.LogicaNegocio.Entidades;
+using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaNegocio.Entidades;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace LogicaAplicacion.InterfacesCasosDeUso
 {
     public interface ICULoginUsuario
     {
-        Usuario LoginUsuario(LoginDTO dto);
+        Administrador LoginUsuario(LoginDTO dto);
     }
 
 }
