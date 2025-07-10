@@ -39,11 +39,14 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             return turnos.Select(t => new TurnoCalendarioDTO
             {
                 Id = t.Id,
+                SucursalId = t.SucursalId,
+
                 FechaHoraInicio = t.FechaHora,
                 FechaHoraFin = t.FechaHora.AddMinutes(t.DuracionTotal()),
 
                 EmpleadaNombre = $"{t.Empleada.Nombre} {t.Empleada.Apellido}",
                 EmpleadaColor = t.Empleada.Color,
+                EmpleadaId = t.EmpleadaId,
 
                 ClienteNombre = t.Cliente.Nombre,
                 ClienteApellido = t.Cliente.Apellido,

@@ -31,7 +31,7 @@ namespace LogicaNegocio.Entidades
         [JsonIgnore]
         public Cliente? Cliente { get; set; }
         // Sucursal en la que se realiza el turno
-        public int? SucursalId { get; set; }
+        public int SucursalId { get; set; }
         [JsonIgnore]
         public Sucursal? Sucursal { get; set; }
 
