@@ -88,17 +88,28 @@ namespace apiJMBROWS.Controllers
         [HttpGet("filtrar")]
         [AllowAnonymous]
         [SwaggerOperation(Summary = "Obtiene turnos con filtros opcionales")]
-        public IActionResult Filtrar([FromQuery] int? empleadaId, [FromQuery] int? sectorId, [FromQuery] EstadoTurno? estado)
+        [SwaggerResponse(200, "Lista de turnos filtrados para el calendario", typeof(List<TurnoCalendarioDTO>))]
+        public IActionResult Filtrar(
+            [FromQuery] int? empleadaId,
+            [FromQuery] int? sectorId,
+            [FromQuery] EstadoTurno? estado,
+            [FromQuery] DateTime? fechaInicio,
+            [FromQuery] DateTime? fechaFin
+        )
         {
             var filtro = new TurnoFiltroDTO
             {
                 EmpleadaId = empleadaId,
                 SectorId = sectorId,
-                Estado = estado
+                Estado = estado,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin
             };
+
             var turnos = _obtenerTurnosFiltrados.Ejecutar(filtro);
             return Ok(turnos);
         }
+
 
         [HttpPost("{id}/agregar-detalle")]
         [Authorize(Roles = "Administrador")]

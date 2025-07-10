@@ -32,12 +32,16 @@ namespace LogicaAccesoDatos.EF
         public IEnumerable<Turno> GetAll()
         {
             return _context.Turnos
-                           .Include(t => t.Detalles)
-                               .ThenInclude(d => d.Extras)
-                           .Include(t => t.Empleada)
-                           .Include(t => t.Cliente)
-                           .ToList();
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Servicio) // ✅ Incluye el servicio principal
+                .Include(t => t.Detalles)
+                    .ThenInclude(d => d.Extras) // ✅ Incluye la lista de extras
+                        .ThenInclude(e => e.Servicio) // ✅ Incluye el servicio asociado al extra
+                .Include(t => t.Empleada)
+                .Include(t => t.Cliente)
+                .ToList();
         }
+
 
         public Turno GetById(int id)
         {

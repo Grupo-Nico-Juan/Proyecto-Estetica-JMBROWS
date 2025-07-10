@@ -15,29 +15,51 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             _repo = repo;
         }
 
-        public IEnumerable<TurnoDTO> Ejecutar(TurnoFiltroDTO filtro)
+        public IEnumerable<TurnoCalendarioDTO> Ejecutar(TurnoFiltroDTO filtro)
         {
             var turnos = _repo.GetAll();
 
-            if (filtro.EmpleadaId.HasValue)
-                turnos = turnos.Where(t => t.EmpleadaId == filtro.EmpleadaId.Value);
+            // Si no se especifica rango de fechas, tomar el día actual
+            if (!filtro.FechaInicio.HasValue && !filtro.FechaFin.HasValue)
+            {
+                var hoy = DateTime.Today;
+                filtro.FechaInicio = hoy;
+                filtro.FechaFin = hoy.AddDays(1).AddTicks(-1);
+            }
 
-            if (filtro.SectorId.HasValue)
-                turnos = turnos.Where(t => t.SectorId == filtro.SectorId.Value);
+            turnos = turnos
+                .Where(t =>
+                    (!filtro.EmpleadaId.HasValue || t.EmpleadaId == filtro.EmpleadaId.Value) &&
+                    (!filtro.SectorId.HasValue || t.SectorId == filtro.SectorId.Value) &&
+                    (!filtro.Estado.HasValue || t.Estado == filtro.Estado.Value) &&
+                    (!filtro.FechaInicio.HasValue || t.FechaHora >= filtro.FechaInicio.Value) &&
+                    (!filtro.FechaFin.HasValue || t.FechaHora <= filtro.FechaFin.Value)
+                );
 
-            if (filtro.Estado.HasValue)
-                turnos = turnos.Where(t => t.Estado == filtro.Estado.Value);
-
-            return turnos.Select(t => new TurnoDTO
+            return turnos.Select(t => new TurnoCalendarioDTO
             {
                 Id = t.Id,
-                FechaHora = t.FechaHora,
-                EmpleadaId = t.EmpleadaId,
-                ClienteId = t.ClienteId,
-                SucursalId = t.SucursalId,
-                SectorId = t.SectorId,
-                Estado = t.Estado,
-                Detalles = t.Detalles.Select(d => new DetalleTurnoDTO { ServicioId = d.ServicioId }).ToList()
+                FechaHoraInicio = t.FechaHora,
+                FechaHoraFin = t.FechaHora.AddMinutes(t.DuracionTotal()),
+
+                EmpleadaNombre = $"{t.Empleada.Nombre} {t.Empleada.Apellido}",
+                EmpleadaColor = t.Empleada.Color,
+
+                ClienteNombre = t.Cliente.Nombre,
+                ClienteApellido = t.Cliente.Apellido,
+                ClienteTelefono = t.Cliente.Telefono,
+
+                Servicios = t.Detalles
+                    .Select(d => d.Servicio.Nombre)
+                    .ToList(),
+
+                Extras = t.Detalles
+                    .SelectMany(d => d.Servicio.Extras)
+                    .Select(e => e.Servicio.Nombre)
+                    .Distinct()
+                    .ToList(),
+
+                Estado = t.Estado
             });
         }
     }

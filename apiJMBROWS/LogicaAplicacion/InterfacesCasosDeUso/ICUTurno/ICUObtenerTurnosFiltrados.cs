@@ -9,6 +9,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUTurno
 {
     public interface ICUObtenerTurnosFiltrados
     {
-        IEnumerable<TurnoDTO> Ejecutar(TurnoFiltroDTO filtro);
+        IEnumerable<TurnoCalendarioDTO> Ejecutar(TurnoFiltroDTO filtro);
     }
 }
