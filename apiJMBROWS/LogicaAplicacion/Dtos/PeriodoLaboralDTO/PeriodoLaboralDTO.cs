@@ -16,8 +16,8 @@ namespace LogicaAplicacion.Dtos.PeriodoLaboralDTO
         public DayOfWeek? DiaSemana { get; set; }
         public TimeSpan? HoraInicio { get; set; }
         public TimeSpan? HoraFin { get; set; }
-        public DateTime? Desde { get; set; }
-        public DateTime? Hasta { get; set; }
+        public DateTimeOffset? Desde { get; set; }
+        public DateTimeOffset? Hasta { get; set; }
         public string? Motivo { get; set; }
     }
 }

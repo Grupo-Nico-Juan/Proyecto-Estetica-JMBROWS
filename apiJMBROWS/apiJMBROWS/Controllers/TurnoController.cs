@@ -218,7 +218,7 @@ namespace apiJMBROWS.Controllers
         [SwaggerResponse(200, "Lista de turnos de hoy", typeof(IEnumerable<TurnoDTO>))]
         public IActionResult TurnosHoy(int empleadaId)
         {
-            var lista = _obtenerTurnosDelDiaPorEmpleada.Ejecutar(empleadaId, DateTime.Today);
+            var lista = _obtenerTurnosDelDiaPorEmpleada.Ejecutar(empleadaId, DateTimeOffset.UtcNow.Date);
             return Ok(lista);
         }
 

@@ -17,7 +17,7 @@ namespace LogicaNegocio.Entidades
         public int Id { get; set; }
 
         [Required]
-        public DateTime FechaHora { get; set; }
+        public DateTimeOffset FechaHora { get; set; }
 
         [Required]
         public int EmpleadaId { get; set; }
@@ -46,9 +46,9 @@ namespace LogicaNegocio.Entidades
 
         public void EsValido()
         {
-            if (FechaHora < DateTime.Now)
+            if (FechaHora < DateTimeOffset.Now)
                 throw new TurnoException("No se puede reservar un turno en el pasado.");
-            if (FechaHora > DateTime.Now.AddMonths(1))
+            if (FechaHora > DateTimeOffset.Now.AddMonths(1))
                 throw new TurnoException("No se puede reservar un turno con mas de un de un mes antelacion.");
 
             if (Detalles.Count == 0)

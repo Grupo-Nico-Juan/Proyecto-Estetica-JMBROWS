@@ -24,8 +24,8 @@ namespace LogicaNegocio.Entidades
         public TimeSpan? HoraFin { get; set; }
 
         // Para Licencia
-        public DateTime? Desde { get; set; }
-        public DateTime? Hasta { get; set; }
+        public DateTimeOffset? Desde { get; set; }
+        public DateTimeOffset? Hasta { get; set; }
         public string? Motivo { get; set; }
 
         public void EsValido()
@@ -48,7 +48,7 @@ namespace LogicaNegocio.Entidades
             }
         }
 
-        public bool SeSuperpone(DateTime inicio, DateTime fin)
+        public bool SeSuperpone(DateTimeOffset inicio, DateTimeOffset fin)
         {
             if (Tipo == TipoPeriodoLaboral.Licencia && Desde != null && Hasta != null)
             {
