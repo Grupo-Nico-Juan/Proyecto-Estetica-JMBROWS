@@ -40,6 +40,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             {
                 Id = t.Id,
                 SucursalId = t.SucursalId,
+                SucursalNombre = t.Sucursal.Nombre,
 
                 FechaHoraInicio = t.FechaHora,
                 FechaHoraFin = t.FechaHora.AddMinutes(t.DuracionTotal()),

@@ -33,14 +33,16 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Turnos
                 .Include(t => t.Detalles)
-                    .ThenInclude(d => d.Servicio) // ✅ Incluye el servicio principal
+                    .ThenInclude(d => d.Servicio)
                 .Include(t => t.Detalles)
-                    .ThenInclude(d => d.Extras) // ✅ Incluye la lista de extras
-                        .ThenInclude(e => e.Servicio) // ✅ Incluye el servicio asociado al extra
+                    .ThenInclude(d => d.Extras)
+                        .ThenInclude(e => e.Servicio)
                 .Include(t => t.Empleada)
                 .Include(t => t.Cliente)
+                .Include(t => t.Sucursal) 
                 .ToList();
         }
+
 
 
         public Turno GetById(int id)
