@@ -121,6 +121,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerEmpleadasPorSector, CUObtenerEmpleadasPorSector>();
 
             builder.Services.AddScoped<ICUActualizarTurno, CUActualizarTurno>();
+            builder.Services.AddScoped<ICUObtenerTurnosFiltrados, CUObtenerTurnosFiltrados>();
             builder.Services.AddScoped<ICUEliminarTurno, CUEliminarTurno>();
             builder.Services.AddScoped<ICUAltaTurno, CUAltaTurno>();
             builder.Services.AddScoped<ICUObtenerTurnos, CUObtenerTurnos>();
@@ -139,6 +140,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerDetallesTurno, CUObtenerDetallesTurno>();
 
             builder.Services.AddScoped<ICUObtenerPeriodosLaboralesPorEmpleada, CUObtenerPeriodosLaboralesPorEmpleada>();
+            builder.Services.AddScoped<ICUObtenerPeriodoPorId, CUObtenerPeriodoPorId>();
             builder.Services.AddScoped<ICUAltaPeriodoLaboral, CUAltaPeriodoLaboral>();
             builder.Services.AddScoped<ICUModificarPeriodoLaboral, CUModificarPeriodoLaboral>();
             builder.Services.AddScoped<ICUEliminarPeriodoLaboral, CUEliminarPeriodoLaboral>();

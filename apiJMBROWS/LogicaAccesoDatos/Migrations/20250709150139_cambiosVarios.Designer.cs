@@ -4,6 +4,7 @@ using LogicaAccesoDatos.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(EsteticaContext))]
-    partial class EsteticaContextModelSnapshot : ModelSnapshot
+    [Migration("20250709150139_cambiosVarios")]
+    partial class cambiosVarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -395,7 +398,10 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<DateTime>("FechaHora")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SucursalId")
+                    b.Property<int?>("SectorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SucursalId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -403,6 +409,8 @@ namespace LogicaAccesoDatos.Migrations
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("EmpleadaId");
+
+                    b.HasIndex("SectorId");
 
                     b.HasIndex("SucursalId");
 
@@ -496,6 +504,10 @@ namespace LogicaAccesoDatos.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordPlano")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -674,15 +686,19 @@ namespace LogicaAccesoDatos.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LogicaNegocio.Entidades.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorId");
+
                     b.HasOne("LogicaNegocio.Entidades.Sucursal", "Sucursal")
                         .WithMany()
-                        .HasForeignKey("SucursalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SucursalId");
 
                     b.Navigation("Cliente");
 
                     b.Navigation("Empleada");
+
+                    b.Navigation("Sector");
 
                     b.Navigation("Sucursal");
                 });

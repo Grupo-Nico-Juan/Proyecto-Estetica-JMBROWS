@@ -19,19 +19,22 @@ namespace apiJMBROWS.Controllers
         private readonly ICUModificarPeriodoLaboral _modificarPeriodoLaboral;
         private readonly ICUEliminarPeriodoLaboral _eliminarPeriodoLaboral;
         private readonly ICUObtenerPeriodosLaboralesPorSucursal _obtenerPeriodosPorSucursal;
+        private readonly ICUObtenerPeriodoPorId _obtenerPeriodoPorId;
 
         public PeriodoLaboralController(
             ICUObtenerPeriodosLaboralesPorEmpleada obtenerPeriodosPorEmpleada,
             ICUAltaPeriodoLaboral altaPeriodoLaboral,
             ICUModificarPeriodoLaboral modificarPeriodoLaboral,
             ICUEliminarPeriodoLaboral eliminarPeriodoLaboral,
-            ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal)
+            ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal,
+            ICUObtenerPeriodoPorId obtenerPeriodoPorId)
         {
             _obtenerPeriodosPorEmpleada = obtenerPeriodosPorEmpleada;
             _altaPeriodoLaboral = altaPeriodoLaboral;
             _modificarPeriodoLaboral = modificarPeriodoLaboral;
             _eliminarPeriodoLaboral = eliminarPeriodoLaboral;
             _obtenerPeriodosPorSucursal = obtenerPeriodosPorSucursal;
+            _obtenerPeriodoPorId = obtenerPeriodoPorId;
         }
 
         /// <summary>
@@ -75,6 +78,33 @@ namespace apiJMBROWS.Controllers
                     return NotFound(new { error = "No se encontraron periodos laborales para la sucursal." });
 
                 return Ok(periodos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene un periodo laboral por su ID.
+        /// </summary>
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador")] // o [AllowAnonymous] si querés que sea público
+        [SwaggerOperation(Summary = "Obtiene un periodo laboral por su ID")]
+        [SwaggerResponse(200, "Periodo laboral encontrado", typeof(PeriodoLaboralDTO))]
+        [SwaggerResponse(404, "Periodo laboral no encontrado")]
+        public IActionResult GetPorId(int id)
+        {
+            try
+            {
+
+                var periodo = _obtenerPeriodoPorId
+                    .Ejecutar(id);
+
+                if (periodo == null)
+                    return NotFound(new { error = "No se encontró el periodo laboral." });
+
+                return Ok(periodo);
             }
             catch (Exception ex)
             {

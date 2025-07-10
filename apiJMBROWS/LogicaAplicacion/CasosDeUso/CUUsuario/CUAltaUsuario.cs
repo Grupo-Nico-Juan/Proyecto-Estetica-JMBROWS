@@ -11,11 +11,11 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
     public class CUAltaUsuario : ICUAltaUsuario
     {
         public IRepositorioUsuarios RepoUsuario { get; set; }
-        private readonly PasswordHasher<Usuario> _hasher;
+        private readonly PasswordHasher<Administrador> _hasher;
         public CUAltaUsuario(IRepositorioUsuarios repo)
         {
             RepoUsuario = repo;
-            _hasher = new PasswordHasher<Usuario>();
+            _hasher = new PasswordHasher<Administrador>();
         }
 
         public void AltaUsuario(RegistroAdministradorDTO dto)
@@ -23,7 +23,7 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
             if (RepoUsuario.GetByEmail(dto.Email) != null)
                 throw new UsuarioException("Ya existe un usuario con ese email.");
 
-            Usuario nuevo;
+            Administrador nuevo;
 
             if (dto.TipoUsuario.ToLower() == "administrador")
             {
@@ -49,19 +49,16 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
 
         public void AltaUsuario(RegistroEmpleadoDTO dto)
         {
-            if (RepoUsuario.GetByEmail(dto.Email) != null)
-                throw new UsuarioException("Ya existe un usuario con ese email.");
-
+            
             Usuario nuevo;
             if (dto.TipoUsuario.ToLower() == "empleado")
             {
                 nuevo = new Empleado
                 {
-                    Email = dto.Email,
+                   
                     Nombre = dto.Nombre,
                     Apellido = dto.Apellido,
-                    PasswordPlano = dto.PasswordPlano,
-                    Password = "", // temporal, se reemplaza luego con el hash
+                    Color = dto.Color,
                     Cargo = dto.Cargo
                     // TODO: Sucursal, Habilidades, Turnos se agregan en próximos pasos
                 };
@@ -71,8 +68,6 @@ namespace Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios
                 throw new UsuarioException("Tipo de usuario no válido.");
             }
             nuevo.EsValido();
-            // 🔐 Hashear con el objeto completo (mejor que usar null)
-            nuevo.Password = _hasher.HashPassword(nuevo, dto.PasswordPlano);
             RepoUsuario.Add(nuevo);
 
         }

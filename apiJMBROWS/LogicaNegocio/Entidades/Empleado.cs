@@ -10,6 +10,7 @@ namespace LogicaNegocio.Entidades
 
         [Required]
         public required string Cargo { get; set; }
+        public required string Color { get; set; } = "#000000"; // Color por defecto
 
         public override string Rol => "Empleado";
         // Sucursal principal del empleado

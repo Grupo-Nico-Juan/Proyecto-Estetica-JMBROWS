@@ -4,23 +4,24 @@ using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.InterfacesRepositorio;
+using Libreria.LogicaNegocio.Entidades;
 
 public class CULoginUsuario : ICULoginUsuario
 {
     private readonly IRepositorioUsuarios _repo;
-    private readonly PasswordHasher<Usuario> _hasher;
+    private readonly PasswordHasher<Administrador> _hasher;
 
     public CULoginUsuario(IRepositorioUsuarios repo)
     {
         _repo = repo;
-        _hasher = new PasswordHasher<Usuario>();
+        _hasher = new PasswordHasher<Administrador>();
     }
 
-    public Usuario LoginUsuario(LoginDTO dto)
+    public Administrador LoginUsuario(LoginDTO dto)
     {
-        var usuario = _repo.GetByEmail(dto.Email);
+        Usuario usuarioBase = _repo.GetByEmail(dto.Email);
 
-        if (usuario == null)
+        if (usuarioBase is not Administrador usuario)
             throw new UsuarioException("Email o contraseña incorrectos.");
 
         var resultado = _hasher.VerifyHashedPassword(usuario, usuario.Password, dto.Password);

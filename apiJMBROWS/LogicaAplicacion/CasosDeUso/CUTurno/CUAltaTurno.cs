@@ -34,7 +34,6 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 EmpleadaId = dto.EmpleadaId,
                 ClienteId = dto.ClienteId,
                 SucursalId = dto.SucursalId,
-                SectorId = dto.SectorId,
                 Estado = EstadoTurno.Pendiente,
                 Detalles = new List<DetalleTurno>()
             };

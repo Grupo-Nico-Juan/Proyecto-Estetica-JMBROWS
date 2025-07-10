@@ -68,12 +68,14 @@ namespace LogicaAccesoDatos.Repositorios
 
         public bool ExisteCorreoElectronico(string email)
         {
-            return _context.Usuarios.Any(u => u.Email == email);
+            return _context.Usuarios.OfType<Administrador>().Any(u => u.Email == email);
         }
 
         public Usuario GetByEmail(string email)
         {
-            return _context.Usuarios.FirstOrDefault(u => u.Email == email);
+            return _context.Usuarios
+            .OfType<Administrador>()
+            .FirstOrDefault(a => a.Email == email);
         }
 
         public IEnumerable<Usuario> GetByRol(string rol)

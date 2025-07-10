@@ -9,6 +9,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado
 {
     public interface ICUMarcarTurnoComoRealizado
     {
-        void Ejecutar(int turnoId);
+        void Ejecutar(int turnoId, string pin);
     }
 }
