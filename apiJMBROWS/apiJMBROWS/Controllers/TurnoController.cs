@@ -100,7 +100,6 @@ namespace apiJMBROWS.Controllers
             var filtro = new TurnoFiltroDTO
             {
                 EmpleadaId = empleadaId,
-                SectorId = sectorId,
                 Estado = estado,
                 FechaInicio = fechaInicio,
                 FechaFin = fechaFin

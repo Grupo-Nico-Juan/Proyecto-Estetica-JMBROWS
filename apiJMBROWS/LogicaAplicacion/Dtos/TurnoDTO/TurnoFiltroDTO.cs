@@ -10,7 +10,6 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     public class TurnoFiltroDTO
     {
         public int? EmpleadaId { get; set; }
-        public int? SectorId { get; set; }
         public EstadoTurno? Estado { get; set; }
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
