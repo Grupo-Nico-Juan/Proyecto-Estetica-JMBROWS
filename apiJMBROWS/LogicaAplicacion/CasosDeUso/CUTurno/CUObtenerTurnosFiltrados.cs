@@ -30,7 +30,6 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             turnos = turnos
                 .Where(t =>
                     (!filtro.EmpleadaId.HasValue || t.EmpleadaId == filtro.EmpleadaId.Value) &&
-                    (!filtro.SectorId.HasValue || t.SectorId == filtro.SectorId.Value) &&
                     (!filtro.Estado.HasValue || t.Estado == filtro.Estado.Value) &&
                     (!filtro.FechaInicio.HasValue || t.FechaHora >= filtro.FechaInicio.Value) &&
                     (!filtro.FechaFin.HasValue || t.FechaHora <= filtro.FechaFin.Value)

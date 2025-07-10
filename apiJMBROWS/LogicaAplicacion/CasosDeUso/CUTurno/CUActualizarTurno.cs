@@ -28,7 +28,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             turno.ClienteId = dto.ClienteId;
             turno.Estado = dto.Estado;
             turno.SucursalId = dto.SucursalId;
-            turno.SectorId = dto.SectorId;
+
 
             turno.Detalles.Clear();
             foreach (var det in dto.Detalles)

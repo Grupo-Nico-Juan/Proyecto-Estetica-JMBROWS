@@ -12,7 +12,6 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
         public int ClienteId { get; set; }
         public EstadoTurno Estado { get; set; }
         public int SucursalId { get; set; }
-        public int? SectorId { get; set; }
         public List<ActualizarDetalleTurnoDTO> Detalles { get; set; } = [];
     }
 }

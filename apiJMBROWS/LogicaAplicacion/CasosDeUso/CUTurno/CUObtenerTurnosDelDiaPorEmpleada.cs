@@ -26,7 +26,6 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 EmpleadaId = t.EmpleadaId,
                 ClienteId = t.ClienteId,
                 SucursalId = t.SucursalId,
-                SectorId = t.SectorId,
                 Estado = t.Estado,
                 Detalles = t.Detalles.Select(d => new DetalleTurnoDTO
                 {

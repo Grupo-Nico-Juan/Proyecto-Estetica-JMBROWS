@@ -35,10 +35,6 @@ namespace LogicaNegocio.Entidades
         [JsonIgnore]
         public Sucursal? Sucursal { get; set; }
 
-        // Sector principal del turno (opcional)
-        public int? SectorId { get; set; }
-        [JsonIgnore]
-        public Sector? Sector { get; set; }
 
         public List<DetalleTurno> Detalles { get; set; } = new();
 
@@ -47,7 +43,7 @@ namespace LogicaNegocio.Entidades
         public void EsValido()
         {
             if (FechaHora < DateTime.Now)
-                throw new TurnoException("No se puede reservar un turno en el pasado.");
+                throw new TurnoException("No se puede reservar un turno en el pasado. " + FechaHora.ToString() + " " + DateTime.Now.ToString());
             if (FechaHora > DateTime.Now.AddMonths(1))
                 throw new TurnoException("No se puede reservar un turno con mas de un de un mes antelacion.");
 
