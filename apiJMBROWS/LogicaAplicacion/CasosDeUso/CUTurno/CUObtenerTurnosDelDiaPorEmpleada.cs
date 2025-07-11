@@ -17,7 +17,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             _repo = repo;
         }
 
-        public IEnumerable<TurnoDTO> Ejecutar(int empleadaId, DateTime fecha)
+        public IEnumerable<TurnoDTO> Ejecutar(int empleadaId, DateTimeOffset fecha)
         {
             return _repo.ObtenerTurnosDelDiaPorEmpleada(empleadaId, fecha).Select(t => new TurnoDTO
             {

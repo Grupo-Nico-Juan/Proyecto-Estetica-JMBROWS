@@ -1,29 +1,31 @@
-﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+﻿using apiJMBROWS.Utils;
+using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
 using LogicaAccesoDatos.EF;
 using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.CasosDeUso.CUCliente;
 using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
 using LogicaAplicacion.CasosDeUso.CUEmpleado;
+using LogicaAplicacion.CasosDeUso.CUExtraServicio;
 using LogicaAplicacion.CasosDeUso.CUHabilidad;
 using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.CasosDeUso.CUReportes;
 using LogicaAplicacion.CasosDeUso.CUServicio;
-using LogicaAplicacion.CasosDeUso.CUExtraServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
-using LogicaAplicacion.CasosDeUso.CUReportes;
+using LogicaAplicacion.Infraestructura.ServiciosExternos;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
 using LogicaNegocio.Excepciones.Middleware;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +33,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
-using LogicaAplicacion.Infraestructura.ServiciosExternos;
 
 namespace apiJMBROWS
 {
@@ -45,7 +46,12 @@ namespace apiJMBROWS
             builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
-             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+            builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new UtcDateTimeOffsetConverter());
              });
 
             // Repositorios
@@ -95,7 +101,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarExtraServicio, CUEliminarExtraServicio>();
             builder.Services.AddScoped<ICUObtenerExtraServicioPorId, CUObtenerExtraServicioPorId>();
             builder.Services.AddScoped<ICUObtenerServiciosDisponiblesPorSectorYEmpleada, CUObtenerServiciosDisponiblesPorSectorYEmpleada>();
-            
+
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
             builder.Services.AddScoped<ICUEliminarHabilidad, CUEliminarHabilidad>();

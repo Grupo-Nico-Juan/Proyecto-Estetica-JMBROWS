@@ -4,7 +4,7 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
 {
     public class HorarioOcupadoDTO
     {
-        public DateTime FechaHoraInicio { get; set; }
-        public DateTime FechaHoraFin { get; set; }
+        public DateTimeOffset FechaHoraInicio { get; set; }
+        public DateTimeOffset FechaHoraFin { get; set; }
     }
 }

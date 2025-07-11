@@ -12,8 +12,8 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
         public int Id { get; set; }
         public int SucursalId { get; set; }
         public string SucursalNombre { get; set; }
-        public DateTime FechaHoraInicio { get; set; }
-        public DateTime FechaHoraFin { get; set; }
+        public DateTimeOffset FechaHoraInicio { get; set; }
+        public DateTimeOffset FechaHoraFin { get; set; }
 
         public string EmpleadaNombre { get; set; }
         public string EmpleadaColor { get; set; }

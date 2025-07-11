@@ -7,7 +7,7 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     public class ActualizarTurnoDTO
     {
         public int Id { get; set; }
-        public DateTime FechaHora { get; set; }
+        public DateTimeOffset FechaHora { get; set; }
         public int EmpleadaId { get; set; }
         public int ClienteId { get; set; }
         public EstadoTurno Estado { get; set; }

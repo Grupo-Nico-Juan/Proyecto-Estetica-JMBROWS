@@ -9,7 +9,7 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     public class HorariosDisponiblesFiltroDTO
     {
         public int SucursalId { get; set; }
-        public DateTime Fecha { get; set; }
+        public DateTimeOffset Fecha { get; set; }
         public List<int> ServicioIds { get; set; } = new();
         public List<int>? ExtraIds { get; set; }
     }

@@ -8,7 +8,7 @@ namespace LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO
 {
     public class ConsultaEmpleadasDisponiblesDTO
     {
-        public DateTime FechaHoraInicio { get; set; }
+        public DateTimeOffset FechaHoraInicio { get; set; }
         public List<int> ServiciosSeleccionados { get; set; } = [];
     }
 

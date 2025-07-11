@@ -6,6 +6,6 @@ namespace LogicaAplicacion.InterfacesCasosDeUso.ICUTurno
 {
     public interface ICUObtenerTurnosDelDiaPorEmpleada
     {
-        IEnumerable<TurnoDTO> Ejecutar(int empleadaId, DateTime fecha);
+        IEnumerable<TurnoDTO> Ejecutar(int empleadaId, DateTimeOffset fecha);
     }
 }

@@ -36,7 +36,7 @@ namespace LogicaNegocio.Entidades
                 throw new EmpleadoException("El cargo no puede estar vacío.");
 
         }
-        public bool EstaDisponible(DateTime inicio, DateTime fin)
+        public bool EstaDisponible(DateTimeOffset inicio, DateTimeOffset fin)
         {
             // 1. Verificar solapamiento con otros turnos asignados (que no estén cancelados)
             foreach (var turno in TurnosAsignados.Where(t => t.Estado != EstadoTurno.Cancelado))

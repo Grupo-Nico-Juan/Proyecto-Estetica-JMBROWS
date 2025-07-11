@@ -115,9 +115,9 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             return horarios.OrderBy(h => h.FechaHoraInicio).ToList(); ;
         }
 
-        private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
+        private List<(DateTimeOffset inicio, DateTimeOffset fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTimeOffset fecha, int duracionMinutos)
         {
-            var bloques = new List<(DateTime, DateTime)>();
+            var bloques = new List<(DateTimeOffset, DateTimeOffset)>();
             var actual = fecha.Date + desde;
             var fin = fecha.Date + hasta;
 

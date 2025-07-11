@@ -11,7 +11,7 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     {
         public int? EmpleadaId { get; set; }
         public EstadoTurno? Estado { get; set; }
-        public DateTime? FechaInicio { get; set; }
-        public DateTime? FechaFin { get; set; }
+        public DateTimeOffset? FechaInicio { get; set; }
+        public DateTimeOffset? FechaFin { get; set; }
     }
 }

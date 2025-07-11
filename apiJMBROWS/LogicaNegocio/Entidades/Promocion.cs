@@ -50,7 +50,7 @@ namespace LogicaNegocio.Entidades
 
         public bool EstaVigente()
         {
-            var hoy = DateTime.Now;
+            var hoy = DateTimeOffset.UtcNow;
             return Activa && hoy >= FechaInicio && hoy <= FechaFin;
         }
     }
