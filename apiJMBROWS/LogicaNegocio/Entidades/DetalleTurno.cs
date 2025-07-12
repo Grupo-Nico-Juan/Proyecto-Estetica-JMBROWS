@@ -28,9 +28,9 @@ namespace LogicaNegocio.Entidades
         public List<ExtraServicio> Extras { get; set; } = new();
 
         [NotMapped]
-        public DateTimeOffset HoraInicio { get; set; }
+        public DateTime HoraInicio { get; set; }
         [NotMapped]
-        public DateTimeOffset HoraFin { get; set; }
+        public DateTime HoraFin { get; set; }
 
         public void EsValido()
         {

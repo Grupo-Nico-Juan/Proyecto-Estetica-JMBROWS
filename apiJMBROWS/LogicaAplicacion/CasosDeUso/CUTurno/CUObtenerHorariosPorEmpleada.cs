@@ -29,7 +29,6 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
 
         public List<HorarioDisponibleDTO> Ejecutar(HorariosPorEmpleadaFiltroDTO filtro)
         {
-            var ahora = DateTimeOffset.UtcNow;
             var empleada = _repoEmpleado.GetEmpleadoById(filtro.EmpleadaId);
             if (empleada == null)
                 return new List<HorarioDisponibleDTO>();
@@ -58,7 +57,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                             p.HoraFin.HasValue)
                 .ToList();
 
-            var turnos = _repoTurno.ObtenerTurnosDelDiaPorEmpleada(empleada.Id, filtro.Fecha.UtcDateTime);
+            var turnos = _repoTurno.ObtenerTurnosDelDiaPorEmpleada(empleada.Id, filtro.Fecha);
 
             var horarios = new List<HorarioDisponibleDTO>();
 
@@ -102,9 +101,9 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             return horarios;
         }
 
-        private List<(DateTimeOffset inicio, DateTimeOffset fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTimeOffset fecha, int duracionMinutos)
+        private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
         {
-            var bloques = new List<(DateTimeOffset, DateTimeOffset)>();
+            var bloques = new List<(DateTime, DateTime)>();
             var actual = fecha.Date + desde;
             var fin = fecha.Date + hasta;
 

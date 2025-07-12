@@ -50,9 +50,6 @@ namespace LogicaNegocio.Entidades
             if (!esTelInt && !esTelNac)
                 throw new UsuarioException("El teléfono debe ser uruguayo y tener formato +598XXXXXXXX o 09XXXXXXX.");
 
-            if (esTelNac)
-                Telefono = "+598" + Telefono.Substring(1);
-
             if (!string.IsNullOrWhiteSpace(Email) &&
                 !Regex.IsMatch(Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
                 throw new UsuarioException("El email no tiene un formato válido.");

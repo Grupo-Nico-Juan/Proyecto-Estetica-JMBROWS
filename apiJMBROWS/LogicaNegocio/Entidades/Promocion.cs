@@ -18,10 +18,10 @@ namespace LogicaNegocio.Entidades
         public required string Nombre { get; set; }
 
         [Required]
-        public DateTimeOffset FechaInicio { get; set; }
+        public DateTime FechaInicio { get; set; }
 
         [Required]
-        public DateTimeOffset FechaFin { get; set; }
+        public DateTime FechaFin { get; set; }
 
         [Required]
         [Range(1, 100)]
