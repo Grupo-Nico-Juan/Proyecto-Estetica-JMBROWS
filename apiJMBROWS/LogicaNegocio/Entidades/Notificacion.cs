@@ -23,7 +23,7 @@ namespace LogicaNegocio.Entidades
         [Required]
         public required string Mensaje { get; set; }
 
-        public DateTimeOffset FechaEnvio { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset FechaEnvio { get; set; } = DateTimeOffset.UtcNow;
 
         public bool Enviada { get; set; } = false;
 

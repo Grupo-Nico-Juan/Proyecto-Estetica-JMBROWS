@@ -38,7 +38,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 throw new Exception("No se puede marcar como realizado un turno cancelado.");
 
             turno.Estado = EstadoTurno.Realizado;
-            _repo.Update(turnoId, turno); _logger.LogInformation("Turno {Id} confirmado a las {Fecha}", turnoId, DateTime.UtcNow);
+            _repo.Update(turnoId, turno); _logger.LogInformation("Turno {Id} confirmado a las {Fecha}", turnoId, DateTimeOffset.UtcNow);
         }
     }
 }

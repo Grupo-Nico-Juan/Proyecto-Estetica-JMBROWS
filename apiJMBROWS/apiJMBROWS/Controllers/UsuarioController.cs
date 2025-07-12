@@ -55,7 +55,7 @@ namespace apiJMBROWS.Controllers
                     token,
                     email = admin.Email,
                     rol = admin.Rol,
-                    expires = DateTime.UtcNow.AddHours(2)
+                    expires = DateTimeOffset.UtcNow.AddHours(2)
                 });
             }
             catch (UsuarioException ex)

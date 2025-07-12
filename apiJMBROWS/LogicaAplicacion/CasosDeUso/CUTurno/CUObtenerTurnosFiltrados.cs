@@ -22,7 +22,7 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
             // Si no se especifica rango de fechas, tomar el día actual
             if (!filtro.FechaInicio.HasValue && !filtro.FechaFin.HasValue)
             {
-                var hoy = DateTime.Today;
+                var hoy = DateTimeOffset.UtcNow.Date;
                 filtro.FechaInicio = hoy;
                 filtro.FechaFin = hoy.AddDays(1).AddTicks(-1);
             }

@@ -5,6 +5,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades.Enums;
+using apiJMBROWS.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -33,6 +34,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerHorariosOcupados _horariosOcupados;
         private readonly ICUMarcarTurnoComoRealizado _marcarTurnoComoRealizado;
         private readonly ICUObtenerTurnosFiltrados _obtenerTurnosFiltrados;
+        private readonly ITimeProvider _timeProvider;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -50,7 +52,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerHorariosPorEmpleada horariosPorEmpleada,
             ICUObtenerHorariosOcupados horariosOcupados,
             ICUMarcarTurnoComoRealizado marcarTurnoComoRealizado,
-            ICUObtenerTurnosFiltrados obtenerTurnosFiltrados
+            ICUObtenerTurnosFiltrados obtenerTurnosFiltrados,
+            ITimeProvider timeProvider
             )
         {
             _altaTurno = altaTurno;
@@ -70,6 +73,7 @@ namespace apiJMBROWS.Controllers
             _horariosOcupados = horariosOcupados;
             _marcarTurnoComoRealizado = marcarTurnoComoRealizado;
             _obtenerTurnosFiltrados = obtenerTurnosFiltrados;
+            _timeProvider = timeProvider;
         }
 
         /// <summary>
@@ -247,7 +251,8 @@ namespace apiJMBROWS.Controllers
         [SwaggerResponse(200, "Lista de turnos de hoy", typeof(IEnumerable<TurnoDTO>))]
         public IActionResult TurnosHoy(int empleadaId)
         {
-            var lista = _obtenerTurnosDelDiaPorEmpleada.Ejecutar(empleadaId, DateTimeOffset.UtcNow.Date);
+            var fecha = _timeProvider.UtcNow.Date;
+            var lista = _obtenerTurnosDelDiaPorEmpleada.Ejecutar(empleadaId, fecha);
             return Ok(lista);
         }
 

@@ -13,6 +13,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades;
 using LogicaNegocio.Excepciones;
 using LogicaNegocio.InterfacesRepositorio;
+using apiJMBROWS.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,6 +41,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerEmpleadoPorHabilidad _obtenerEmpleadoPorHabilidad;
         private readonly ICUObtenerTurnosDelDiaPorEmpleada _cuObtenerTurnosDelDia;
         private readonly ICUObtenerEmpleadasPorSector _obtenerEmpleadasPorSector;
+        private readonly ITimeProvider _timeProvider;
         public EmpleadoController(
             ICUAltaEmpleado altaEmpleado,
             ICUObtenerEmpleados obtenerEmpleados,
@@ -56,7 +58,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerEmpleadasDisponibles obtenerDisponibles,
             ICUObtenerEmpleadoPorHabilidad obtenerEmpleadoPorHabilidad,
             ICUObtenerTurnosDelDiaPorEmpleada ObtenerTurnosDelDia,
-            ICUObtenerEmpleadasPorSector obtenerEmpleadasPorSector)
+            ICUObtenerEmpleadasPorSector obtenerEmpleadasPorSector,
+            ITimeProvider timeProvider)
         {
             _altaEmpleado = altaEmpleado;
             _obtenerEmpleados = obtenerEmpleados;
@@ -74,6 +77,7 @@ namespace apiJMBROWS.Controllers
             _obtenerEmpleadoPorHabilidad = obtenerEmpleadoPorHabilidad;
             _cuObtenerTurnosDelDia = ObtenerTurnosDelDia;
             _obtenerEmpleadasPorSector = obtenerEmpleadasPorSector;
+            _timeProvider = timeProvider;
 
         }
 
@@ -351,7 +355,8 @@ namespace apiJMBROWS.Controllers
         {
             try
             {
-                var turnos = _cuObtenerTurnosDelDia.Ejecutar(empleadoId, DateTime.Today);
+                var fecha = _timeProvider.UtcNow.Date;
+                var turnos = _cuObtenerTurnosDelDia.Ejecutar(empleadoId, fecha);
                 return Ok(turnos);
             }
             catch (Exception ex)

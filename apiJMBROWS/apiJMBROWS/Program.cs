@@ -54,6 +54,9 @@ namespace apiJMBROWS
                 options.JsonSerializerOptions.Converters.Add(new UtcDateTimeOffsetConverter());
              });
 
+            // Servicio de tiempo centralizado
+            builder.Services.AddSingleton<ITimeProvider, SystemTimeProvider>();
+
             // Repositorios
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
