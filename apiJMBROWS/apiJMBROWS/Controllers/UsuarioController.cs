@@ -68,7 +68,7 @@ namespace apiJMBROWS.Controllers
         /// Registro de un nuevo administrador. Solo administradores.
         /// </summary>
         [HttpPost("Registrar")]
-        [Authorize(Roles = "Administrador")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Registro de un nuevo administrador (solo administradores autorizados).")]
         [SwaggerResponse(StatusCodes.Status200OK, "Administrador registrado exitosamente.")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los datos del usuario.")]

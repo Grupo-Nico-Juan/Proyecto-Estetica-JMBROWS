@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(EsteticaContext))]
-    [Migration("20250710192457_removeSectorIdForTurnos")]
-    partial class removeSectorIdForTurnos
+    [Migration("20250712175250_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
