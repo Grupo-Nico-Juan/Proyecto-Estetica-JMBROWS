@@ -1,37 +1,40 @@
-﻿using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
-using Libreria.LogicaNegocio.InterfacesRepositorio;
-using LogicaAccesoDatos.EF;
-using LogicaAccesoDatos.Repositorios;
-using LogicaAplicacion.CasosDeUso.CUCliente;
-using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
-using LogicaAplicacion.CasosDeUso.CUEmpleado;
-using LogicaAplicacion.CasosDeUso.CUHabilidad;
-using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
-using LogicaAplicacion.CasosDeUso.CUServicio;
-using LogicaAplicacion.CasosDeUso.CUExtraServicio;
-using LogicaAplicacion.CasosDeUso.CUSucursal;
-using LogicaAplicacion.CasosDeUso.CUTurno;
-using LogicaAplicacion.CasosDeUso.CUReportes;
-using LogicaAplicacion.InterfacesCasosDeUso;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
-using LogicaNegocio.Excepciones.Middleware;
-using LogicaNegocio.InterfacesRepositorio;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using System.Text.Json.Serialization;
+
+                      // WhatsAppSettings & JwtSettings
+using LogicaAccesoDatos.EF;
+using LogicaAccesoDatos.Repositorios;
 using LogicaAplicacion.Infraestructura.ServiciosExternos;
+using LogicaNegocio.Excepciones.Middleware;
+using LogicaNegocio.InterfacesRepositorio;
+using Libreria.LogicaNegocio.InterfacesRepositorio;
+using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
+using LogicaAplicacion.CasosDeUso.CUCliente;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
+using LogicaAplicacion.CasosDeUso.CUSucursal;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.CasosDeUso.CUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
+using LogicaAplicacion.CasosDeUso.CUExtraServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using LogicaAplicacion.CasosDeUso.CUHabilidad;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaAplicacion.CasosDeUso.CUTurno;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
+using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
+using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
+using LogicaAplicacion.CasosDeUso.CUReportes;
+using apiJMBROWS.UtilidadesJwt;
 
 namespace apiJMBROWS
 {
@@ -42,13 +45,33 @@ namespace apiJMBROWS
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://*:8080");
 
+            // ─────────────── Serialización ───────────────
             builder.Services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-             });
+            .AddJsonOptions(o =>
+            o.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter()));
 
-            // Repositorios
+            // ─────────────── Settings tipados ─────────────
+            builder.Services.Configure<WhatsAppSettings>(
+            builder.Configuration.GetSection("WhatsApp"));
+            builder.Services.Configure<JwtSettings>(
+            builder.Configuration.GetSection("Jwt"));
+
+            // ─────────────── Cache (memoria en dev) ───────
+            builder.Services.AddMemoryCache();
+            builder.Services.AddDistributedMemoryCache();
+            // En producción considera AddStackExchangeRedisCache
+
+            // ─────────────── HttpClient WhatsApp ──────────
+            builder.Services.AddHttpClient("WhatsApp", c =>
+            {
+                c.BaseAddress = new Uri("https://graph.facebook.com/v19.0/");
+                c.DefaultRequestHeaders.Accept.Add(
+                    new("application/json"));
+            });
+            builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
+
+            // ─────────────── Repositorios ─────────────────
             builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
             builder.Services.AddScoped<IRepositorioSucursales, RepositorioSucursales>();
             builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
@@ -60,7 +83,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
             builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
 
-            // Casos de uso
+            // ─────────────── Casos de Uso ─────────────────
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
 
@@ -95,7 +118,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUEliminarExtraServicio, CUEliminarExtraServicio>();
             builder.Services.AddScoped<ICUObtenerExtraServicioPorId, CUObtenerExtraServicioPorId>();
             builder.Services.AddScoped<ICUObtenerServiciosDisponiblesPorSectorYEmpleada, CUObtenerServiciosDisponiblesPorSectorYEmpleada>();
-            
+
             builder.Services.AddScoped<ICUAltaHabilidad, CUAltaHabilidad>();
             builder.Services.AddScoped<ICUActualizarHabilidad, CUActualizarHabilidad>();
             builder.Services.AddScoped<ICUEliminarHabilidad, CUEliminarHabilidad>();
@@ -153,34 +176,28 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUObtenerSectores, CUObtenerSectores>();
             builder.Services.AddScoped<ICUObtenerSectoresPorSucursal, CUObtenerSectoresPorSucursal>();
 
-            // Reportes
+            // ─────────────── Reportes ─────────────────────
             builder.Services.AddScoped<ICUIngresosSucursalSector, CUIngresosSucursalSector>();
             builder.Services.AddScoped<ICUEstadoTurnos, CUEstadoTurnos>();
             builder.Services.AddScoped<ICUTurnosPorServicio, CUTurnosPorServicio>();
             builder.Services.AddScoped<ICUHorarioMayorTurnos, CUHorarioMayorTurnos>();
 
-            //Whatsapp Services
-            builder.Services.AddMemoryCache();
-            builder.Services.AddScoped<WhatsAppService>();
-
-
-            // CORS
-            var allowedOrigins = new[] {
+            // ─────────────── CORS ─────────────────────────
+            var allowedOrigins = new[]
+            {
                 "https://calm-tree-09940dd0f.6.azurestaticapps.net",
                 "http://localhost:5173",
                 "http://www.jmbrows.site"
             };
-            builder.Services.AddCors(options =>
+            builder.Services.AddCors(o =>
             {
-                options.AddPolicy("FrontendPolicy", policy =>
-                {
-                    policy.WithOrigins(allowedOrigins)
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
+                o.AddPolicy("FrontendPolicy", p =>
+                    p.WithOrigins(allowedOrigins)
+                     .AllowAnyHeader()
+                     .AllowAnyMethod());
             });
 
-            // Swagger/OpenAPI
+            // ─────────────── Swagger ──────────────────────
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
@@ -188,7 +205,7 @@ namespace apiJMBROWS
                 {
                     Title = "API de Estética JMBROWS",
                     Version = "v1",
-                    Description = "API REST para la gestión de citas y notificaciones",
+                    Description = "API REST para la gestión de citas y notificaciones"
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -207,7 +224,7 @@ namespace apiJMBROWS
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id   = "Bearer"
                             }
                         },
                         Array.Empty<string>()
@@ -215,29 +232,35 @@ namespace apiJMBROWS
                 });
             });
 
-            builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
-            });
+            // ─────────────── JWT Auth ─────────────────────
+            var jwt = builder.Configuration.GetSection("Jwt")
+                                          .Get<JwtSettings>();
 
+            builder.Services.AddAuthentication("Bearer")
+                   .AddJwtBearer("Bearer", o =>
+                   {
+                       o.TokenValidationParameters = new TokenValidationParameters
+                       {
+                           ValidateIssuer = true,
+                           ValidateAudience = true,
+                           ValidateLifetime = true,
+                           ValidateIssuerSigningKey = true,
+                           ValidIssuer = jwt.Issuer,
+                           ValidAudience = jwt.Audience,
+                           IssuerSigningKey = new SymmetricSecurityKey(
+                               Encoding.UTF8.GetBytes(jwt.Key))
+                       };
+                   });
             builder.Services.AddAuthorization();
 
-            builder.Services.AddDbContext<EsteticaContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            // ─────────────── DbContext ────────────────────
+            builder.Services.AddDbContext<EsteticaContext>(o =>
+                o.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // ─────────────── Build & Middleware ───────────
             var app = builder.Build();
 
-            // ✅ ORDEN CORRECTO DE MIDDLEWARES
             app.UseCors("FrontendPolicy");
 
             app.UseSwagger();

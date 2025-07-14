@@ -1,10 +1,12 @@
-﻿using apiJMBROWS.UtilidadesJwt;
+﻿
+using apiJMBROWS.UtilidadesJwt;
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.Excepciones;
 using LogicaAplicacion.Dtos.DtoUsuario;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;             // ⬅ IOptions<T>
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace apiJMBROWS.Controllers
@@ -14,14 +16,17 @@ namespace apiJMBROWS.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly ICUAltaUsuario _altaUsuario;
-        private readonly ICULoginUsuario _login;
-        private readonly IConfiguration _config;
+        private readonly ICULoginUsuario _loginUsuario;
+        private readonly JwtSettings _jwt;           // ⬅ valores ya tipados
 
-        public UsuarioController(ICUAltaUsuario altaUsuario, ICULoginUsuario login, IConfiguration config)
+        public UsuarioController(
+            ICUAltaUsuario altaUsuario,
+            ICULoginUsuario loginUsuario,
+            IOptions<JwtSettings> jwtOptions)             // ⬅ inyección
         {
             _altaUsuario = altaUsuario;
-            _login = login;
-            _config = config;
+            _loginUsuario = loginUsuario;
+            _jwt = jwtOptions.Value;
         }
 
         /// <summary>
@@ -40,21 +45,18 @@ namespace apiJMBROWS.Controllers
 
             try
             {
-                var admin = _login.LoginUsuario(dto);
+                var usuario = _loginUsuario.LoginUsuario(dto);
 
                 var token = ManejadorJwt.GenerarToken(
-                    admin.Email,
-                    admin.Rol,
-                    _config["Jwt:Key"],
-                    _config["Jwt:Issuer"],
-                    _config["Jwt:Audience"]
-                );
+                                usuario.Email,
+                                usuario.Rol,
+                                _jwt);                    // ⬅ pasamos JwtSettings
 
                 return Ok(new
                 {
                     token,
-                    email = admin.Email,
-                    rol = admin.Rol,
+                    email = usuario.Email,
+                    rol = usuario.Rol,
                     expires = DateTime.UtcNow.AddHours(2)
                 });
             }
@@ -68,7 +70,7 @@ namespace apiJMBROWS.Controllers
         /// Registro de un nuevo administrador. Solo administradores.
         /// </summary>
         [HttpPost("Registrar")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]              // <- quita AllowAnonymous si realmente es solo admin
         [SwaggerOperation(Summary = "Registro de un nuevo administrador (solo administradores autorizados).")]
         [SwaggerResponse(StatusCodes.Status200OK, "Administrador registrado exitosamente.")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los datos del usuario.")]

@@ -1,58 +1,56 @@
-﻿using LogicaAplicacion.Dtos.WhatsappDTO;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
+using System.Net.Http;
+using LogicaAplicacion.Infraestructura.ServiciosExternos;
+using LogicaNegocio.Excepciones;
 
-namespace LogicaAplicacion.Infraestructura.ServiciosExternos
+public interface IWhatsAppService
 {
-    public class WhatsAppService
+    Task EnviarCodigoAsync(int clienteId, string telefono);
+    Task<bool> VerificarCodigoAsync(int clienteId, string codigo);
+}
+
+public class WhatsAppService : IWhatsAppService
+{
+    private readonly IHttpClientFactory _httpFactory;
+    private readonly WhatsAppSettings _cfg;
+    private readonly IDistributedCache _cache;
+    private readonly ILogger<WhatsAppService> _log;
+
+    public WhatsAppService(
+        IHttpClientFactory httpFactory,
+        IOptions<WhatsAppSettings> opt,
+        IDistributedCache cache,
+        ILogger<WhatsAppService> log)
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _token;
-        private readonly string _telefonoRemitente;
-        private readonly string _urlApi;
-        private readonly IMemoryCache _cache;
+        _httpFactory = httpFactory;
+        _cfg = opt.Value;
+        _cache = cache;
+        _log = log;
+    }
 
-        public WhatsAppService(IConfiguration config, IMemoryCache cache)
+    public async Task EnviarCodigoAsync(int clienteId, string telefono)
+    {
+        var codigo = RandomNumberGenerator.GetInt32(100000, 999999).ToString("D6");
+        await _cache.SetStringAsync($"verif_{clienteId}", codigo,
+            new DistributedCacheEntryOptions
+            { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
+
+        var mensaje = new
         {
-            _httpClient = new HttpClient();
-            _token = config["WhatsApp:Token"]!;
-            _telefonoRemitente = config["WhatsApp:PhoneNumberId"]!;
-            _urlApi = $"https://graph.facebook.com/v19.0/{_telefonoRemitente}/messages";
-            _cache = cache;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public async Task EnviarMensajeVerificacionAsync(WhatsAppVerificacionDTO dto)
-        {
-            // 1. Generar un código de 6 dígitos
-            var codigo = new Random().Next(100000, 999999).ToString();
-
-            // 2. Guardar temporalmente en memoria (10 minutos)
-            _cache.Set($"verif_{dto.ClienteId}", codigo, TimeSpan.FromMinutes(10));
-
-            // 3. Armar el mensaje con el código y el botón
-            var mensaje = new
+            messaging_product = "whatsapp",
+            to = telefono,
+            type = "template",
+            template = new
             {
-                messaging_product = "whatsapp",
-                to = dto.TelefonoDestino,
-                type = "template",
-                template = new
-                {
-                    name = "verificacion_preaprobada",
-                    language = new { code = "es" },
-                    components = new object[]
+                name = "verify",
+                language = new { code = "en_US" },
+                components = new object[]
                     {
                 new
                 {
@@ -73,35 +71,35 @@ namespace LogicaAplicacion.Infraestructura.ServiciosExternos
                     }
                 }
                     }
-                }
-            };
-
-            // 4. Enviar el mensaje
-            var request = new HttpRequestMessage(HttpMethod.Post, _urlApi);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            request.Content = new StringContent(JsonSerializer.Serialize(mensaje), Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Error al enviar mensaje de WhatsApp: {error}");
             }
-        }
+        };
 
-
-        public bool VerificarCodigo(int clienteId, string codigoIngresado)
+        using var client = _httpFactory.CreateClient("WhatsApp");
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{_cfg.PhoneNumberId}/messages")
         {
-            if (_cache.TryGetValue($"verif_{clienteId}", out string? codigoGuardado))
-            {
-                if (codigoGuardado == codigoIngresado)
-                {
-                    _cache.Remove($"verif_{clienteId}"); // Limpia el código luego de usarlo
-                    return true;
-                }
-            }
-            return false;
+            Content = JsonContent.Create(mensaje)
+        };
+        request.Headers.Authorization = new("Bearer", _cfg.Token);
+
+        var rsp = await client.SendAsync(request);
+
+        if (!rsp.IsSuccessStatusCode)
+        {
+            var body = await rsp.Content.ReadAsStringAsync();
+            _log.LogWarning("WhatsApp error {Status}: {Body}", rsp.StatusCode, body);
+            throw new WhatsAppApiException(rsp.StatusCode, body);
         }
 
+
+    }
+
+    public async Task<bool> VerificarCodigoAsync(int clienteId, string codigoIngresado)
+    {
+        var codigoGuardado = await _cache.GetStringAsync($"verif_{clienteId}");
+        var ok = codigoGuardado == codigoIngresado;
+        if (ok) await _cache.RemoveAsync($"verif_{clienteId}");
+        return ok;
     }
 }
