@@ -97,8 +97,12 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                     }
                 }
             }
+            //No mandar bloques de horas inferiores a la actual
+            var ahora = DateTime.Now;
+            if (filtro.Fecha.Date == ahora.Date) horarios = horarios
+                .Where(h => h.FechaHoraInicio.TimeOfDay > ahora.TimeOfDay).ToList();
 
-            return horarios;
+            return horarios.OrderBy(h => h.FechaHoraInicio).ToList();
         }
 
         private List<(DateTime inicio, DateTime fin)> GenerarBloques(TimeSpan desde, TimeSpan hasta, DateTime fecha, int duracionMinutos)
