@@ -5,6 +5,7 @@ using LogicaNegocio.Entidades;
 using LogicaNegocio.Entidades.Enums;
 using System;
 using System.Linq;
+using Hangfire;
 
 namespace LogicaAplicacion.CasosDeUso.CUTurno
 {
@@ -19,28 +20,47 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
 
         public void Ejecutar(ActualizarTurnoDTO dto)
         {
-            var turno = _repo.GetById(dto.Id);
-            if (turno == null)
-                throw new Exception("Turno no encontrado");
+            var turno = _repo.GetById(dto.Id)
+                       ?? throw new Exception("Turno no encontrado");
 
-            turno.FechaHora = dto.FechaHora;
-            turno.EmpleadaId = dto.EmpleadaId;
-            turno.ClienteId = dto.ClienteId;
-            turno.Estado = dto.Estado;
-            turno.SucursalId = dto.SucursalId;
+            bool fechaCambio = false;
 
-
-            turno.Detalles.Clear();
-            foreach (var det in dto.Detalles)
+            if (dto.FechaHora.HasValue && dto.FechaHora != turno.FechaHora)
             {
-                turno.Detalles.Add(new DetalleTurno
-                {
-                    ServicioId = det.ServicioId,
-
-                });
+                turno.FechaHora = dto.FechaHora.Value;
+                fechaCambio = true;
             }
 
-            turno.EsValido(); // <-- Validación de solapamiento
+            if (dto.EmpleadaId.HasValue) turno.EmpleadaId = dto.EmpleadaId.Value;
+            if (dto.ClienteId.HasValue) turno.ClienteId = dto.ClienteId.Value;
+            if (dto.SucursalId.HasValue) turno.SucursalId = dto.SucursalId.Value;
+            if (dto.Estado.HasValue) turno.Estado = dto.Estado.Value;
+
+            if (dto.Detalles != null)
+            {
+                turno.Detalles.Clear();
+                foreach (var det in dto.Detalles)
+                    turno.Detalles.Add(new DetalleTurno { ServicioId = det.ServicioId });
+            }
+
+            // Validación de solapamiento sólo si cambió fecha/hora o empleada
+            if (fechaCambio || dto.EmpleadaId.HasValue)
+                turno.EsValido();
+
+            // ─── Hangfire ────────────────────────────────────────────
+            if (fechaCambio)
+            {
+                BackgroundJob.Delete(turno.HangfireId);
+                turno.HangfireId = BackgroundJob.Schedule<IWhatsAppService>(
+                                       s => s.EnviarRecordatorioAsync(turno.Id),
+                                       turno.FechaHora.AddDays(-1));
+            }
+            else if (dto.Estado.HasValue && turno.Estado != EstadoTurno.Pendiente)
+            {
+                // Si solo confirmaron/cancelaron: borra recordatorio
+                BackgroundJob.Delete(turno.HangfireId);
+                turno.HangfireId = null;
+            }
 
             _repo.Update(dto.Id, turno);
         }

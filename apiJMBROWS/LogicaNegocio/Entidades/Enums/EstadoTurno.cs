@@ -7,6 +7,7 @@ namespace LogicaNegocio.Entidades.Enums
         Pendiente,
         Confirmado,
         Realizado,
-        Cancelado
+        Cancelado,
+        ReprogramarSolicitado
     }
 }

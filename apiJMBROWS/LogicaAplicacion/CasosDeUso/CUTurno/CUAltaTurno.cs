@@ -1,3 +1,4 @@
+using Hangfire;
 using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades;
@@ -95,6 +96,11 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 if (periodo.SeSuperpone(inicioNuevoTurno, finNuevoTurno))
                     throw new TurnoException("La empleada está de licencia o no disponible en el horario seleccionado.");
             }
+            var jobId = BackgroundJob.Schedule<IWhatsAppService>(
+              s => s.EnviarRecordatorioAsync(turno.Id),
+              turno.FechaHora.AddDays(-1));
+
+            turno.HangfireId = jobId;
 
             _repo.Add(turno);
         }

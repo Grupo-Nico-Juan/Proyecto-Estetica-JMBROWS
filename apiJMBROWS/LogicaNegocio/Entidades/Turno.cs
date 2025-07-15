@@ -39,6 +39,7 @@ namespace LogicaNegocio.Entidades
         public List<DetalleTurno> Detalles { get; set; } = new();
 
         public EstadoTurno Estado { get; set; } = EstadoTurno.Pendiente;
+        public string? HangfireId { get; set; }
 
         public void EsValido()
         {
