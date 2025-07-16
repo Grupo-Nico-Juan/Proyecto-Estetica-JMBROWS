@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(EsteticaContext))]
-    [Migration("20250716135159_addHangfireForWSNotifications")]
-    partial class addHangfireForWSNotifications
+    [Migration("20250716211315_nuevaDB")]
+    partial class nuevaDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
