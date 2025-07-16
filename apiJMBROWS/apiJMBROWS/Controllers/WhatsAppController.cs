@@ -3,6 +3,7 @@ using LogicaAplicacion.Dtos.WhatsappDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades.Enums;
 using LogicaNegocio.Excepciones;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -47,15 +48,18 @@ namespace apiJMBROWS.Controllers
         }
 
         [HttpGet("webhook")]
-        [ApiExplorerSettings(IgnoreApi = true)]   // oculta en Swagger
-        public IActionResult VerifyWebhook([FromQuery] string hub_mode,
-                                   [FromQuery] string hub_challenge,
-                                   [FromQuery] string hub_verify_token)
+        [AllowAnonymous]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult VerifyWebhook(
+        [FromQuery(Name = "hub.mode")] string mode,
+        [FromQuery(Name = "hub.challenge")] string challenge,
+        [FromQuery(Name = "hub.verify_token")] string verifyToken)
         {
-            if (hub_mode == "subscribe" && hub_verify_token == _verifyToken)
-                return Ok(hub_challenge);          // Meta espera 200 + challenge
+            if (mode == "subscribe" && verifyToken == _verifyToken)
+                return Ok(challenge);          // ✅ devuelve solo el reto
             return Unauthorized();
         }
+
 
         [HttpPost("webhook")]
         [ApiExplorerSettings(IgnoreApi = true)]
