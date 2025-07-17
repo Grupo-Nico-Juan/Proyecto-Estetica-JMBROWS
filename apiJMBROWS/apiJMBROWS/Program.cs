@@ -1,40 +1,42 @@
-﻿using System.Text;
-using System.Text.Json.Serialization;
+﻿using apiJMBROWS.Hubs;
+using apiJMBROWS.UtilidadesJwt;
+using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
+using Libreria.LogicaNegocio.InterfacesRepositorio;
+// WhatsAppSettings & JwtSettings
+using LogicaAccesoDatos.EF;
+using LogicaAccesoDatos.Repositorios;
+using LogicaAplicacion.CasosDeUso.CUCliente;
+using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
+using LogicaAplicacion.CasosDeUso.CUEmpleado;
+using LogicaAplicacion.CasosDeUso.CUExtraServicio;
+using LogicaAplicacion.CasosDeUso.CUHabilidad;
+using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.CasosDeUso.CUReportes;
+using LogicaAplicacion.CasosDeUso.CUServicio;
+using LogicaAplicacion.CasosDeUso.CUSucursal;
+using LogicaAplicacion.CasosDeUso.CUTurno;
+using LogicaAplicacion.CasosDeUso.CUUsuario;
+using LogicaAplicacion.Infraestructura.ServiciosExternos;
+using LogicaAplicacion.InterfacesCasosDeUso;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
+using LogicaNegocio.Excepciones.Middleware;
+using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-                      // WhatsAppSettings & JwtSettings
-using LogicaAccesoDatos.EF;
-using LogicaAccesoDatos.Repositorios;
-using LogicaAplicacion.Infraestructura.ServiciosExternos;
-using LogicaNegocio.Excepciones.Middleware;
-using LogicaNegocio.InterfacesRepositorio;
-using Libreria.LogicaNegocio.InterfacesRepositorio;
-using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
-using LogicaAplicacion.InterfacesCasosDeUso;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
-using LogicaAplicacion.CasosDeUso.CUCliente;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUSurcursal;
-using LogicaAplicacion.CasosDeUso.CUSucursal;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
-using LogicaAplicacion.CasosDeUso.CUServicio;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
-using LogicaAplicacion.CasosDeUso.CUExtraServicio;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUHabilidad;
-using LogicaAplicacion.CasosDeUso.CUHabilidad;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUEmpleado;
-using LogicaAplicacion.CasosDeUso.CUEmpleado;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
-using LogicaAplicacion.CasosDeUso.CUTurno;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
-using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
-using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUSector;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUReportes;
-using LogicaAplicacion.CasosDeUso.CUReportes;
-using apiJMBROWS.UtilidadesJwt;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace apiJMBROWS
 {
@@ -232,6 +234,9 @@ namespace apiJMBROWS
                 });
             });
 
+
+
+
             // ─────────────── JWT Auth ─────────────────────
             var jwt = builder.Configuration.GetSection("Jwt")
                                           .Get<JwtSettings>();
@@ -241,6 +246,7 @@ namespace apiJMBROWS
                    {
                        o.TokenValidationParameters = new TokenValidationParameters
                        {
+                           RoleClaimType = ClaimTypes.Role,
                            ValidateIssuer = true,
                            ValidateAudience = true,
                            ValidateLifetime = true,
@@ -253,6 +259,9 @@ namespace apiJMBROWS
                    });
             builder.Services.AddAuthorization();
 
+
+            // ─────────────── Notificaciones Signalr ─────────────────────
+            builder.Services.AddSignalR();
             // ─────────────── DbContext ────────────────────
             builder.Services.AddDbContext<EsteticaContext>(o =>
                 o.UseSqlServer(
@@ -276,7 +285,17 @@ namespace apiJMBROWS
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // ─────────────── Notificaciones Signalr ─────────────────────
+            app.MapHub<NotificacionesHub>("/hub/notificacionesHub");
+
+
+
+
             app.Run();
+
+
+
         }
     }
 }

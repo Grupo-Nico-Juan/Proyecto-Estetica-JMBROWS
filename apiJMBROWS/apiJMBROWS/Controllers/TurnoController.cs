@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
+﻿using apiJMBROWS.Hubs;
+using LogicaAplicacion.CasosDeUso.CUDetalleTurno;
 using LogicaAplicacion.CasosDeUso.CUTurno;
 using LogicaAplicacion.Dtos.TurnoDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUDetalleTurno;
@@ -7,6 +8,7 @@ using LogicaAplicacion.InterfacesCasosDeUso.ICUTurno;
 using LogicaNegocio.Entidades.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace apiJMBROWS.Controllers
@@ -33,6 +35,8 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerHorariosOcupados _horariosOcupados;
         private readonly ICUMarcarTurnoComoRealizado _marcarTurnoComoRealizado;
         private readonly ICUObtenerTurnosFiltrados _obtenerTurnosFiltrados;
+
+        private readonly IHubContext<NotificacionesHub> _hubContext;
         public TurnosController(
             ICUAltaTurno altaTurno,
             ICUObtenerTurnos obtenerTurnos,
@@ -50,7 +54,8 @@ namespace apiJMBROWS.Controllers
             ICUObtenerHorariosPorEmpleada horariosPorEmpleada,
             ICUObtenerHorariosOcupados horariosOcupados,
             ICUMarcarTurnoComoRealizado marcarTurnoComoRealizado,
-            ICUObtenerTurnosFiltrados obtenerTurnosFiltrados
+            ICUObtenerTurnosFiltrados obtenerTurnosFiltrados,
+            IHubContext<NotificacionesHub> hubContext
             )
         {
             _altaTurno = altaTurno;
@@ -70,6 +75,7 @@ namespace apiJMBROWS.Controllers
             _horariosOcupados = horariosOcupados;
             _marcarTurnoComoRealizado = marcarTurnoComoRealizado;
             _obtenerTurnosFiltrados = obtenerTurnosFiltrados;
+            _hubContext = hubContext;
         }
 
         /// <summary>
@@ -214,11 +220,16 @@ namespace apiJMBROWS.Controllers
         [SwaggerOperation(Summary = "Crea un nuevo turno (solo administradores)")]
         [SwaggerResponse(201, "Turno creado correctamente")]
         [SwaggerResponse(400, "Error en los datos del turno")]
-        public IActionResult Create([FromBody] AltaTurnoDTO dto)
+        public async Task<IActionResult> Create([FromBody] AltaTurnoDTO dto)
         {
             try
             {
                 _altaTurno.Ejecutar(dto);
+                await _hubContext.Clients.Group("Administradores").SendAsync("RecibirNotificacion", new
+                {
+                    mensaje = "Se ha agendado un nuevo turno",
+                    fecha = DateTime.Now
+                });
                 return StatusCode(201, "Turno creado correctamente.");
             }
             catch (Exception ex)
