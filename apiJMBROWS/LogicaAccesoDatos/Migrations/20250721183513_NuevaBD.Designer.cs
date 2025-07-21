@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(EsteticaContext))]
-    [Migration("20250716211315_nuevaDB")]
-    partial class nuevaDB
+    [Migration("20250721183513_NuevaBD")]
+    partial class NuevaBD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -353,6 +353,28 @@ namespace LogicaAccesoDatos.Migrations
                     b.ToTable("Sectores");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.ServicioImagen", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ServicioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServicioId");
+
+                    b.ToTable("ServicioImagenes");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Sucursal", b =>
                 {
                     b.Property<int>("Id")
@@ -666,6 +688,17 @@ namespace LogicaAccesoDatos.Migrations
                     b.Navigation("Sucursal");
                 });
 
+            modelBuilder.Entity("LogicaNegocio.Entidades.ServicioImagen", b =>
+                {
+                    b.HasOne("Servicio", "Servicio")
+                        .WithMany("Imagenes")
+                        .HasForeignKey("ServicioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Servicio");
+                });
+
             modelBuilder.Entity("LogicaNegocio.Entidades.Turno", b =>
                 {
                     b.HasOne("LogicaNegocio.Entidades.Cliente", "Cliente")
@@ -751,6 +784,8 @@ namespace LogicaAccesoDatos.Migrations
             modelBuilder.Entity("Servicio", b =>
                 {
                     b.Navigation("Extras");
+
+                    b.Navigation("Imagenes");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Entidades.Empleado", b =>

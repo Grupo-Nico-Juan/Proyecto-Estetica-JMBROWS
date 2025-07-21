@@ -1,4 +1,5 @@
 ﻿using apiJMBROWS.Hubs;
+using apiJMBROWS.Servicios;
 using apiJMBROWS.UtilidadesJwt;
 using Libreria.LogicaAplicacion.CasosDeUso.CUUsuarios;
 using Libreria.LogicaNegocio.InterfacesRepositorio;
@@ -83,8 +84,13 @@ namespace apiJMBROWS
             builder.Services.AddScoped<IRepositorioSectores, RepositorioSectores>();
             builder.Services.AddScoped<IRepositorioDetalleTurno, RepositorioDetalleTurno>();
             builder.Services.AddScoped<IRepositorioPeriodoLaboral, RepositorioPeriodoLaboral>();
+            builder.Services.AddScoped<IRepoServicioImagenes, RepoServicioImagenes>();
 
             // ─────────────── Casos de Uso ─────────────────
+            builder.Services.AddSingleton<IStorageImagenes, StorageImagenAzure>();
+            builder.Services.AddScoped<ICUSubirImagenesServicio, CUSubirImagenesServicio>();
+            builder.Services.AddScoped<ICUEliminarImagenServicio, CUEliminarImagenServicio>();
+
             builder.Services.AddScoped<ICUAltaUsuario, CUAltaUsuario>();
             builder.Services.AddScoped<ICULoginUsuario, CULoginUsuario>();
 

@@ -16,6 +16,7 @@ namespace LogicaAccesoDatos.EF
         public DbSet<DetalleTurno> DetallesTurno { get; set; }
         public DbSet<PeriodoLaboral> PeriodosLaborales { get; set; }
         public DbSet<ExtraServicio> ExtrasServicio { get; set; }
+        public DbSet<ServicioImagen> ServicioImagenes { get; set; }
 
 
         public EsteticaContext(DbContextOptions<EsteticaContext> options) : base(options) { }
@@ -31,6 +32,12 @@ namespace LogicaAccesoDatos.EF
             modelBuilder.Entity<ExtraServicio>()
                 .Property(e => e.Precio)
                 .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ServicioImagen>()
+            .HasOne(si => si.Servicio)
+            .WithMany(s => s.Imagenes)
+            .HasForeignKey(si => si.ServicioId)
+            .OnDelete(DeleteBehavior.Cascade);
 
             // Herencia TPH para Usuario
             modelBuilder.Entity<Usuario>().HasKey(u => u.Id);

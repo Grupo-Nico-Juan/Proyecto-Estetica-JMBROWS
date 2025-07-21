@@ -1,9 +1,9 @@
-﻿using LogicaAplicacion.Dtos.HabilidadDTO;
+﻿using LogicaAplicacion.Dtos.ExtraServicioDTO;
+using LogicaAplicacion.Dtos.HabilidadDTO;
 using LogicaAplicacion.Dtos.SectorDTO;
 using LogicaAplicacion.Dtos.ServicioDTO;
-using LogicaAplicacion.Dtos.ExtraServicioDTO;
-using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUExtraServicio;
+using LogicaAplicacion.InterfacesCasosDeUso.ICUServicio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -33,7 +33,8 @@ namespace apiJMBROWS.Controllers
         private readonly ICUObtenerExtrasDeServicio _obtenerExtras;
         private readonly ICUObtenerExtraServicioPorId _obtenerExtraPorId;
         private readonly ICUObtenerServiciosDisponiblesPorSectorYEmpleada _obtenerServiciosPorSectorYEmpleada;
-        
+        private readonly ICUSubirImagenesServicio _subirImgs;
+        private readonly ICUEliminarImagenServicio _eliminarImg;
         public ServicioController(
             ICUAltaServicio altaServicio,
             ICUActualizarServicio actualizarServicio,
@@ -52,7 +53,9 @@ namespace apiJMBROWS.Controllers
             ICUEliminarExtraServicio eliminarExtra,
             ICUObtenerExtrasDeServicio obtenerExtras,
             ICUObtenerExtraServicioPorId obtenerExtraPorId,
-            ICUObtenerServiciosDisponiblesPorSectorYEmpleada obtenerServiciosPorSectorYEmpleada)
+            ICUObtenerServiciosDisponiblesPorSectorYEmpleada obtenerServiciosPorSectorYEmpleada,
+            ICUSubirImagenesServicio subirImagenesServicio,
+            ICUEliminarImagenServicio eliminarImagenServicio)
         {
             _altaServicio = altaServicio;
             _actualizarServicio = actualizarServicio;
@@ -72,6 +75,8 @@ namespace apiJMBROWS.Controllers
             _obtenerExtras = obtenerExtras;
             _obtenerExtraPorId = obtenerExtraPorId;
             _obtenerServiciosPorSectorYEmpleada = obtenerServiciosPorSectorYEmpleada;
+            _subirImgs = subirImagenesServicio;
+            _eliminarImg = eliminarImagenServicio;
         }
 
         /// <summary>
@@ -412,6 +417,39 @@ namespace apiJMBROWS.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
+        }
+        /// <summary>Sube una o varias imágenes a un servicio.</summary>
+        /// <remarks>
+        /// * **Roles:** Administrador  
+        /// * Content‑Type: **multipart/form-data**  
+        /// * Campo: **archivos** (puede contener varios)  
+        /// </remarks>
+        [HttpPost("{servicioId}/imagenes")]
+        [Authorize(Roles = "Administrador")]
+        [Consumes("multipart/form-data")]
+        [SwaggerOperation(Summary = "Sube imágenes a un servicio",
+                          Description = "Carga 1‑N archivos y los asocia al servicio.")]
+        [SwaggerResponse(200, "Imágenes subidas")]
+        [SwaggerResponse(400, "Validación o formato incorrecto")]
+        public async Task<IActionResult> SubirImagenes(
+            int servicioId,
+            [SwaggerParameter("Lista de archivos", Required = true)]
+            [FromForm] List<IFormFile> archivos) 
+        {
+            await _subirImgs.SubirAsync(servicioId, archivos);
+            return Ok();
+        }
+
+        /// <summary>Elimina una imagen asociada a un servicio.</summary>
+        [HttpDelete("imagenes/{imagenId:int}")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Borra una imagen")]
+        [SwaggerResponse(204, "Imagen eliminada")]
+        [SwaggerResponse(404, "Imagen no encontrada")]
+        public async Task<IActionResult> EliminarImagen(int imagenId)
+        {
+            await _eliminarImg.Ejecutar(imagenId);
+            return NoContent();
         }
     }
 }

@@ -31,6 +31,7 @@ namespace LogicaAccesoDatos.EF
             return _context.Servicios
                 .Include(s => s.Extras)
                 .Include(s => s.Habilidades)
+                .Include(s => s.Imagenes)
                 .Include(s => s.Sectores)
                 .ToList();
         }
@@ -39,6 +40,7 @@ namespace LogicaAccesoDatos.EF
         {
             return _context.Servicios
                 .Include(s => s.Extras)
+                .Include(s => s.Imagenes)
                 .FirstOrDefault(s => s.Id == id);
         }
 

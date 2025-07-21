@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LogicaAccesoDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class nuevaDB : Migration
+    public partial class NuevaBD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -310,6 +310,26 @@ namespace LogicaAccesoDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ServicioImagenes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServicioId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServicioImagenes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServicioImagenes_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServicioSector",
                 columns: table => new
                 {
@@ -490,6 +510,11 @@ namespace LogicaAccesoDatos.Migrations
                 column: "SucursalId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ServicioImagenes_ServicioId",
+                table: "ServicioImagenes",
+                column: "ServicioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Servicios_PromocionId",
                 table: "Servicios",
                 column: "PromocionId");
@@ -540,6 +565,9 @@ namespace LogicaAccesoDatos.Migrations
 
             migrationBuilder.DropTable(
                 name: "PeriodosLaborales");
+
+            migrationBuilder.DropTable(
+                name: "ServicioImagenes");
 
             migrationBuilder.DropTable(
                 name: "ServicioSector");
