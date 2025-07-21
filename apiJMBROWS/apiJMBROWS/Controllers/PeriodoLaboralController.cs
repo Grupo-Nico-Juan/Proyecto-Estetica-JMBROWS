@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.Dtos.PeriodoLaboralDTO;
+﻿using LogicaAplicacion.CasosDeUso.CUPeriodoLaboral;
+using LogicaAplicacion.Dtos.PeriodoLaboralDTO;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUPeriodoLaboral;
 using LogicaNegocio.InterfacesRepositorio;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,7 @@ namespace apiJMBROWS.Controllers
         private readonly ICUEliminarPeriodoLaboral _eliminarPeriodoLaboral;
         private readonly ICUObtenerPeriodosLaboralesPorSucursal _obtenerPeriodosPorSucursal;
         private readonly ICUObtenerPeriodoPorId _obtenerPeriodoPorId;
+        private readonly ICUAltaLicenciaSucursal _altaLicenciaSucursal;
 
         public PeriodoLaboralController(
             ICUObtenerPeriodosLaboralesPorEmpleada obtenerPeriodosPorEmpleada,
@@ -27,7 +29,8 @@ namespace apiJMBROWS.Controllers
             ICUModificarPeriodoLaboral modificarPeriodoLaboral,
             ICUEliminarPeriodoLaboral eliminarPeriodoLaboral,
             ICUObtenerPeriodosLaboralesPorSucursal obtenerPeriodosPorSucursal,
-            ICUObtenerPeriodoPorId obtenerPeriodoPorId)
+            ICUObtenerPeriodoPorId obtenerPeriodoPorId,
+            ICUAltaLicenciaSucursal altaLicenciaSucursal)
         {
             _obtenerPeriodosPorEmpleada = obtenerPeriodosPorEmpleada;
             _altaPeriodoLaboral = altaPeriodoLaboral;
@@ -35,6 +38,7 @@ namespace apiJMBROWS.Controllers
             _eliminarPeriodoLaboral = eliminarPeriodoLaboral;
             _obtenerPeriodosPorSucursal = obtenerPeriodosPorSucursal;
             _obtenerPeriodoPorId = obtenerPeriodoPorId;
+            _altaLicenciaSucursal = altaLicenciaSucursal;
         }
 
         /// <summary>
@@ -126,6 +130,27 @@ namespace apiJMBROWS.Controllers
             {
                 _altaPeriodoLaboral.Ejecutar(dto);
                 return Ok("Periodo laboral creado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Agrega una licencia a todas las empleadas de una o varias sucursales.
+        /// </summary>
+        [HttpPost("sucursal/licencia")]
+        [Authorize(Roles = "Administrador")]
+        [SwaggerOperation(Summary = "Agrega una licencia colectiva a una o varias sucursales")]
+        [SwaggerResponse(200, "Licencias agregadas correctamente")]
+        [SwaggerResponse(400, "Error en los datos de la licencia")]
+        public IActionResult PostLicenciaSucursal([FromBody] AltaLicenciaSucursalDTO dto)
+        {
+            try
+            {
+                _altaLicenciaSucursal.Ejecutar(dto);
+                return Ok("Licencias agregadas correctamente.");
             }
             catch (Exception ex)
             {

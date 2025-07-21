@@ -15,7 +15,6 @@ using LogicaAplicacion.CasosDeUso.CUReportes;
 using LogicaAplicacion.CasosDeUso.CUServicio;
 using LogicaAplicacion.CasosDeUso.CUSucursal;
 using LogicaAplicacion.CasosDeUso.CUTurno;
-using LogicaAplicacion.CasosDeUso.CUUsuario;
 using LogicaAplicacion.Infraestructura.ServiciosExternos;
 using LogicaAplicacion.InterfacesCasosDeUso;
 using LogicaAplicacion.InterfacesCasosDeUso.ICUCliente;
@@ -170,6 +169,7 @@ namespace apiJMBROWS
             builder.Services.AddScoped<ICUModificarPeriodoLaboral, CUModificarPeriodoLaboral>();
             builder.Services.AddScoped<ICUEliminarPeriodoLaboral, CUEliminarPeriodoLaboral>();
             builder.Services.AddScoped<ICUObtenerPeriodosLaboralesPorSucursal, CUObtenerPeriodosLaboralesPorSucursal>();
+            builder.Services.AddScoped<ICUAltaLicenciaSucursal, CUAltaLicenciaSucursal>();
 
             builder.Services.AddScoped<ICUAltaSector, CUAltaSector>();
             builder.Services.AddScoped<ICUActualizarSector, CUActualizarSector>();
