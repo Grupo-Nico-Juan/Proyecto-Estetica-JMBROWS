@@ -27,7 +27,6 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
                 Descripcion = s.Descripcion,
                 DuracionMinutos = s.DuracionMinutos,
                 Precio = s.Precio,
-                Imagenes = s.Imagenes.Select(i => i.Url).ToList(),
                 Extras = _repoExtras.ObtenerPorServicio(s.Id)
                     .Select(e => new ServiciosExtrasDTO
                     {
@@ -36,7 +35,10 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
                         DuracionMinutos = e.DuracionMinutos,
                         Precio = e.Precio,
                         ServicioId = e.ServicioId
-                    }).ToList()
+                    }).ToList(),
+                Imagenes = s.Imagenes
+                .Select(i => new ServicioImagenDTO { Id = i.Id, Url = i.Url })
+                .ToList()
             });
         }
     }

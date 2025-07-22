@@ -41,7 +41,9 @@ namespace LogicaAplicacion.CasosDeUso.CUServicio
                 Descripcion = s.Descripcion,
                 DuracionMinutos = s.DuracionMinutos,
                 Precio = s.Precio,
-                Imagenes = s.Imagenes.Select(i => i.Url).ToList(),
+                Imagenes = s.Imagenes
+                .Select(i => new ServicioImagenDTO { Id = i.Id, Url = i.Url })
+                .ToList(),
                 Extras = extras
             };
         }
