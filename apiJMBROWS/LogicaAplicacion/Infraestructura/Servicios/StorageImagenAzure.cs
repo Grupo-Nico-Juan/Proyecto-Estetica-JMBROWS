@@ -12,8 +12,8 @@ namespace apiJMBROWS.Servicios
 
         public StorageImagenAzure(IConfiguration cfg)
         {
-            var conn = cfg["AzureBlobStorage:ConnectionString"]!;
-            var cont = cfg["AzureBlobStorage:ContainerName"]!;
+            var conn = cfg["BlobStorage:ConnectionString"]!;
+            var cont = cfg["BlobStorage:ContainerName"]!;
             _container = new BlobContainerClient(conn, cont);
         }
 
