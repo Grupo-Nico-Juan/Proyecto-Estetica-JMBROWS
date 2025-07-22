@@ -10,7 +10,7 @@ namespace apiJMBROWS.Servicios
     {
         private readonly BlobContainerClient _container;
 
-        public StorageImagenAzure(IConfiguration cfg)
+        public StorageImagenAzure(IConfiguration cfg)   
         {
             var conn = cfg["BlobStorage:ConnectionString"]!;
             var cont = cfg["BlobStorage:ContainerName"]!;
