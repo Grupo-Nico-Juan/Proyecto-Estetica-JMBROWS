@@ -12,7 +12,7 @@ namespace LogicaAplicacion.Dtos.DtoUsuario
     {
         public required string TipoUsuario { get; set; } // "Empleado"
         [Required]
-        public string Cargo { get; set; }
+        public required string Cargo { get; set; }
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }
         public string? Color { get; set; } 

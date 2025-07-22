@@ -29,7 +29,8 @@ namespace LogicaAccesoDatos.Repositorios
 
         public Habilidad GetById(int id)
         {
-            return _context.Habilidades.FirstOrDefault(h => h.Id == id);
+            var habilidad = _context.Habilidades.FirstOrDefault(h => h.Id == id);
+            return habilidad ?? throw new Exception("Habilidad no encontrada");
         }
 
         public void Update(int id, Habilidad obj)

@@ -9,7 +9,7 @@ namespace LogicaAplicacion.Dtos.EmpleadoDTO.EmpleadoDispibleDTO
     public class EmpleadaDisponibleDTO
     {
         public int Id { get; set; }
-        public string NombreCompleto { get; set; }
+        public required string NombreCompleto { get; set; }
         public string? Color { get; set; }
         public List<int> ServiciosQuePuedeRealizar { get; set; } = [];
     }

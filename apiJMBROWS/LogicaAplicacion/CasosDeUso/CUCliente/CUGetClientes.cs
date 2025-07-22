@@ -28,7 +28,7 @@ namespace LogicaAplicacion.CasosDeUso.CUCliente
                 Nombre = c.Nombre,
                 Apellido = c.Apellido,
                 Telefono = c.Telefono,
-                Email = c.Email,
+                Email = c.Email ?? string.Empty,
                 EsRegistrado = c.EsRegistrado
             });
         }

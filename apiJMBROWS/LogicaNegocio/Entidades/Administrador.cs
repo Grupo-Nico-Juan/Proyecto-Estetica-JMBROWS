@@ -19,7 +19,7 @@ namespace Libreria.LogicaNegocio.Entidades
         public required string Password { get; set; }
         [JsonIgnore]
         [NotMapped]
-        public string PasswordPlano { get; set; }
+        public required string PasswordPlano { get; set; }
         public override void EsValido()
         {
             base.EsValido(); // Llama a la validación de Usuario

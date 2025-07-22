@@ -45,10 +45,11 @@ namespace LogicaAccesoDatos.Repositorios
 
         public DetalleTurno GetById(int id)
         {
-            return _context.DetallesTurno
+            var detalle = _context.DetallesTurno
                 .Include(d => d.Extras)
                 .AsNoTracking()
                 .FirstOrDefault(d => d.Id == id);
+            return detalle ?? throw new KeyNotFoundException($"DetalleTurno con ID {id} no encontrado.");
         }
 
         public IEnumerable<DetalleTurno> GetAll()

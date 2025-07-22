@@ -31,7 +31,8 @@ namespace LogicaAccesoDatos.EF
 
         public Sucursal GetById(int id)
         {
-            return _context.Sucursales.FirstOrDefault(s => s.Id == id);
+            var sucursal = _context.Sucursales.FirstOrDefault(s => s.Id == id);
+            return sucursal ?? throw new Exception("Sucursal no encontrada");
         }
 
         public void Update(int id, Sucursal obj)

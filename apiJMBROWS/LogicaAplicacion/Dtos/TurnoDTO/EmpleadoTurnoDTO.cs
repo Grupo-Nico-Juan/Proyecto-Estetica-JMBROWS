@@ -3,9 +3,9 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     public class EmpleadoTurnoDTO
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public required string Nombre { get; set; }
+        public required string Apellido { get; set; }
         public string? Color { get; set; }
-        public string Cargo { get; set; }
+        public required string Cargo { get; set; }
     }
 }

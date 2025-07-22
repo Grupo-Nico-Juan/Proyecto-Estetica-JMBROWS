@@ -30,7 +30,8 @@ namespace LogicaAccesoDatos.Repositorios
 
         public Cliente GetById(int id)
         {
-            return _context.Clientes.FirstOrDefault(c => c.Id == id);
+            var cliente = _context.Clientes.FirstOrDefault(c => c.Id == id);
+            return cliente ?? throw new ClienteException($"No se encontró el cliente con ID {id}");
         }
 
         public void Remove(int id)
@@ -71,7 +72,8 @@ namespace LogicaAccesoDatos.Repositorios
 
         public Cliente GetByEmail(string email)
         {
-            return _context.Clientes.FirstOrDefault(c => c.Email == email);
+            var cliente = _context.Clientes.FirstOrDefault(c => c.Email == email);
+            return cliente ?? throw new ClienteException($"No se encontró el cliente con email {email}");
         }
 
         public bool ExisteCorreoElectronico(string email)

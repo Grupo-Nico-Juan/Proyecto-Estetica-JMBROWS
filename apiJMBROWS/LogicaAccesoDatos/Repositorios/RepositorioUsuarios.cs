@@ -32,18 +32,15 @@ namespace LogicaAccesoDatos.Repositorios
 
         public Usuario GetById(int id)
         {
-            return _context.Usuarios.FirstOrDefault(u => u.Id == id);
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
+            return usuario ?? throw new UsuarioException($"No se encontró el Usuario con Id {id}");
         }
 
         public void Remove(int id)
         {
-            var usuario = GetById(id);
-            if (usuario == null)
-                throw new UsuarioException($"No se encontró el Usuario con Id {id}");
-
-                _context.Usuarios.Remove(usuario);
-                _context.SaveChanges();
-            
+            var usuario = GetById(id) ?? throw new UsuarioException($"No se encontró el Usuario con Id {id}");
+            _context.Usuarios.Remove(usuario);
+            _context.SaveChanges();
         }
 
         public void Remove(Usuario obj)
@@ -73,9 +70,10 @@ namespace LogicaAccesoDatos.Repositorios
 
         public Usuario GetByEmail(string email)
         {
-            return _context.Usuarios
+            var usuario = _context.Usuarios
             .OfType<Administrador>()
             .FirstOrDefault(a => a.Email == email);
+            return usuario ?? throw new UsuarioException($"No se encontró el usuario con email {email}");
         }
 
         public IEnumerable<Usuario> GetByRol(string rol)
@@ -95,13 +93,14 @@ namespace LogicaAccesoDatos.Repositorios
         }
         public Empleado GetEmpleadoById(int id)
         {
-            return _context.Usuarios
+            var usuario = _context.Usuarios
                 .OfType<Empleado>()
                 .Include(e => e.PeriodosLaborales)
                 .Include(e => e.TurnosAsignados)
                 .Include(e => e.SectoresAsignados)
                 .Include(e => e.Habilidades)
                 .FirstOrDefault(e => e.Id == id);
+            return usuario ?? throw new EmpleadoException($"No se encontró el empleado con Id {id}");
         }
         public void AddEmpleado(Empleado e)
         {

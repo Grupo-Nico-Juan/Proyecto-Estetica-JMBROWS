@@ -124,7 +124,7 @@ public class WhatsAppService : IWhatsAppService
     public async Task EnviarRecordatorioAsync(int turnoId)
     {
         var turno = _repoTurno.GetById(turnoId);
-        if (turno == null || turno.Estado != EstadoTurno.Pendiente) return;
+        if (turno == null || turno.Estado != EstadoTurno.Pendiente || turno.Cliente == null) return;
 
         var tel = turno.Cliente.Telefono;               // ya en formato +598…
         var fecha = turno.FechaHora.ToString("d 'de' MMMM");
@@ -140,15 +140,15 @@ public class WhatsAppService : IWhatsAppService
                 name = "recordatorio_turno_es",
                 language = new { code = "es" },
                 components = new[] {
-                new {
-                    type = "body",
-                    parameters = new[] {
-                        new { type = "text", text = turno.Cliente.Nombre },
-                        new { type = "text", text = fecha },
-                        new { type = "text", text = hora }
+                    new {
+                        type = "body",
+                        parameters = new[] {
+                            new { type = "text", text = turno.Cliente.Nombre },
+                            new { type = "text", text = fecha },
+                            new { type = "text", text = hora }
+                        }
                     }
                 }
-            }
             },
             // contexto para reconocer el turno en el webhook:
             context = new { message_id = $"TURNO_{turno.Id}" }

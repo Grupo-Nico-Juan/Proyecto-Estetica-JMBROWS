@@ -40,7 +40,7 @@ namespace LogicaAplicacion.CasosDeUso.CUCliente
             {
                 Id = cliente.Id,
                 Telefono = cliente.Telefono,
-                Email = cliente.Email,
+                Email = cliente.Email ?? string.Empty,
                 Nombre = cliente.Nombre,
                 Apellido = cliente.Apellido
             };

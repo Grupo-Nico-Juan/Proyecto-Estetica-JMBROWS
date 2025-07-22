@@ -11,20 +11,20 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
     {
         public int Id { get; set; }
         public int SucursalId { get; set; }
-        public string SucursalNombre { get; set; }
+        public required string SucursalNombre { get; set; }
         public DateTime FechaHoraInicio { get; set; }
         public DateTime FechaHoraFin { get; set; }
 
-        public string EmpleadaNombre { get; set; }
-        public string EmpleadaColor { get; set; }
+        public required string EmpleadaNombre { get; set; }
+        public required string EmpleadaColor { get; set; }
         public int EmpleadaId { get; set; }
 
-        public string ClienteNombre { get; set; }
-        public string ClienteApellido { get; set; }
-        public string ClienteTelefono { get; set; }
+        public required string ClienteNombre { get; set; }
+        public required string ClienteApellido { get; set; }
+        public required string ClienteTelefono { get; set; }
 
-        public List<string> Servicios { get; set; }
-        public List<string> Extras { get; set; }
+        public required List<string> Servicios { get; set; }
+        public required List<string> Extras { get; set; }
 
         public EstadoTurno Estado { get; set; }
     }

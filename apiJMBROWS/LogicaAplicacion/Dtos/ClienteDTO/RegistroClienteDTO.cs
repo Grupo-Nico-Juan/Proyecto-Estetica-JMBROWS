@@ -11,14 +11,14 @@ namespace LogicaAplicacion.Dtos.ClienteDTO
     public class RegistroClienteDTO
     {
         [Required]
-        public string Nombre { get; set; }
+        public required string Nombre { get; set; }
 
         [Required]
-        public string Apellido { get; set; }
+        public required string Apellido { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
         [Required]
         public required string Telefono { get; set; }
 

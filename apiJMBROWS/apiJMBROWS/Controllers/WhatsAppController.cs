@@ -21,7 +21,7 @@ namespace apiJMBROWS.Controllers
         {
             _ws = ws;
             _cuTurno = cuTurno;
-            _verifyToken = cfg["WhatsApp:WebhookVerifyToken"]; // lo pones en appsettings / KeyVault
+            _verifyToken = cfg["WhatsApp:WebhookVerifyToken"] ?? throw new ArgumentNullException(nameof(cfg), "El token de verificación de WhatsApp no puede ser nulo.");
         }
 
         [HttpPost("verificar")]

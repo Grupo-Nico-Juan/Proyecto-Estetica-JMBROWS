@@ -28,7 +28,8 @@ namespace LogicaAccesoDatos.Repositorios
 
         public ExtraServicio GetById(int id)
         {
-            return _context.ExtrasServicio.Include(e => e.Servicio).FirstOrDefault(e => e.Id == id);
+            var extra = _context.ExtrasServicio.Include(e => e.Servicio).FirstOrDefault(e => e.Id == id);
+            return extra ?? throw new KeyNotFoundException($"ExtraServicio con ID {id} no encontrado.");
         }
 
         public IEnumerable<ExtraServicio> ObtenerPorServicio(int servicioId)

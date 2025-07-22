@@ -9,9 +9,9 @@ namespace LogicaAplicacion.Dtos.SucursalDTO
     public class SucursalDTO
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Direccion { get; set; }
-        public string Telefono { get; set; }
+        public required string Nombre { get; set; }
+        public required string Direccion { get; set; }
+        public required string Telefono { get; set; }
     }
 
 }

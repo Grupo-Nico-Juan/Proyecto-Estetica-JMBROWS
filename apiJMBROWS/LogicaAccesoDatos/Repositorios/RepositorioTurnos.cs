@@ -47,12 +47,13 @@ namespace LogicaAccesoDatos.EF
 
         public Turno GetById(int id)
         {
-            return _context.Turnos
+            var turno = _context.Turnos
                            .Include(t => t.Detalles)
                                .ThenInclude(d => d.Extras)
                            .Include(t => t.Empleada)
                            .Include(t => t.Cliente)
                            .FirstOrDefault(t => t.Id == id);
+            return turno ?? throw new KeyNotFoundException($"Turno con ID {id} no encontrado.");
         }
 
         public void Remove(int id)

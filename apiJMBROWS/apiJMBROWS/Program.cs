@@ -245,8 +245,7 @@ namespace apiJMBROWS
 
             // ─────────────── JWT Auth ─────────────────────
             var jwt = builder.Configuration.GetSection("Jwt")
-                                          .Get<JwtSettings>();
-
+                                          .Get<JwtSettings>() ?? throw new InvalidOperationException("No se pudo cargar la configuración Jwt desde appsettings.");
             builder.Services.AddAuthentication("Bearer")
                    .AddJwtBearer("Bearer", o =>
                    {

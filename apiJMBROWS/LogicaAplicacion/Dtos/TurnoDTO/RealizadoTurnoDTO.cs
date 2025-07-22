@@ -8,6 +8,6 @@ namespace LogicaAplicacion.Dtos.TurnoDTO
 {
     public class RealizadoTurnoDTO
     {
-        public string Pin { get; set; }
+        public required string Pin { get; set; }
     }
 }

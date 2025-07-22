@@ -38,10 +38,11 @@ namespace LogicaAccesoDatos.EF
 
         public Servicio GetById(int id)
         {
-            return _context.Servicios
+            var servicio = _context.Servicios
                 .Include(s => s.Extras)
                 .Include(s => s.Imagenes)
                 .FirstOrDefault(s => s.Id == id);
+            return servicio ?? throw new KeyNotFoundException($"Servicio con ID {id} no encontrado.");
         }
 
         public void Update(int id, Servicio obj)

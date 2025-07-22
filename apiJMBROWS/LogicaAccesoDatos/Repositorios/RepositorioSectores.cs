@@ -32,7 +32,8 @@ namespace LogicaAccesoDatos.EF
 
         public Sector GetById(int id)
         {
-            return _context.Sectores.FirstOrDefault(s => s.Id == id);
+            var sector = _context.Sectores.FirstOrDefault(s => s.Id == id);
+            return sector ?? throw new Exception("Sector no encontrado");
         }
 
         public void Update(int id, Sector obj)
