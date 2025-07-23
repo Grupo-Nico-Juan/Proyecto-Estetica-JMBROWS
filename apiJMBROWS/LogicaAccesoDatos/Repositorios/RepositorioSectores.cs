@@ -70,10 +70,12 @@ namespace LogicaAccesoDatos.EF
         public IEnumerable<Sector> ObtenerSectoresConServiciosPorSucursal(int sucursalId)
         {
             return _context.Sectores
-            .Include(s => s.Servicios)
-                .ThenInclude(serv => serv.Extras)
+                .Include(s => s.Servicios)
+                    .ThenInclude(serv => serv.Extras)
+                .Include(s => s.Servicios)
+                    .ThenInclude(serv => serv.Imagenes)
                 .Where(s => s.SucursalId == sucursalId)
-            .ToList();
+                .ToList();
         }
 
     }
