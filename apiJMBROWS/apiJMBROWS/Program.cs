@@ -37,6 +37,8 @@ using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace apiJMBROWS
 {
@@ -46,6 +48,15 @@ namespace apiJMBROWS
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://*:8080");
+
+            // ─────────────── Hangfire ────────────────────
+            builder.Services.AddHangfire(cfg =>
+            cfg.UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+             .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"),
+            new SqlServerStorageOptions { PrepareSchemaIfNecessary = true }));
+
+            builder.Services.AddHangfireServer();
 
             // ─────────────── Serialización ───────────────
             builder.Services.AddControllers()
@@ -276,7 +287,6 @@ namespace apiJMBROWS
             var app = builder.Build();
 
             app.UseCors("FrontendPolicy");
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -288,6 +298,7 @@ namespace apiJMBROWS
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.MapHangfireDashboard("/hangfire");
 
             app.MapControllers();
 

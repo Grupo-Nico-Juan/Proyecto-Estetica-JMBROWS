@@ -99,7 +99,6 @@ namespace apiJMBROWS.Controllers
                     {
                         "CONFIRMAR" => EstadoTurno.Confirmado,
                         "CANCELAR" => EstadoTurno.Cancelado,
-                        "REPROGRAMAR" => EstadoTurno.ReprogramarSolicitado,
                         _ => (EstadoTurno?)null
                     }
                 ;

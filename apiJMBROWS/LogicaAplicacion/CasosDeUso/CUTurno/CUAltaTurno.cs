@@ -14,13 +14,21 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
         private readonly IRepositorioTurnos _repo;
         private readonly IRepositorioUsuarios _repoUsuarios;
         private readonly IRepositorioServicios _repoServicios;
+        private readonly IBackgroundJobClient _jobs;
+        private readonly IWhatsAppService _wa;
 
 
-        public CUAltaTurno(IRepositorioTurnos repo, IRepositorioUsuarios repoUsuarios, IRepositorioServicios repoServicios)
+        public CUAltaTurno(IRepositorioTurnos repo,
+        IRepositorioUsuarios repoUsuarios,
+        IRepositorioServicios repoServicios,
+        IBackgroundJobClient jobs,
+        IWhatsAppService wa)
         {
             _repo = repo;
             _repoUsuarios = repoUsuarios;
             _repoServicios = repoServicios;
+            _jobs = jobs;
+            _wa = wa;
 
         }
 
@@ -96,13 +104,17 @@ namespace LogicaAplicacion.CasosDeUso.CUTurno
                 if (periodo.SeSuperpone(inicioNuevoTurno, finNuevoTurno))
                     throw new TurnoException("La empleada está de licencia o no disponible en el horario seleccionado.");
             }
-            //var jobId = BackgroundJob.Schedule<IWhatsAppService>(
-              //s => s.EnviarRecordatorioAsync(turno.Id),
-              //turno.FechaHora.AddDays(-1));
+            _repo.Add(turno);                // genera Id
 
-            //turno.HangfireId = jobId;
+            var when = turno.FechaHora.AddHours(-24);
+            if (when < DateTime.UtcNow) when = DateTime.UtcNow.AddMinutes(1);
 
-            _repo.Add(turno);
+            var jobId = _jobs.Schedule(
+                () => _wa.EnviarRecordatorioAsync(turno.Id),
+                when);
+
+            turno.HangfireId = jobId;
+            _repo.Update(turno.Id, turno);
         }
     }
 }

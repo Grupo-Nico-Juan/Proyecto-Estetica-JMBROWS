@@ -138,7 +138,7 @@ public class WhatsAppService : IWhatsAppService
             template = new
             {
                 name = "recordatorio_turno_es",
-                language = new { code = "es" },
+                language = new { code = "es_UY" },
                 components = new[] {
                     new {
                         type = "body",
