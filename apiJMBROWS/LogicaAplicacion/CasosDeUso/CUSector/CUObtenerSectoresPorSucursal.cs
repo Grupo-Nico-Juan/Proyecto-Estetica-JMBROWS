@@ -34,6 +34,12 @@ public CUObtenerSectoresPorSucursal(IRepositorioSectores repo)
                 Precio = serv.Precio,
                 DuracionMinutos = serv.DuracionMinutos,
                 Descripcion = serv.Descripcion,
+                Imagenes = serv.Imagenes?.Select(img => new ServicioImagenDTO
+                {
+                    Id = img.Id,
+                    Url = img.Url,
+                }).ToList() ?? new List<ServicioImagenDTO>(),
+
                 Extras = serv.Extras?.Select(ex => new ServiciosExtrasDTO
                 {
                     Id = ex.Id,
